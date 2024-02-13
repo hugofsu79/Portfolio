@@ -1,0 +1,291 @@
+/* couleurs
+#FFFAF5
+*/
+
+body {
+    padding: 1em;
+    background-color: rgb(244, 240, 230);
+}
+
+/* header */
+/* nav {
+    position: fixed;
+    background-color: rgba(244, 240, 230, 0.545);
+    backdrop-filter: blur(2px);
+} */
+.dashboard {
+    display: flex;
+    flex-direction: row;
+}
+
+.header_align {
+    display: flex;
+    justify-content: space-between;
+    text-decoration: none;
+
+}
+
+.contact {
+    text-align: right;
+    text-decoration: underline;
+}
+
+.icone_lien {
+    width: 2em;
+    display: flex;
+}
+
+
+
+/* Premiere partie */
+h1 {
+    margin-block-start: 0px;
+    padding: 0;
+    text-align: center;
+    font-family: "arya-single", sans-serif;
+    font-style: normal;
+    font-size: 6em;
+    color: rgb(255, 60, 0);
+    text-transform: uppercase;
+
+}
+
+.projets_content {
+    display: grid;
+    grid-template-columns: repeat(4, 2fr);
+}
+
+.projetsDetail {
+    position: relative;
+    display: inline-block;
+    margin: .3em;
+
+    /* Ou flex, selon la mise en page désirée */
+}
+
+.detailPng {
+    filter: opacity(100%);
+}
+.detailPng:hover {
+    filter: opacity(55%);
+}
+
+.nameTag {
+    position: absolute;
+    top: 0;
+    left: .25em;
+    color: black;
+    font-family: "arya-single", sans-serif;
+    padding: 5px;
+    font-size: 6em;
+    color: rgb(255, 60, 0);
+}
+
+.descriptionTag {
+    font-family: Futura;
+    font-weight: 100;
+    font-style: normal;
+    color: rgb(255, 60, 0);
+    position: absolute;
+    top: 6.5em;
+    margin: 1em;
+    opacity: 0%;
+    transition: .5s;
+}
+
+.projetsDetail:hover .descriptionTag {
+    opacity: 100%;
+    transition: .5s;
+    top: 6em;
+
+}
+
+
+h2 {
+    margin-top: -1.5em;
+    text-align: center;
+    font-family: Futura;
+    font-weight: 100;
+    font-style: normal;
+    font-size: 3em;
+    color: rgb(255, 60, 0);
+
+    /* text-transform: uppercase; */
+}
+
+h3 {
+    color: rgb(255, 60, 0);
+    text-transform: uppercase;
+    font-family: "europa", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+p {
+    color: rgb(255, 60, 0);
+    font-family: "europa", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+
+}
+
+mark {
+    background-color: rgb(255, 60, 0);
+    color: rgb(244, 240, 230);
+}
+
+ul {
+    color: rgb(255, 60, 0);
+
+}
+
+.home_about {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.home_content {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.languages {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+.chapitre {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 8em;
+}
+
+/*
+.home_projects {
+ background-color: #fff200; 
+}*/
+
+
+.detailPng {
+    width: 40em;
+    border-radius: 1em;
+}
+
+p .presentation {
+    display: flex;
+    justify-content: center;
+    font-family: "mundial", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+    font-size: 4em;
+    max-width: 24em;
+}
+
+.presentation {
+    text-align: center;
+}
+
+/*footer*/
+footer {
+    background-color: #46e0ff;
+}
+
+.footerDispo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.logoHugo {
+    width: 20em;
+}
+
+.about {
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+}
+
+/* modale */
+*:focus {
+    box-shadow: 0 0 10px blue;
+}
+
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn .3s both;
+}
+
+.modal-wrapper {
+    overflow: auto;
+    width: 600px;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    padding: 20px;
+    background-color: white;
+    animation: slideFromTop .5s both;
+
+}
+
+.modal[aria-hidden="true"] {
+    animation: fadeOut;
+}
+
+.modal[aria-hidden="true"] .modal-wrapper {
+    animation: slideFromToBottom;
+}
+
+@keyframes fadIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes slideFromTop {
+    from {
+        transform: translatey(-50px);
+    }
+
+    to {
+        transform: translatey(0px);
+
+    }
+}
+
+@keyframes slideToBottom {
+    from {
+        transform: translatey(0px);
+    }
+
+    to {
+        transform: translatey(-50px);
+
+    }
+}

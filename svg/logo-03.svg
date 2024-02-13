@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90.22 90.22">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Dégradé_sans_nom_6);
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: url(#Dégradé_sans_nom_7);
+      }
+
+      .cls-3 {
+        fill: #d6ccb6;
+      }
+    </style>
+    <linearGradient id="Dégradé_sans_nom_7" data-name="Dégradé sans nom 7" x1="76.25" y1="4.61" x2="76.25" y2="84.65" gradientUnits="userSpaceOnUse">
+      <stop offset=".14" stop-color="#f4f0e6"/>
+      <stop offset=".87" stop-color="#d6ccb6"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_6" data-name="Dégradé sans nom 6" x1="10.81" y1="18.96" x2="68.26" y2="79.77" gradientUnits="userSpaceOnUse">
+      <stop offset=".13" stop-color="#d6ccb6"/>
+      <stop offset=".86" stop-color="#f4f0e6"/>
+    </linearGradient>
+  </defs>
+  <polygon class="cls-3" points="67.33 0 67.33 26.5 12.7 68.76 5.63 60.31 67.33 0"/>
+  <g>
+    <polygon class="cls-2" points="85.17 8.32 85.17 82.19 70.32 88.87 67.33 90.22 67.33 0 70.52 1.49 85.17 8.32"/>
+    <polygon class="cls-1" points="67.33 90.22 67.33 62.79 45.09 43.7 34.23 34.39 20.59 22.69 14.88 17.8 5.05 28.86 67.33 90.22"/>
+  </g>
+</svg>

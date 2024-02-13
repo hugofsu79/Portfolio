@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 90.22 90.22">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Dégradé_sans_nom_9);
+      }
+
+      .cls-1, .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: url(#Dégradé_sans_nom_11);
+      }
+    </style>
+    <linearGradient id="Dégradé_sans_nom_9" data-name="Dégradé sans nom 9" x1="1.04" y1="51.09" x2="89.18" y2="51.09" gradientUnits="userSpaceOnUse">
+      <stop offset=".87" stop-color="#d6ccb6"/>
+      <stop offset=".94" stop-color="#d6ccb6"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_11" data-name="Dégradé sans nom 11" x1="18.67" y1="35.82" x2="71.55" y2="35.82" gradientUnits="userSpaceOnUse">
+      <stop offset=".11" stop-color="#f4f0e6"/>
+      <stop offset=".14" stop-color="#f4f0e6"/>
+    </linearGradient>
+  </defs>
+  <polygon class="cls-1" points="71.55 12.92 45.11 58.72 18.67 12.92 1.04 12.92 45.11 89.26 89.18 12.92 71.55 12.92"/>
+  <polygon class="cls-2" points="71.55 12.92 55.29 12.92 45.11 30.55 34.93 12.92 18.67 12.92 45.11 58.72 71.55 12.92"/>
+</svg>

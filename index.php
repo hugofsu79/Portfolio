@@ -12,12 +12,7 @@ include 'header.php';
             Ma priorité est de répondre précisément à vos besoins, tout en enrichissant l'expérience utilisateur. Je m'engage à <mark>créer</mark> des solutions <mark>innovantes</mark> et <mark>captivantes</mark>, toujours conçues pour <mark>marquer les esprits</mark> et répondre efficacement aux défis posés.
         </p>
 
-        <div class="languages">
-            <?php
-            $languages = languages();
-            foreach ($languages as $language) {
-                echo "<h3>" . $language['name'] . "</h3>";
-            } ?></div>
+       
 
         <div class="home_content">
             <section class="home_projects">
@@ -28,9 +23,12 @@ include 'header.php';
                     foreach ($projets as $projet) {
                         echo "
             <div class=\"projetsDetail\">
-                <img class=\"detailPng\" src=\"./png/detailpng/" . $projet['fullPicture'] . "\" alt=\"...\">
-                <div class=\"nameTag\">" . $projet['name'] . "</div>
-                <div class=\"descriptionTag\">" . $projet['description'] . "</div>
+            <div class=\"textTag\">
+            <h3 class=\"nameTag\">" . $projet['name'] . "</h3>
+            <p class=\"languageTag\">" . $projet['language'] . "</p>
+            <p class=\"descriptionTag\">" . $projet['description'] . "</p></div>
+                <img class=\"detailPng\" src=\"src/png/detailpng" . $projet['fullPicture'] . "\" alt=\"...\">
+                
             </div>";
                     }
                     ?>
@@ -42,7 +40,7 @@ include 'header.php';
 </body>
 
 <?php
-// include 'footer.php';
+include 'footer.php';
 ?>
 
 <!-- php -S localhost:8080 -->

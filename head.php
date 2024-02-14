@@ -7,7 +7,7 @@
     <title>Portfolio</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="src/css/style.css">
 
     <!-- font -->
     <link rel="stylesheet" href="https://use.typekit.net/ten3udm.css">

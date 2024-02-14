@@ -1,6 +1,6 @@
 <footer>
+        <h2>Contact</h2>
     <div class="footerDispo">
-        <a href="./index.php"><img class="logoHugo" src="./png/logoFooter.png" alt=""></a>
         <div class="chap">
             <p>Work</p>
             <p>About</p>

@@ -16,7 +16,7 @@ function getProjetsHomePage()
             'fullPicture' => 'marzocco.png',
             'language' => '',
         ],
-        
+
         //deuxième projet
         [
             'name' => 'Bombino',
@@ -50,7 +50,8 @@ function getProjetsHomePage()
     ];
 }
 
-function languages() {
+function languages()
+{
     return [
         [
             'name' => 'Python',
@@ -85,16 +86,4 @@ function languages() {
             'id' => '8',
         ],
     ];
-}
-
-function getProjetId($id)
-{
-    $projets = getProjets();
-
-    foreach ($projets as $projet) {
-        if ($projet['id'] == $id) {
-            
-            return $projet;
-        }
-    }
 }

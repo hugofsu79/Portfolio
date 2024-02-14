@@ -12,7 +12,7 @@ include 'header.php';
             Ma priorité est de répondre précisément à vos besoins, tout en enrichissant l'expérience utilisateur. Je m'engage à <mark>créer</mark> des solutions <mark>innovantes</mark> et <mark>captivantes</mark>, toujours conçues pour <mark>marquer les esprits</mark> et répondre efficacement aux défis posés.
         </p>
 
-       
+
 
         <div class="home_content">
             <section class="home_projects">
@@ -27,7 +27,7 @@ include 'header.php';
             <h3 class=\"nameTag\">" . $projet['name'] . "</h3>
             <p class=\"languageTag\">" . $projet['language'] . "</p>
             <p class=\"descriptionTag\">" . $projet['description'] . "</p></div>
-                <img class=\"detailPng\" src=\"src/png/detailpng" . $projet['fullPicture'] . "\" alt=\"...\">
+                <img class=\"detailPng\" src=\"src/png/detailPng/" . $projet['fullPicture'] . "\" alt=\"...\">
                 
             </div>";
                     }

@@ -1,0 +1,187 @@
+/* couleurs
+#FFFAF5
+*/
+body {
+    background-color: #f4f0e6;
+}
+
+/* header */
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+}
+
+.header_align {
+    display: flex;
+    justify-content: space-between;
+    text-decoration: none;
+}
+
+.contact {
+    text-align: right;
+    text-decoration: underline;
+}
+
+.icone_lien {
+    width: 2em;
+    display: flex;
+}
+
+/* Premiere partie */
+h1 {
+    margin-block-start: 0px;
+    padding: 0;
+    font-family: "arya-single", sans-serif;
+    font-style: normal;
+    font-size: 6em;
+    color: #ff3c00;
+    text-transform: uppercase;
+}
+
+.projets_content {
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    justify-content: center;
+}
+
+.projetsDetail {
+    display: flex;
+    flex-direction: column;
+    margin: 0.3em;
+    padding-bottom: 4em;
+}
+.detailPng .teteImage {
+    display: flex;
+    justify-content: center;
+}
+
+.descriptionTag {
+    margin: 1em;
+}
+
+h2 {
+    margin-top: -1.5em;
+    font-family: Futura;
+    font-weight: 100;
+    font-style: normal;
+    font-size: 3em;
+    color: #ff3c00;
+    /* text-transform: uppercase; */
+}
+
+h3 {
+    color: #ff3c00;
+    text-transform: uppercase;
+    font-family: "europa", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+p {
+    color: #ff3c00;
+    font-family: "europa", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+mark {
+    background-color: #ff3c00;
+    color: #f4f0e6;
+}
+
+ul {
+    color: #ff3c00;
+}
+
+.home_about {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.home_content {
+    display: flex;
+    flex-direction: column;
+}
+
+.languages {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.chapitre {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 20vw;
+    margin: 0;
+}
+
+/*
+.home_projects {
+ background-color: #fff200; 
+}*/
+.detailPng {
+    display: flex;
+    justify-content: center;
+    width: 65em;
+}
+
+.nameTag {
+    font-size: 4em;
+    margin: 0px;
+}
+
+.textTag {
+    display: flex;
+    justify-content: space-around;
+}
+
+p .char {
+    display: flex;
+    justify-content: center;
+    font-family: "mundial", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+    text-align: center;
+}
+.char {
+    padding: 2em;
+}
+
+.languageTag {
+    display: flex;
+    flex-direction: column;
+}
+
+.footerDispo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.about {
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+}
+
+/*footer*/
+footer {
+    padding-top: 4em;
+    background-color: #ff3c00;
+    border-radius: 0em 0em 2em 2em;
+}
+
+/* Media screen  */
+@media screen and (max-width: 1224px) {
+    .projets_content {
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

@@ -1,0 +1,13 @@
+<div class="title">
+                <h1>Portfolio</h1>
+                <p class="annee"><?php echo date('Y'); ?></p>
+            </div>
+            <div class="profil">
+                <h2 class="metier" data-speed="0.5">Hugo Foisseau</h2>
+            </div>
+            <div class="synops">
+                <p>Bonjour, je m'appelle Hugo. Passionné par la création de sites web, j'ai débuté ma carrière dans le graphisme et l'UI/UX, avant de continuer de me former le développement web, forgeant ainsi un profil polyvalent.</p>
+                <p>Ma priorité est de répondre précisément à vos besoins, enrichissant l'expérience utilisateur. Je m'engage à concevoir des solutions innovantes et captivantes</p>
+                <p>
+                    Je m'engage à créer des solutions innovantes et captivantes, conçues pour marquer les esprits et relever efficacement les défis.</p>
+            </div>

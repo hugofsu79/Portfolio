@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2080.2 80.08">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        font-family: Helvetica-Light, Helvetica;
+        font-weight: 300;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        fill: #4f4c45;
+        font-size: 23.32px;
+      }
+
+      .cls-2 {
+        letter-spacing: 0em;
+      }
+
+      .cls-3 {
+        font-family: Helvetica-Bold, Helvetica;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <text class="cls-3" transform="translate(1164.62 35.82)"><tspan x="0" y="0">Graphiste Ui/Ux indépendant</tspan></text>
+  <text class="cls-1" transform="translate(1484.66 28.05) scale(.58)"><tspan x="0" y="0" xml:space="preserve"> 2020-2022</tspan></text>
+  <text class="cls-1" transform="translate(1164.62 63.8)"><tspan x="0" y="0">Studio H | 12 rue Yvers,79000 Niort</tspan></text>
+  <text class="cls-3" transform="translate(512.43 35.82)"><tspan x="0" y="0">Graphiste Print</tspan></text>
+  <text class="cls-1" transform="translate(680.89 28.05) scale(.58)"><tspan x="0" y="0" xml:space="preserve"> 2015-2016</tspan></text>
+  <text class="cls-1" transform="translate(512.43 63.8)"><tspan x="0" y="0">Cazaux Imprimerie SAS | 27 Av des pyrénées, 31600 Muret</tspan></text>
+  <text class="cls-3" transform="translate(1587.46 35.82)"><tspan x="0" y="0">Gérant</tspan></text>
+  <text class="cls-1" transform="translate(1662.62 28.05) scale(.58)"><tspan x="0" y="0" xml:space="preserve"> 2020-2021</tspan></text>
+  <text class="cls-1" transform="translate(1587.46 63.8)"><tspan x="0" y="0">Voltex | 19 Pl. Saint-Georges, 31000 Toulouse</tspan></text>
+  <text class="cls-3" transform="translate(17.06 35.82)"><tspan x="0" y="0">Formation Openclassrooms</tspan></text>
+  <text class="cls-2" transform="translate(326.76 28.05) scale(.58)"><tspan x="0" y="0" xml:space="preserve"> 2022</tspan></text>
+  <text class="cls-1" transform="translate(17.06 63.8)"><tspan x="0" y="0">Développeur web | 12 rue Yvers,79000 Niort</tspan></text>
+</svg>

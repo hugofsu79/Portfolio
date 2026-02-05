@@ -1,0 +1,36 @@
+---
+import "../../src/styles/tokens/color.css";
+interface Props {
+	title?: string;
+}
+
+const { title = "Portfolio" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+	</head>
+
+	<body class="app-root">
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	.app-root {
+		min-height: 100vh;
+
+		/* Layer */
+		background-color: var(--layer-background);
+
+		/* Text */
+		color: var(--text-primary);
+
+		/* Typo (héritée) */
+		font-family: var(--font-body, system-ui, sans-serif);
+	}
+</style>

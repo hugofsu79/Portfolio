@@ -1,0 +1,129 @@
+:root {
+    /* =========================
+        Core — Neutral
+     ========================= */
+    --core-neutral-50: #ffffff;
+    --core-neutral-100: #e5e5e5;
+    --core-neutral-200: #cccccc;
+    --core-neutral-300: #b2b2b2;
+    --core-neutral-400: #999999;
+    --core-neutral-500: #808080;
+    --core-neutral-600: #666666;
+    --core-neutral-700: #4d4d4d;
+    --core-neutral-800: #333333;
+    --core-neutral-900: #1a1a1a;
+
+    /* =========================
+        Core — Brown
+     ========================= */
+    --core-brown-50: #ce9188;
+    --core-brown-100: #bf6f64;
+    --core-brown-200: #a85246;
+    --core-brown-300: #872416;
+    --core-brown-400: #6f0f01;
+    --core-brown-500: #600c00;
+    --core-brown-600: #570b00;
+    --core-brown-700: #470900;
+    --core-brown-800: #380700;
+    --core-brown-900: #2b0900;
+
+    /* =========================
+        Core — Blue
+     ========================= */
+    --core-blue-100: #aac6f3;
+    --core-blue-300: #518be7;
+    --core-blue-500: #1a57b7;
+    --core-blue-700: #0d2d5e;
+
+    /* =========================
+        Core — Green
+     ========================= */
+    --core-green-100: #cdfac7;
+    --core-green-300: #7bf06b;
+    --core-green-500: #2fde17;
+    --core-green-700: #1b810d;
+
+    /* =========================
+        Core — Red
+     ========================= */
+    --core-red-100: #ffe6e1;
+    --core-red-300: #fe937b;
+    --core-red-500: #fe4016;
+    --core-red-700: #ad2001;
+
+    /* =========================
+        Core — Beige
+     ========================= */
+    --core-beige-50: #fdfcfb;
+    --core-beige-100: #f7f3ee;
+    --core-beige-200: #e7dacb;
+    --core-beige-300: #d7c1a8;
+    --core-beige-400: #c7a885;
+    --core-beige-500: #b78f62;
+    --core-beige-600: #9d7648;
+    --core-beige-700: #7a5c38;
+    --core-beige-800: #574228;
+    --core-beige-900: #342818;
+
+    /* =========================
+        Semantic — Layer
+     ========================= */
+    --layer-background: var(--core-beige-50);
+    --layer-surface: var(--core-neutral-50);
+
+    /* =========================
+        Semantic — Text
+     ========================= */
+    --text-primary: var(--core-neutral-900);
+    --text-secondary: var(--core-neutral-600);
+    --text-tertiary: var(--core-neutral-400);
+    --text-on-accent: var(--core-neutral-50);
+    --text-initial: var(--core-neutral-200);
+
+    /* =========================
+        Semantic — Fill
+     ========================= */
+    --fill-brand: var(--core-brown-800);
+    --fill-accent: var(--core-blue-300);
+    --fill-hover: var(--core-beige-100);
+    --fill-success: var(--core-green-500);
+    --fill-error: var(--core-red-500);
+    /* =========================
+        Semantic — Stroke
+         ========================= */
+    --stroke-primary: var(--core-brown-900);
+    --stroke-secondary: var(--core-neutral-200);
+    --stroke-tertiary: var(--core-beige-50);
+
+
+    /* =========================
+        Static
+         ========================= */
+    --static-white: white;
+    --static-black: black;
+    --static-transparent: transparent;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --layer-background: var(--core-neutral-900);
+        --layer-surface: var(--core-neutral-800);
+
+        --text-primary: var(--core-neutral-50);
+        --text-secondary: var(--core-neutral-200);
+        --text-tertiary: var(--core-neutral-300);
+        --text-on-accent: var(--core-blue-300);
+        --text-initial: var(--core-brown-600);
+
+        --fill-brand: var(--core-beige-50);
+        --fill-accent: var(--core-blue-700);
+        --fill-hover: var(--core-beige-800);
+        --fill-success: var(--core-green-100);
+        --fill-error: var(--core-red-200);
+
+        --stroke-primary: var(--core-beige-50);
+        --stroke-secondary: var(--core-brown-300);
+        --stroke-tertiary: var(--core-beige-900);
+    }
+}

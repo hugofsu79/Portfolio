@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Heavy files
+*.dmg
+*.zip
+*.mov
+*.mp4
+*.psd

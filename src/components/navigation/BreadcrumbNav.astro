@@ -1,0 +1,122 @@
+---
+import { navigation } from "../../data/navigation.ts";
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="breadcrumb" aria-label="Fil d'ariane">
+    <span class="breadcrumb-indicator" aria-hidden="true"></span>
+    <ul class="breadcrumb-list">
+        {
+            navigation.map((item, index) => {
+                const isActive = item.href === currentPath;
+
+                return (
+                    <li class="breadcrumb-item">
+                        <a
+                            href={item.href}
+                            class={isActive ? "is-active" : ""}
+                            aria-current={isActive ? "page" : undefined}
+                        >
+                            <span class="breadcrumb-label">{item.label}</span>
+                        </a>
+                    </li>
+                );
+            })
+        }
+    </ul>
+</nav>
+
+<style>
+    .breadcrumb {
+        position: relative;
+        left: 12px;
+    }
+
+    .breadcrumb-indicator {
+        filter: blur(0.1px);
+        position: absolute;
+        left: -12px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: var(--text-primary);
+
+        transform: translateY(0);
+
+        animation: float 3.5s ease-in-out infinite;
+        box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 20%, transparent);
+
+        transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(var(--indicator-y, 0)) translateX(0);
+        }
+        50% {
+            transform: translateY(var(--indicator-y, 0)) translateX(1.5px);
+        }
+        100% {
+            transform: translateY(var(--indicator-y, 0)) translateX(0);
+        }
+    }
+
+    .breadcrumb {
+        display: flex;
+        width: 110px;
+left
+        padding: var(--space-8) 0;
+
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-8);
+
+        position: fixed;
+        top: 20vh;
+    }
+
+    .breadcrumb-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-8);
+    }
+
+    .breadcrumb-item a {
+        padding: 2px 4px 2px 4px;
+        display: flex;
+        align-items: center;
+        gap: var(--space-8);
+
+        text-decoration: none;
+        color: var(--text-secondary);
+
+        font-size: 0.875rem;
+        font-weight: var(--font-weight-regular);
+
+        opacity: 0.7;
+        transform: translateY(2px);
+
+        transition:
+            color 120ms ease,
+            opacity 120ms ease,
+            transform 120ms ease;
+    }
+
+    .breadcrumb-item a:hover,
+    .breadcrumb-item a:focus-visible {
+        color: var(--text-primary);
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .breadcrumb-item a.is-active {
+        color: var(--text-primary);
+        opacity: 1;
+        transform: translateY(0);
+        font-weight: var(--font-weight-bold);
+    }
+</style

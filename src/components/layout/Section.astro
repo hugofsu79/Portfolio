@@ -1,0 +1,30 @@
+---
+interface Props {
+    size?: "sm" | "md" | "lg";
+    class?: string;
+}
+
+const { size = "sm", class: className } = Astro.props;
+---
+
+<section class={`section section--${size} ${className ?? ""}`}>
+    <slot />
+</section>
+
+<style>
+    .section {
+        width: 100%;
+    }
+
+    .section--sm {
+        padding-block: var(--space-48);
+    }
+
+    .section--md {
+        padding-block: var(--space-64);
+    }
+
+    .section--lg {
+        padding-block: var(--space-96);
+    }
+</style>

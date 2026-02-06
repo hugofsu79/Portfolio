@@ -1,0 +1,169 @@
+<section class="hero">
+    <div class="hero-header container--wide">
+        <h1 class="hero-name">HUGO FOISSEAU</h1>
+
+        <button class="hero-lang" aria-label="Changer de langue">
+            FR<br />EN
+        </button>
+    </div>
+
+    <div class="hero-canvas container--wide">
+        <div class="hero-meta hero-meta--left">
+            <span>PARIS</span>
+            <span class="dot"></span>
+        </div>
+        <div class="hero-rect">
+            <div class="hero-rect-inner">
+                <!-- contenu à venir -->
+            </div>
+        </div>
+
+        <div class="hero-meta hero-meta--right">
+            <span class="dot"></span>
+            <span id="hero-time" aria-label="Heure actuelle"></span>
+        </div>
+    </div>
+
+    <div class="hero-footer container--wide">
+        <p class="hero-hint">
+            Si quelqu’un ne scroll pas, il doit déjà avoir confiance. Invitation
+            au scroll après un moment d’inactivité.
+        </p>
+
+        <h2 class="hero-role">
+            CONCEPTEUR<br />D’APPLICATION
+        </h2>
+    </div>
+</section>
+
+<style>
+    h1,
+    h2 {
+        margin: 0;
+    }
+    .hero {
+        scroll-snap-align: start;
+        min-height: 100vh;
+        padding-block: var(--space-48);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .hero-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .hero-name {
+        font-size: clamp(40px, 6vw, 72px);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -0.02em;
+    }
+
+    .hero-lang {
+        background: none;
+        border: none;
+        font-weight: var(--font-weight-bold);
+        cursor: pointer;
+    }
+
+    .hero-canvas {
+        position: relative;
+        margin-block: var(--space-32);
+    }
+
+    .hero-rect {
+        width: 100%;
+        aspect-ratio: 16 / 7;
+        background: red;
+
+        overflow: hidden;
+        position: relative;
+    }
+
+    .hero-rect::before {
+        content: "";
+        position: absolute;
+        inset: -20%;
+
+        background: radial-gradient(
+            circle at 50% 50%,
+            rgba(255, 255, 255, 0.06),
+            transparent 60%
+        );
+
+        animation: heroFloat 18s ease-in-out infinite;
+    }
+
+    .hero-rect-inner {
+        position: absolute;
+        inset: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hero-meta {
+        position: absolute;
+        top: 50%;
+        display: flex;
+        align-items: center;
+        gap: var(--space-8);
+        font-size: 12px;
+        transform: translateY(-50%);
+    }
+
+    .hero-meta .dot {
+        width: 10px;
+        height: 10px;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+    }
+
+    .hero-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .hero-hint {
+        max-width: 320px;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .hero-role {
+        text-align: right;
+    }
+
+    @keyframes heroFloat {
+        0% {
+            transform: translate(-2%, -2%);
+        }
+        50% {
+            transform: translate(2%, 1%);
+        }
+        100% {
+            transform: translate(-2%, -2%);
+        }
+    }
+</style>
+
+<script>
+  const timeElement = document.getElementById("hero-time");
+
+  if (timeElement) {
+    const updateTime = () => {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      timeElement.textContent = `${hours}:${minutes}`;
+    };
+
+    updateTime();
+    setInterval(updateTime, 60_000);
+  }
+</script>

@@ -1,5 +1,7 @@
 ---
-import "../../src/styles/tokens/color.css";
+import "../styles/globals.css";
+import MobileNav from "../components/navigation/MobileNav.astro";
+
 interface Props {
 	title?: string;
 }
@@ -16,21 +18,83 @@ const { title = "Portfolio" } = Astro.props;
 	</head>
 
 	<body class="app-root">
-		<slot />
+		<!-- CONTENT GRID -->
+		<header class="app-header">
+			<nav class="mobile-nav">
+				<MobileNav />
+			</nav>
+		</header>
+		<main class="main-content">
+			<slot />
+		</main>
 	</body>
 </html>
 
 <style is:global>
+	/* =========================================================
+   ROOT LAYOUT
+   ========================================================= */
+
 	.app-root {
 		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
 
-		/* Layer */
-		background-color: var(--layer-background);
+	/* =========================================================
+   HEADER / NAVIGATION
+   ========================================================= */
 
-		/* Text */
-		color: var(--text-primary);
+	.app-header {
+		position: relative;
+		width: 100%;
+	}
 
-		/* Typo (héritée) */
-		font-family: var(--font-body, system-ui, sans-serif);
+	/* Mobile first */
+	.mobile-nav {
+		display: block;
+	}
+
+	.desktop-nav {
+		display: none;
+	}
+
+	/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+	.app-main {
+		flex: 1;
+		width: 100%;
+	}
+
+	/* =========================================================
+   DESKTOP LAYOUT
+   ========================================================= */
+
+	@media (min-width: 769px) {
+		/* Header devient le rail de navigation */
+		.app-header {
+			position: sticky;
+			top: 0;
+
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+		}
+
+		.desktop-nav {
+			display: flex;
+		}
+
+		.mobile-nav {
+			display: none;
+		}
+
+		/* Contenu principal */
+		.app-main {
+			flex: 1;
+			min-width: 0;
+		}
 	}
 </style>

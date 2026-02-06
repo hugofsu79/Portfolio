@@ -1,0 +1,232 @@
+---
+import type { ProjectListItem } from "../../data/projects";
+
+interface Props {
+    project: ProjectListItem;
+}
+
+const { project } = Astro.props;
+---
+
+<li class="project-row">
+    <a href={`/projects/${project.slug}`} class="project-row-inner">
+        <div class="project-row-content">
+            <div class="project-meta">
+                <span class="project-year">{project.year}</span>
+            </div>
+
+            <div class="project-title">
+                <h3>{project.entreprise}</h3>
+                <span class="project-subtitle">{project.tags}</span>
+            </div>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="project-preview">
+            <img src={project.cover} alt={project.cover} />
+        </div>
+    </a>
+</li>
+<style>
+    .project-row {
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+
+        border-bottom: 0.5px solid var(--stroke-secondary);
+    }
+    .project-row:last-child {
+        border-bottom: none;
+    }
+
+    .project-row-inner {
+        position: relative;
+        display: block;
+        width: 100%;
+
+        /* compact vertical rhythm */
+        padding: var(--space-4) 0;
+
+        text-decoration: none;
+
+        transition: padding 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .project-row:hover .project-row-inner {
+        padding: var(--space-32) 0;
+    }
+
+    .project-title,
+    .project-year {
+        display: flex;
+
+        align-items: center;
+        gap: var(--space-12);
+        color: var(--text-initial);
+    }
+
+    .project-title h3 {
+        margin: var(--space-24);
+
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: var(--font-weight-bold);
+        color: var(--text-initial);
+        line-height: 1.05;
+        transition:
+            color 400ms ease,
+            transform 400ms ease;
+    }
+
+    .project-subtitle {
+        font-size: 0.875em;
+    }
+
+    .project-row .project-title span,
+    .project-row .project-year {
+        transition:
+            color 400ms ease,
+            transform 420ms ease;
+    }
+
+    .project-row:hover .project-title h3,
+    .project-row:hover .project-title span,
+    .project-row:hover .project-year {
+        color: var(--text-primary);
+        gap: var(--space-24);
+    }
+
+    /* micro-scale for all texts */
+    .project-row:hover .project-title span,
+    .project-row:hover .project-year {
+        transform: scale(1.01);
+    }
+
+    /* slightly stronger scale for main title */
+    .project-row:hover .project-title h3 {
+        transform: scale(1.015);
+    }
+
+    /* image */
+
+    .project-preview {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    .project-preview img {
+        position: absolute;
+
+        width: 260px;
+        height: 80px; /* ex : ratio ~3:2 */
+        height: auto;
+
+        opacity: 0;
+
+        left: var(--x, 0px);
+        top: var(--y, 0px);
+
+        /* point d’accroche = coin haut gauche */
+        transform-origin: top left;
+
+        transition: opacity 0ms ease;
+        will-change: transform, left, top;
+    }
+
+    .project-row:hover .project-preview img {
+        opacity: 1;
+    }
+
+    .project-row-content {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-24);
+    }
+</style>
+
+<script is:inline>
+    // Hover Miniature des projets
+    (() => {
+        const rows = document.querySelectorAll(".project-row");
+
+        rows.forEach((row) => {
+            const img = row.querySelector(".project-preview img");
+            if (!img) return;
+
+            let currentX = 0;
+            let currentY = 0;
+            let targetX = 0;
+            let targetY = 0;
+            let raf = 0;
+
+            const lerp = (a, b, n) => a + (b - a) * n;
+
+            let vx = 0;
+            let vy = 0;
+            let angle = 0;
+            let angularVelocity = 0;
+
+            const gravity = 0.15; // poids
+            const stiffness = 0.06; // tension du fil
+            const damping = 0.78; // frottement
+            const rotationDamping = 0.42;
+
+            const tick = () => {
+                const dx = targetX - currentX;
+                const dy = targetY - currentY;
+
+                // mouvement du point d’attache
+                vx += dx * stiffness;
+                vy += dy * stiffness;
+
+                // gravité (agit vers le bas)
+                vy += gravity;
+
+                // amortissement
+                vx *= damping;
+                vy *= damping;
+
+                currentX += vx;
+                currentY += vy;
+
+                // rotation induite par le mouvement horizontal + gravité
+                angularVelocity += vx * 0.002 + gravity * 0.001;
+                angularVelocity *= rotationDamping;
+                angle += angularVelocity;
+
+                img.style.left = `${currentX}px`;
+                img.style.top = `${currentY}px`;
+                img.style.transform = `rotate(${angle}rad)`;
+
+                raf = requestAnimationFrame(tick);
+            };
+
+            row.addEventListener("mouseenter", (e) => {
+                const rect = row.getBoundingClientRect();
+                targetX = e.clientX - rect.left;
+                targetY = e.clientY - rect.top;
+                currentX = targetX;
+                currentY = targetY;
+
+                img.style.setProperty("--x", `${currentX}px`);
+                img.style.setProperty("--y", `${currentY}px`);
+
+                if (!raf) raf = requestAnimationFrame(tick);
+            });
+
+            row.addEventListener("mousemove", (e) => {
+                const rect = row.getBoundingClientRect();
+                targetX = e.clientX - rect.left;
+                targetY = e.clientY - rect.top;
+            });
+
+            row.addEventListener("mouseleave", () => {
+                cancelAnimationFrame(raf);
+                raf = 0;
+            });
+        });
+
+        console.log("✅ Project hover script mounted");
+    })();
+</script>

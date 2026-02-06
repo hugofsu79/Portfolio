@@ -1,0 +1,27 @@
+:root {
+    /*===========
+    Font Weight
+    ===========*/
+
+    --font-weight-light: 100;
+    --font-weight-regular: 600;
+    --font-weight-bold: 900;
+}
+
+:root {
+    /*===========
+  Headings
+  ===========*/
+
+    --h2-font-size: clamp(48px, 3vw, 36px);
+    --h2-line-height: 1.15;
+    --h2-font-weight: var(--font-weight-bold);
+    --h2-letter-spacing: -0.01em;
+}
+
+h2 {
+    font-size: var(--h2-font-size);
+    line-height: var(--h2-line-height);
+    font-weight: var(--h2-font-weight);
+    letter-spacing: var(--h2-letter-spacing);
+}

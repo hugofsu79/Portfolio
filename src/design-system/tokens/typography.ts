@@ -8,6 +8,13 @@ export const fontSize = {
     64: 64,
 } as const;
 
+export const fontWeight = {
+    bold: 900,
+    regular: 600,
+    light: 100,
+}
+
+
 export const lineHeight = {
     tight: 1.1,
     normal: 1.4,

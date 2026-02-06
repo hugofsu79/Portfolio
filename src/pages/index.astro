@@ -1,18 +1,67 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+// import Button from "../components/ui/Button.astro";
+import ProjectRow from "../components/projects/ProjectRow.astro";
+import Container from "../components/layout/Container.astro";
+import Section from "../components/layout/Section.astro";
+import Footer from "../components/layout/Footer.astro";
+import { projectsList } from "../data/projects";
+import Hero from "../components/hero/Hero.astro";
+import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
 ---
 
-<BaseLayout title="Test DS">
-	<main style="padding: 32px">
-		<h1>Design System Test</h1>
-		<p>
-			Texte principal avec <strong>hiérarchie</strong> et lisibilité.
-		</p>
+<BaseLayout title="Home">
+	<Hero />
 
-		<div
-			style="margin-top: 24px; padding: 16px; background: var(--layer-background)"
-		>
-			Surface secondaire
-		</div>
-	</main>
+	<div class="page-with-rail">
+		<aside class="desktop-nav">
+			<BreadCrumbNav />
+		</aside>
+
+		<main class="page-content">
+			<Section>
+				<Container>
+					<h2>Mes projets</h2>
+					<ul class="projects-list">
+						{
+							projectsList.map((project) => (
+								<ProjectRow project={project} />
+							))
+						}
+					</ul>
+				</Container>
+			</Section>
+
+			<Section>
+				<Container>
+					<h2>Labo</h2>
+				</Container>
+			</Section>
+
+			<Section>
+				<Container>
+					<h2>About</h2>
+				</Container>
+			</Section>
+		</main>
+	</div>
+
+	<Footer />
 </BaseLayout>
+<style>
+	.page-with-rail {
+		display: grid;
+		grid-template-columns: 110px 1fr;
+		align-items: start;
+	}
+
+	.desktop-nav {
+		position: sticky;
+		top: 0;
+		height: fit-content;
+	}
+
+	.page-content {
+		min-width: 0;
+	}
+</style>

@@ -1,0 +1,14 @@
+:root {
+    --space-4: 4px;
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-14: 14px;
+    --space-16: 16px;
+    --space-24: 24px;
+    --space-32: 32px;
+}
+
+:root {
+    --hero-height: 60vh;
+    --hero-offset: var(--hero-height);
+}

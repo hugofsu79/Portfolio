@@ -74,17 +74,17 @@
     /* =========================
         Semantic — Text
      ========================= */
-    --text-primary: var(--core-neutral-900);
-    --text-secondary: var(--core-neutral-600);
-    --text-tertiary: var(--core-neutral-400);
-    --text-on-accent: var(--core-neutral-50);
+    --text-primary: var(--core-brown-900);
+    --text-secondary: var(--core-neutral-800);
+    --text-tertiary: var(--core-beige-50);
+    --text-on-accent: var(--core-blue-500);
     --text-initial: var(--core-neutral-200);
 
     /* =========================
         Semantic — Fill
      ========================= */
     --fill-brand: var(--core-brown-800);
-    --fill-accent: var(--core-blue-300);
+    --fill-accent: var(--core-beige-100);
     --fill-hover: var(--core-beige-100);
     --fill-success: var(--core-green-500);
     --fill-error: var(--core-red-500);

@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+    padded?: boolean;
+}
+
+const { padded = true, ...rest } = Astro.props;
+---
+
+<div
+    {...rest}
+    class={["card", padded && "card--padded"].filter(Boolean).join(" ")}
+>
+    <slot />
+</div>
+
+<style>
+    /* =========================
+     Base
+     ========================= */
+    .card {
+        background-color: var(--layer-surface);
+        color: inherit;
+
+        border-radius: var(--radius-8);
+        border: 1px solid var(--stroke-secondary);
+
+        box-sizing: border-box;
+    }
+
+    /* =========================
+     Padding
+     ========================= */
+    .card--padded {
+        padding: var(--space-24);
+    }
+</style>

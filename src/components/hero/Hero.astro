@@ -1,10 +1,22 @@
+---
+import { heroContent } from "../../content/hero.js";
+import type { HeroLang } from "../../content/hero.js";
+
+const isHeroLang = (v: any): v is HeroLang => v === "fr" || v === "en";
+
+const urlLang = Astro.url.searchParams.get("lang");
+const lang: HeroLang = isHeroLang(urlLang) ? urlLang : "fr";
+
+const content = heroContent[lang];
+
+import LanguageToggle from "../../components/ui/LanguageToggle.astro";
+---
+
 <section class="hero">
     <div class="hero-header container--wide">
         <h1 class="hero-name">HUGO FOISSEAU</h1>
 
-        <button class="hero-lang" aria-label="Changer de langue">
-            FR<br />EN
-        </button>
+        <LanguageToggle />
     </div>
 
     <div class="hero-canvas container--wide">
@@ -26,12 +38,11 @@
 
     <div class="hero-footer container--wide">
         <p class="hero-hint">
-            Si quelqu’un ne scroll pas, il doit déjà avoir confiance. Invitation
-            au scroll après un moment d’inactivité.
+            {content.subtitle}
         </p>
 
-        <h2 class="hero-role">
-            CONCEPTEUR<br />D’APPLICATION
+        <h2 class="hero-intro">
+            {content.intro}
         </h2>
     </div>
 </section>
@@ -84,28 +95,14 @@
         position: relative;
     }
 
-    .hero-rect::before {
-        content: "";
-        position: absolute;
-        inset: -20%;
-
-        background: radial-gradient(
-            circle at 50% 50%,
-            rgba(255, 255, 255, 0.06),
-            transparent 60%
-        );
-
-        animation: heroFloat 18s ease-in-out infinite;
-    }
-
-    .hero-rect-inner {
+    /* .hero-rect-inner {
         position: absolute;
         inset: 0;
 
         display: flex;
         align-items: center;
         justify-content: center;
-    }
+    } */
     .hero-meta {
         position: absolute;
         top: 50%;
@@ -150,20 +147,31 @@
             transform: translate(-2%, -2%);
         }
     }
+
+    @media (max-width: 768px) {
+.hero{
+    min-height: 80vh;
+}
+
+        .hero-rect {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+    }
 </style>
 
 <script>
-  const timeElement = document.getElementById("hero-time");
+    const timeElement = document.getElementById("hero-time");
 
-  if (timeElement) {
-    const updateTime = () => {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, "0");
-      const minutes = String(now.getMinutes()).padStart(2, "0");
-      timeElement.textContent = `${hours}:${minutes}`;
-    };
+    if (timeElement) {
+        const updateTime = () => {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, "0");
+            const minutes = String(now.getMinutes()).padStart(2, "0");
+            timeElement.textContent = `${hours}:${minutes}`;
+        };
 
-    updateTime();
-    setInterval(updateTime, 60_000);
-  }
+        updateTime();
+        setInterval(updateTime, 60_000);
+    }
 </script>

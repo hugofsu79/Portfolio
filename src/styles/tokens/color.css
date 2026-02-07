@@ -123,7 +123,7 @@
         --fill-error: var(--core-red-200);
 
         --stroke-primary: var(--core-beige-50);
-        --stroke-secondary: var(--core-brown-300);
+        --stroke-secondary: var(--core-neutral-800);
         --stroke-tertiary: var(--core-beige-900);
     }
 }

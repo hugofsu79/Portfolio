@@ -98,3 +98,14 @@ const { title = "Portfolio" } = Astro.props;
 		}
 	}
 </style>
+
+<script is:inline>
+	const savedLang = localStorage.getItem("lang") || "fr";
+	document.documentElement.dataset.lang = savedLang;
+</script>
+
+<script type="module">
+	import { useProjectScrollActive } from "../scripts/useProjectScrollActive";
+
+	useProjectScrollActive(".project-row");
+</script>

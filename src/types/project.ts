@@ -1,10 +1,25 @@
+export type Lang = "fr" | "en";
+export type I18n<T> = { fr: T; en: T };
+
 export type ContextLink = {
-    label: string;
+    content: I18n<{
+        label: string;
+    }>;
     href: string;
 };
 export type ContextDetail = {
-    label: string;
-    value: (string | ContextLink)[];
+    content: I18n<{
+        label: string;
+    }>;
+    value: Array<
+        | string
+        | {
+            content: I18n<{
+                label: string;
+            }>;
+            href?: string;
+        }
+    >;
     marquee?: boolean;
 };
 
@@ -13,7 +28,9 @@ export type Project = {
 
     hero: {
         entreprise: string;
-        title: string;
+        content: I18n<{
+            title: string;
+        }>;
         cover: string;
         image: string;
         tags: string[];
@@ -29,37 +46,47 @@ export type Project = {
 
     sections: {
         context: {
-            title?: string;
-            description: string;
+            content: I18n<{
+                title?: string;
+                description: string;
+            }>;
             details: ContextDetail[];
         };
         objectifs: {
-            title?: string;
-            description: string;
+            content: I18n<{
+                title?: string;
+                description: string;
+            }>;
             image: {
                 src: string;
                 alt: string;
             }[];
         };
         role: {
-            title?: string;
-            description: string;
+            content: I18n<{
+                title?: string;
+                description: string;
+            }>;
             image: {
                 src: string;
                 alt: string;
             }[];
         };
         demarche: {
-            title?: string;
-            description: string;
+            content: I18n<{
+                title?: string;
+                description: string;
+            }>;
             image: {
                 src: string;
                 alt: string;
             }[];
         };
         resultat: {
-            title?: string;
-            description: string;
+            content: I18n<{
+                title?: string;
+                description: string;
+            }>;
             image: {
                 src: string;
                 alt: string;

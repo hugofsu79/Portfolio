@@ -20,4 +20,10 @@ const { size = "default" } = Astro.props;
     .container--wide {
         max-width: 1200px;
     }
+
+    @media (max-width: 768px) {
+        .container {
+            padding-inline: 0;
+        }
+    }
 </style>

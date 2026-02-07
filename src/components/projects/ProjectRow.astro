@@ -1,232 +1,211 @@
 ---
-import type { ProjectListItem } from "../../data/projects";
+import type { HomeProject, Lang } from "../../data/projects";
 
 interface Props {
-    project: ProjectListItem;
+    project: HomeProject;
+    lang: Lang;
 }
 
-const { project } = Astro.props;
+const { project, lang } = Astro.props as Props;
 ---
 
 <li class="project-row">
-    <a href={`/projects/${project.slug}`} class="project-row-inner">
-        <div class="project-row-content">
-            <div class="project-meta">
-                <span class="project-year">{project.year}</span>
-            </div>
+    <div class="project-title">
+        <span class="project-year">{project.year}</span>
 
-            <div class="project-title">
-                <h3>{project.entreprise}</h3>
-                <span class="project-subtitle">{project.tags}</span>
-            </div>
-        </div>
+        <h3>{project.entreprise}</h3>
+        <span class="project-subtitle">
+            {project.title[lang]}
+        </span>
+    </div>
 
-        <!-- PREVIEW -->
-        <div class="project-preview">
-            <img src={project.cover} alt={project.cover} />
-        </div>
-    </a>
+    <div class="project-preview">
+        <img src={project.cover} alt={project.entreprise} />
+    </div>
 </li>
+
 <style>
+    /* =====================================================
+   Base layout
+===================================================== */
+
     .project-row {
-        display: flex;
-        align-items: center;
         position: relative;
         overflow: hidden;
-
         border-bottom: 0.5px solid var(--stroke-secondary);
+
+        /* 👇 hauteur stable */
+        min-height: 140px;
     }
+
     .project-row:last-child {
         border-bottom: none;
     }
 
-    .project-row-inner {
+    /* =====================================================
+   Title & meta
+===================================================== */
+
+    .project-title {
         position: relative;
-        display: block;
-        width: 100%;
+        transform: translateY(0);
+        transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
 
-        /* compact vertical rhythm */
-        padding: var(--space-4) 0;
-
-        text-decoration: none;
-
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-12);
+        padding: 0;
         transition: padding 420ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .project-row:hover .project-row-inner {
-        padding: var(--space-32) 0;
-    }
-
-    .project-title,
     .project-year {
         display: flex;
-
         align-items: center;
-        gap: var(--space-12);
-        color: var(--text-initial);
     }
 
     .project-title h3 {
-        margin: var(--space-24);
-
+        margin: 20px;
         font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: var(--font-weight-bold);
-        color: var(--text-initial);
         line-height: 1.05;
         transition:
-            color 400ms ease,
-            transform 400ms ease;
+            transform 400ms ease,
+            color 400ms ease;
     }
 
     .project-subtitle {
-        font-size: 0.875em;
-    }
-
-    .project-row .project-title span,
-    .project-row .project-year {
         transition:
-            color 400ms ease,
-            transform 420ms ease;
+            transform 420ms ease,
+            color 400ms ease;
     }
 
-    .project-row:hover .project-title h3,
-    .project-row:hover .project-title span,
-    .project-row:hover .project-year {
-        color: var(--text-primary);
-        gap: var(--space-24);
+    /* Default (inactive) state */
+    .project-year,
+    .project-title h3,
+    .project-subtitle {
+        color: var(--text-secondary);
+        font-weight: (--font-weight-light);
+        opacity: 0.2;
+        transform: scale(0.98);
+    }
+    .project-subtitle {
+        font-weight: var(--font-weight-regular);
+    }
+    /* =====================================================
+   Hover / active states (desktop hover + scroll)
+===================================================== */
+
+    .project-title:hover,
+    .project-row.is-active .project-title {
+        padding: 40px 0;
     }
 
-    /* micro-scale for all texts */
-    .project-row:hover .project-title span,
-    .project-row:hover .project-year {
-        transform: scale(1.01);
+    .project-row:hover h3,
+    .project-row.is-active h3,
+    .project-row:hover .project-subtitle,
+    .project-row.is-active .project-subtitle {
+        opacity: 1;
     }
 
-    /* slightly stronger scale for main title */
-    .project-row:hover .project-title h3 {
+    .project-row:hover h3,
+    .project-row.is-active h3 {
         transform: scale(1.015);
     }
 
-    /* image */
+    .project-title:hover .project-subtitle,
+    .project-row.is-active .project-subtitle {
+        transform: scale(1.01);
+    }
+
+    /* =====================================================
+   Preview image
+===================================================== */
 
     .project-preview {
         position: absolute;
         inset: 0;
         pointer-events: none;
-        overflow: hidden;
+        width: 100%;
     }
+
     .project-preview img {
         position: absolute;
-
         width: 260px;
-        height: 80px; /* ex : ratio ~3:2 */
         height: auto;
 
+        /* Hidden by default */
         opacity: 0;
 
-        left: var(--x, 0px);
-        top: var(--y, 0px);
-
-        /* point d’accroche = coin haut gauche */
+        /* Subtle resting pose */
+        transform: translateY(12px) scale(0.98) rotate(-0.6deg);
         transform-origin: top left;
 
-        transition: opacity 0ms ease;
-        will-change: transform, left, top;
+        transition:
+            opacity 360ms ease,
+            transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+        transition-delay: 40ms;
+
+        will-change: transform, left, top, clip-path, opacity;
     }
 
-    .project-row:hover .project-preview img {
+    .project-row:hover .project-preview img,
+    .project-row.is-active .project-preview img {
         opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
     }
 
-    .project-row-content {
-        display: flex;
-        align-items: baseline;
-        gap: var(--space-24);
+    .project-row.is-active .project-preview img {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    /* =====================================================
+   Mobile layout
+===================================================== */
+
+    @media (max-width: 768px) {
+        .project-row {
+            padding: var(--space-24) 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .project-title {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-8);
+        }
+
+        .project-title h3 {
+            margin: 0;
+        }
+
+        .project-year {
+            font-size: 12px;
+        }
+
+        .project-subtitle {
+            font-size: 14px;
+        }
+
+        .project-preview {
+            position: relative;
+            inset: auto;
+            width: 100%;
+            margin-top: var(--space-16);
+        }
+
+        .project-preview img {
+            right: 0;
+            width: 30vw;
+            max-width: 100%;
+
+            /* Hidden by default; revealed via .is-active (scroll) */
+            opacity: 0;
+
+            /* Keep it stable in mobile (no mouse-driven transform) */
+            transform: none;
+            clip-path: none;
+        }
     }
 </style>
-
-<script is:inline>
-    // Hover Miniature des projets
-    (() => {
-        const rows = document.querySelectorAll(".project-row");
-
-        rows.forEach((row) => {
-            const img = row.querySelector(".project-preview img");
-            if (!img) return;
-
-            let currentX = 0;
-            let currentY = 0;
-            let targetX = 0;
-            let targetY = 0;
-            let raf = 0;
-
-            const lerp = (a, b, n) => a + (b - a) * n;
-
-            let vx = 0;
-            let vy = 0;
-            let angle = 0;
-            let angularVelocity = 0;
-
-            const gravity = 0.15; // poids
-            const stiffness = 0.06; // tension du fil
-            const damping = 0.78; // frottement
-            const rotationDamping = 0.42;
-
-            const tick = () => {
-                const dx = targetX - currentX;
-                const dy = targetY - currentY;
-
-                // mouvement du point d’attache
-                vx += dx * stiffness;
-                vy += dy * stiffness;
-
-                // gravité (agit vers le bas)
-                vy += gravity;
-
-                // amortissement
-                vx *= damping;
-                vy *= damping;
-
-                currentX += vx;
-                currentY += vy;
-
-                // rotation induite par le mouvement horizontal + gravité
-                angularVelocity += vx * 0.002 + gravity * 0.001;
-                angularVelocity *= rotationDamping;
-                angle += angularVelocity;
-
-                img.style.left = `${currentX}px`;
-                img.style.top = `${currentY}px`;
-                img.style.transform = `rotate(${angle}rad)`;
-
-                raf = requestAnimationFrame(tick);
-            };
-
-            row.addEventListener("mouseenter", (e) => {
-                const rect = row.getBoundingClientRect();
-                targetX = e.clientX - rect.left;
-                targetY = e.clientY - rect.top;
-                currentX = targetX;
-                currentY = targetY;
-
-                img.style.setProperty("--x", `${currentX}px`);
-                img.style.setProperty("--y", `${currentY}px`);
-
-                if (!raf) raf = requestAnimationFrame(tick);
-            });
-
-            row.addEventListener("mousemove", (e) => {
-                const rect = row.getBoundingClientRect();
-                targetX = e.clientX - rect.left;
-                targetY = e.clientY - rect.top;
-            });
-
-            row.addEventListener("mouseleave", () => {
-                cancelAnimationFrame(raf);
-                raf = 0;
-            });
-        });
-
-        console.log("✅ Project hover script mounted");
-    })();
-</script>

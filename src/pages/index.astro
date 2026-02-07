@@ -1,13 +1,19 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-// import Button from "../components/ui/Button.astro";
 import ProjectRow from "../components/projects/ProjectRow.astro";
 import Container from "../components/layout/Container.astro";
 import Section from "../components/layout/Section.astro";
 import Footer from "../components/layout/Footer.astro";
-import { projectsList } from "../data/projects";
 import Hero from "../components/hero/Hero.astro";
 import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
+import { useProjectScrollActive } from "../scripts/useProjectScrollActive";
+
+
+
+import { getProjectsList, type Lang } from "../data/projects";
+
+const lang: Lang = Astro.url.searchParams.get("lang") === "en" ? "en" : "fr";
+const homeProjects = getProjectsList(lang);
 ---
 
 <BaseLayout title="Home">
@@ -24,30 +30,35 @@ import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
 					<h2>Mes projets</h2>
 					<ul class="projects-list">
 						{
-							projectsList.map((project) => (
-								<ProjectRow project={project} />
+							homeProjects.map((project) => (
+								<ProjectRow
+									project={project}
+									lang={lang}
+									key={project.slug}
+								/>
 							))
 						}
 					</ul>
 				</Container>
 			</Section>
-
-			<Section>
-				<Container>
-					<h2>Labo</h2>
-				</Container>
-			</Section>
-
-			<Section>
-				<Container>
-					<h2>About</h2>
-				</Container>
-			</Section>
 		</main>
-	</div>
 
-	<Footer />
+		<Section>
+			<Container>
+				<h2>Labo</h2>
+			</Container>
+		</Section>
+
+		<Section>
+			<Container>
+				<h2>About</h2>
+			</Container>
+		</Section>
+	</div>
 </BaseLayout>
+
+<Footer />
+
 <style>
 	.page-with-rail {
 		display: grid;
@@ -64,4 +75,33 @@ import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
 	.page-content {
 		min-width: 0;
 	}
+
+@media (max-width: 768px) {
+	.page-with-rail {
+		display: block;
+	}	
+
+	ul.projects-list {
+            padding-inline-start: 0;
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+        }
+
 </style>
+
+<script type="module" src="/src/scripts/useProjectHover.ts"></script>
+<script is:inline>
+	window.addEventListener("load", () => {
+		// @ts-ignore
+		window.useProjectHover(".project-row");
+	});
+</script>
+
+<script type="module">
+    import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
+
+    window.addEventListener("load", () => {
+        useProjectScrollActive(".project-row");
+    });
+</script>

@@ -1,0 +1,197 @@
+<h2>Labo</h2>
+<p class="labo-baseline">
+    Explorations autour de l’interaction, du système et de la matière.
+</p>
+<div class="all-articles">
+    <article class="labo-card">
+        <header class="labo-card-header">
+            <h3>Interaction</h3>
+            <p>Geste, feedback, continuité.</p>
+        </header>
+
+        <div class="labo-card-preview">
+            <canvas data-preview="interaction"></canvas>
+        </div>
+
+        <footer class="labo-card-footer">
+            <a href="/labo#interaction">Continuer →</a>
+        </footer>
+    </article>
+    <article class="labo-card">
+        <header class="labo-card-header">
+            <h3>Rythme</h3>
+            <p>Le temps fait partie du design</p>
+        </header>
+
+        <div class="labo-card-preview">
+            <canvas data-preview="interaction"></canvas>
+        </div>
+
+        <footer class="labo-card-footer">
+            <a href="/labo#interaction">Continuer →</a>
+        </footer>
+    </article>
+    <article class="labo-card">
+        <header class="labo-card-header">
+            <h3>Matière</h3>
+            <p>L'interface peut être ressentie</p>
+        </header>
+
+        <div class="labo-card-preview">
+            <canvas data-preview="interaction"></canvas>
+        </div>
+
+        <footer class="labo-card-footer">
+            <a href="/labo#interaction">Continuer →</a>
+        </footer>
+    </article>
+    <article class="labo-card">
+        <header class="labo-card-header">
+            <h3>Système</h3>
+            <p>Chaque détail existe dans un ensemble</p>
+        </header>
+
+        <div class="labo-card-preview">
+            <canvas data-preview="interaction"></canvas>
+        </div>
+
+        <footer class="labo-card-footer">
+            <a href="/labo#interaction">Continuer →</a>
+        </footer>
+    </article>
+</div>
+
+<div class="labo-cta">
+    <a href="/labo">Explorer le laboratoire →</a>
+</div>
+
+<style>
+    .all-articles {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+        height: 220px;
+    }
+
+    /* Header */
+    .labo-card-header {
+        z-index: 2;
+    }
+
+    .labo-card-header h3 {
+        font-weight: var(--font-weight-bold);
+        opacity: 0.2;
+
+        transition: opacity 300ms ease;
+    }
+
+    /* Base */
+    .labo-card {
+        border-radius: var(--radius-8);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+
+        border: 0.5px solid var(--stroke-secondary);
+        padding: var(--space-16);
+
+        overflow: hidden;
+
+        transition:
+            height 420ms cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 300ms ease;
+        z-index: 1;
+    }
+
+    /* Hover / Open state */
+    .labo-card:hover {
+        height: 100%;
+
+        border-color: var(--text-primary);
+        padding-bottom: calc(var(--space-16) * 2);
+        z-index: 2;
+    }
+
+    .labo-card:hover .labo-card-preview {
+        opacity: 1;
+    }
+
+    .labo-card:hover .labo-card-footer {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Subtle emphasis on text when open */
+    .labo-card:hover .labo-card-header h3 {
+        letter-spacing: -0.015em;
+        opacity: 1;
+    }
+
+    /* Preview canvas */
+    .labo-card-preview {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+
+        transition: opacity 300ms ease;
+    }
+
+    .labo-card-preview canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Footer CTA */
+    .labo-card-footer {
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+            opacity 240ms ease,
+            transform 240ms ease;
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        .labo-card,
+        .labo-card-preview,
+        .labo-card-footer {
+            transition: none;
+        }
+    }
+</style>
+<script type="module">
+    import { animate } from "animejs";
+
+    const container = document.querySelector(".all-articles");
+    const cards = Array.from(container?.children ?? []);
+
+    if (container && cards.length) {
+        const base = Array(cards.length).fill("1fr");
+
+        const apply = (index) => {
+            const cols = base.map((v, i) => (i === index ? "2fr" : "1fr"));
+
+            animate(container, {
+                gridTemplateColumns: cols.join(" "),
+                duration: 1800,
+                ease: "inOutExpo",
+            });
+        };
+
+        const reset = () => {
+            animate(container, {
+                gridTemplateColumns: base.join(" "),
+                duration: 520,
+                ease: "outExpo",
+            });
+        };
+
+        cards.forEach((card, i) => {
+            card.addEventListener("mouseenter", () => apply(i));
+            card.addEventListener("mouseleave", reset);
+        });
+    }
+</script>

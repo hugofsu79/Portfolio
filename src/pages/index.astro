@@ -5,6 +5,7 @@ import Container from "../components/layout/Container.astro";
 import Section from "../components/layout/Section.astro";
 import Footer from "../components/layout/Footer.astro";
 import Hero from "../components/hero/Hero.astro";
+import LaboSection from "../components/sections/Labo.astro"
 import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
 import { useProjectScrollActive } from "../scripts/useProjectScrollActive";
 
@@ -34,7 +35,6 @@ const homeProjects = getProjectsList(lang);
 								<ProjectRow
 									project={project}
 									lang={lang}
-									key={project.slug}
 								/>
 							))
 						}
@@ -45,7 +45,7 @@ const homeProjects = getProjectsList(lang);
 
 		<Section>
 			<Container>
-				<h2>Labo</h2>
+				<LaboSection/>
 			</Container>
 		</Section>
 
@@ -62,7 +62,6 @@ const homeProjects = getProjectsList(lang);
 <style>
 	.page-with-rail {
 		display: grid;
-		grid-template-columns: 110px 1fr;
 		align-items: start;
 	}
 

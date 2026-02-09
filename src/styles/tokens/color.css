@@ -100,8 +100,14 @@
         Static
          ========================= */
     --static-white: white;
+    --static-opacit-50: hsla(0, 20%, 99%, 0.05);
+    --static-opacit-1: hsla(0, 20%, 99%, 0.1);
+    --static-opacit-2: hsla(0, 20%, 99%, 0.2);
+
     --static-black: black;
     --static-transparent: transparent;
+    --static-gradient-to: var(--core-brown-800);
+    --static-gradient-end: var(--core-brown-900);
 }
 
 
@@ -124,6 +130,8 @@
 
         --stroke-primary: var(--core-beige-50);
         --stroke-secondary: var(--core-neutral-800);
-        --stroke-tertiary: var(--core-beige-900);
+        --stroke-tertiary: var(--core-neutral-600);
+        --static-gradient-to: var(--core-neutral-800);
+        --static-gradient-end: var(--core-neutral-800);
     }
 }

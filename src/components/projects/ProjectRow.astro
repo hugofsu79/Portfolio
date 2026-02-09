@@ -12,7 +12,6 @@ const { project, lang } = Astro.props as Props;
 <li class="project-row">
     <div class="project-title">
         <span class="project-year">{project.year}</span>
-
         <h3>{project.entreprise}</h3>
         <span class="project-subtitle">
             {project.title[lang]}
@@ -104,7 +103,9 @@ const { project, lang } = Astro.props as Props;
     .project-row:hover h3,
     .project-row.is-active h3,
     .project-row:hover .project-subtitle,
-    .project-row.is-active .project-subtitle {
+    .project-row.is-active .project-subtitle,
+    .project-year:hover .project-subtitle,
+    .project-year.is-active .project-subtitle {
         opacity: 1;
     }
 

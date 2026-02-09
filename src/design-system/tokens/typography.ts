@@ -1,4 +1,5 @@
 export const fontSize = {
+    8: 8,
     12: 12,
     16: 16,
     20: 20,
@@ -10,6 +11,7 @@ export const fontSize = {
 
 export const fontWeight = {
     bold: 900,
+    medium: 400,
     regular: 600,
     light: 100,
 }

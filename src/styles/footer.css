@@ -1,0 +1,149 @@
+footer {
+    margin: -10px;
+    position: relative;
+    padding: var(--space-24);
+    background: linear-gradient(var(--static-gradient-to),
+            var(--static-gradient-end));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer p {
+    color: var(--text-tertiary);
+    text-transform: none;
+    font-size: var(--p-footer-font-size);
+}
+
+.col-1-footer img {
+    margin-bottom: 34px;
+    width: 100%;
+}
+
+.col-end-footer {
+    height: 100%;
+}
+
+.baseline-footer {
+    font-weight: var(--font-weight-light);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+}
+
+.baseline-footer:nth-child(1) {
+    top: 5px;
+}
+
+.baseline-footer:nth-child(2) {
+    bottom: 5px;
+}
+
+.lign-tableau,
+.lign-tableau:visited,
+.lign-tableau:hover,
+.lign-tableau:active {
+    text-decoration: none;
+    color: inherit;
+}
+
+.link {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: var(--space-4);
+}
+
+.rectangle {
+    background-color: var(--static-opacit-1);
+    width: 1px;
+    height: 4vh;
+    overflow: hidden;
+}
+
+.border_link {
+    color: var(--core-brown-50);
+    opacity: 0.2;
+}
+
+.medium-container {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    justify-content: space-between;
+    align-items: center;
+}
+
+p .muted {
+    font-weight: var(--font-weight-regular);
+    color: var(--static-opacit-2);
+}
+
+
+/* Tableau contact */
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    position: relative;
+    padding: var(--space-12);
+}
+
+/* coin haut droit */
+.footer-contact::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 12px;
+    height: 12px;
+
+    border-top: 1px solid var(--static-opacit-2);
+    border-right: 1px solid var(--static-opacit-2);
+}
+
+/* coin bas gauche */
+.footer-contact::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 12px;
+    height: 12px;
+
+    border-bottom: 1px solid var(--static-opacit-2);
+    border-left: 1px solid var(--static-opacit-2);
+}
+
+.lign-tableau {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-12);
+    align-items: center;
+}
+
+.left-tableau {
+    width: 48px;
+    font-weight: var(--font-weight-bold);
+    color: var(--static-opacit-1);
+}
+
+.right-tableau {
+    font-weight: var(--font-weight-regular);
+    text-transform: none;
+}
+
+.rectangle {
+    background-color: var(--static-opacit-1);
+    width: 1px;
+    height: 4vh;
+    overflow: hidden;
+}

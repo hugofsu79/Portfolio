@@ -1,7 +1,7 @@
 footer {
     margin: -10px;
     position: relative;
-    padding: var(--space-24);
+    padding: var(--space-32);
     background: linear-gradient(var(--static-gradient-to),
             var(--static-gradient-end));
     display: flex;
@@ -13,6 +13,13 @@ footer p {
     color: var(--text-tertiary);
     text-transform: none;
     font-size: var(--p-footer-font-size);
+}
+
+.col-1-footer {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-32);
 }
 
 .col-1-footer img {

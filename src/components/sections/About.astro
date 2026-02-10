@@ -14,11 +14,6 @@ import { about } from "../../data/textesAbout";
                 height="22"
                 fill="none"
             >
-                <path
-                    class="stroke-circle-approche"
-                    stroke="currentColor"
-                    d="M11 .5c1.227 0 2.473 1.008 3.441 2.945C15.395 5.353 16 8.023 16 11c0 2.977-.605 5.647-1.559 7.555C13.473 20.492 12.227 21.5 11 21.5c-1.227 0-2.473-1.008-3.441-2.945C6.605 16.647 6 13.977 6 11c0-2.977.605-5.647 1.559-7.555C8.527 1.508 9.773.5 11 .5ZM22 .5c1.227 0 2.473 1.008 3.441 2.945C26.395 5.353 27 8.023 27 11c0 2.977-.605 5.647-1.559 7.555C24.473 20.492 23.227 21.5 22 21.5c-1.227 0-2.473-1.008-3.441-2.945C17.605 16.647 17 13.977 17 11c0-2.977.605-5.647 1.559-7.555C19.527 1.508 20.773.5 22 .5Z"
-                ></path>
                 <circle
                     class="stroke-circle-approche"
                     cx="11"
@@ -120,6 +115,13 @@ import { about } from "../../data/textesAbout";
 </section>
 
 <style>
+    .split-texte {
+        opacity: 0;
+    }
+    .split-texte.is-visible {
+        opacity: 1;
+    }
+
     .about {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -220,38 +222,91 @@ import { about } from "../../data/textesAbout";
         translateX: [0, 2, 0],
     });
 
-    // Animation Ce qui APPROCHE .troke-circle-approche
+    // Animation APPROCHE .troke-circle-approche
 
-    const strokes = document.querySelectorAll<SVGGeometryElement>(
-        ".stroke-circle-approche",
-    );
-
-    strokes.forEach((el) => {
-        const length = el.getTotalLength();
-
-        el.style.strokeDasharray = `${length}`;
-        el.style.strokeDashoffset = `${length}`;
-    });
-
-    animate(strokes, {
-        strokeDashoffset: [strokes[0].getTotalLength(), 0],
-        duration: 8100,
-        easing: "inOutExpo",
-        delay: stagger(850),
-        loop: true,
-    });
-
-    // Split & animate ALL .split-texte paragraphs (individually)
-    document.querySelectorAll<HTMLElement>(".split-texte").forEach((p) => {
-        splitText(p, {
-            lines: { wrap: "clip" },
-        }).addEffect(({ lines }) =>
-            animate(lines, {
-                y: ["100%", "0%"],
-                duration: 650,
-                easing: "inOut",
-                delay: stagger(80),
-            }),
+    // Initialisation (Indispensable)
+    const initApprocheAnimation = () => {
+        // 1. On déclare et on récupère les éléments ICI
+        const strokes = document.querySelectorAll<SVGGeometryElement>(
+            ".stroke-circle-approche",
         );
-    });
+
+        // Sécurité : on vérifie qu'on a trouvé quelque chose
+        if (strokes.length === 0) {
+            console.warn("Aucun élément .stroke-circle-approche trouvé");
+            return;
+        }
+
+        // 2. Initialisation individuelle des longueurs
+        strokes.forEach((el) => {
+            const length = el.getTotalLength();
+            el.style.strokeDasharray = `${length}`;
+            el.style.strokeDashoffset = `${length}`;
+        });
+
+        // 3. Animation (strokes est bien accessible ici car on est dans la même fonction)
+        animate(strokes, {
+            strokeDashoffset: 0, // Anime de la valeur actuelle (length) vers 0
+            duration: 4000,
+            easing: "inOutExpo",
+            delay: stagger(400),
+            direction: "alternate",
+            loop: true,
+        });
+    };
+
+    // Lancement au chargement du DOM
+    initApprocheAnimation();
+
+    // Pour Astro : relancer si tu utilises les View Transitions
+    document.addEventListener("astro:after-swap", initApprocheAnimation);
+
+    // Split <p>
+
+    const initTextObserver = () => {
+        const textElements =
+            document.querySelectorAll<HTMLElement>(".split-texte");
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target as HTMLElement;
+
+                        // 1. On rend le paragraphe visible
+                        target.classList.add("is-visible");
+
+                        // 2. On split et on anime
+                        // On ne le fait qu'une fois par apparition pour éviter de multiplier les spans
+                        const split = splitText(target, {
+                            lines: { wrap: "clip" },
+                        });
+
+                        split.addEffect(({ lines }) =>
+                            animate(lines, {
+                                y: ["100%", "0%"],
+                                duration: 800,
+                                easing: "outExpo", // Un peu plus fluide pour du texte
+                                delay: stagger(100),
+                            }),
+                        );
+
+                        // Si tu ne veux pas que ça se "rembobine", décommente la ligne suivante :
+                        // observer.unobserve(target);
+                    } else {
+                        // EFFET REMBOBINAGE :
+                        // On retire la classe et on peut éventuellement reset l'état
+                        entry.target.classList.remove("is-visible");
+                    }
+                });
+            },
+            { threshold: 0.1 },
+        );
+
+        textElements.forEach((el) => observer.observe(el));
+    };
+
+    // Initialisation Astro
+    initTextObserver();
+    document.addEventListener("astro:after-swap", initTextObserver);
 </script>

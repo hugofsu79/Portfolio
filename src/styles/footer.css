@@ -27,19 +27,50 @@ footer p {
 .baseline-footer {
     font-weight: var(--font-weight-light);
     position: absolute;
-    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
+    font-kerning: none;
+
+    /* AJOUTS ESSENTIELS */
+    display: flex;
+    align-items: center;
+    /* Aligne tout le monde sur le centre vertical */
+    white-space: nowrap;
+    width: max-content;
+    /* Force le conteneur à prendre la largeur de son contenu */
 }
 
-.baseline-footer:nth-child(1) {
+/* Gestion de tes deux baselines (top et bottom) */
+footer .baseline-footer:first-of-type {
     top: 5px;
+    bottom: auto;
 }
 
-.baseline-footer:nth-child(2) {
+footer .baseline-footer:last-of-type {
     bottom: 5px;
 }
+
+.muted {
+    display: inline-flex;
+    /* Changé de inline-block à inline-flex */
+    align-items: center;
+    /* Aligne le contenu du span au centre aussi */
+    max-width: 0;
+    overflow: hidden;
+    will-change: max-width, opacity;
+
+    transition:
+        max-width 4s cubic-bezier(0.22, 1, 1, 0.22),
+        margin 4s cubic-bezier(0.22, 1, 1, 0.22);
+}
+
+.baseline-footer.is-visible .muted {
+    max-width: 20rem;
+    /* Augmenté pour être sûr de ne pas couper le nom */
+    margin: 0 0.3em;
+}
+
 
 .lign-tableau,
 .lign-tableau:visited,

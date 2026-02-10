@@ -139,6 +139,7 @@ p .muted {
 .right-tableau {
     font-weight: var(--font-weight-regular);
     text-transform: none;
+    color: var(--text-tertiary);
 }
 
 .rectangle {
@@ -146,4 +147,105 @@ p .muted {
     width: 1px;
     height: 4vh;
     overflow: hidden;
+}
+
+/* Formulaire */
+
+.all-form {
+    display: flex;
+    gap: var(--space-8);
+    flex-direction: column;
+}
+
+#contact-form {
+    color: var(--static-opacity-2);
+    max-width: 30vw;
+}
+
+input,
+textarea {
+    background: none;
+    padding: 12px 16px;
+    border-radius: var(--radius-S);
+    border: 1px solid var(--stroke-tertiary);
+    color: var(--core-green-300);
+    font-weight: 200;
+}
+
+input {
+    border-radius: var(--radius-basic);
+}
+
+textarea {
+    border-radius: var(--radius-basic);
+    min-height: 120px;
+    color: var(--core-green-300);
+}
+
+#contact-form {
+    width: 100%;
+}
+
+/* HOVER — feedback élégant */
+.sendButton:hover {
+    color: var(--color-secondary);
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-text-muted-bg-light);
+}
+
+/* Notification message envoyé */
+.allForm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--radius-S);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+.toast.success {
+    background: var(--color-bg);
+}
+
+.toast.error {
+    background: #dc2626;
+    /* rouge */
+}
+
+/* ACTIVE / CLICK — sensation physique */
+.sendButton:active {
+    background-color: var(--color-bg);
+}
+
+.cta {
+    display: flex;
+    justify-content: center;
+}
+
+.ctaLabel {
+    color: var(--color-text-primary) !important;
+}
+
+/* texte */
+.text-secondary {
+    color: var(--color-text-secondary);
+}
+
+.text-muted {
+    color: var(--color-text-muted);
 }

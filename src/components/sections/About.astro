@@ -1,0 +1,257 @@
+---
+import { about } from "../../data/textesAbout";
+---
+
+<h2>Ma pomme</h2>
+
+<section class="about">
+    <article class="about-block a">
+        <div class="title-about">
+            <h4>{about[0].titre}</h4>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="33"
+                height="22"
+                fill="none"
+            >
+                <path
+                    class="stroke-circle-approche"
+                    stroke="currentColor"
+                    d="M11 .5c1.227 0 2.473 1.008 3.441 2.945C15.395 5.353 16 8.023 16 11c0 2.977-.605 5.647-1.559 7.555C13.473 20.492 12.227 21.5 11 21.5c-1.227 0-2.473-1.008-3.441-2.945C6.605 16.647 6 13.977 6 11c0-2.977.605-5.647 1.559-7.555C8.527 1.508 9.773.5 11 .5ZM22 .5c1.227 0 2.473 1.008 3.441 2.945C26.395 5.353 27 8.023 27 11c0 2.977-.605 5.647-1.559 7.555C24.473 20.492 23.227 21.5 22 21.5c-1.227 0-2.473-1.008-3.441-2.945C17.605 16.647 17 13.977 17 11c0-2.977.605-5.647 1.559-7.555C19.527 1.508 20.773.5 22 .5Z"
+                ></path>
+                <circle
+                    class="stroke-circle-approche"
+                    cx="11"
+                    cy="11"
+                    r="10.5"
+                    stroke="currentColor"></circle>
+                <circle
+                    class="stroke-circle-approche"
+                    cx="21.927"
+                    cy="11"
+                    r="10.5"
+                    stroke="currentColor"></circle>
+            </svg>
+        </div>
+        <p class="split-texte">{about[0].texte}</p>
+    </article>
+
+    <article class="about-block b">
+        <div class="title-about">
+            <h4>{about[1].titre}</h4>
+
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="none"
+            >
+                <g fill="#FDFCFB" stroke="currentColor" clip-path="url(#a)">
+                    <circle
+                        class="top-circule-feed"
+                        cx="17.608"
+                        cy="2.454"
+                        r="1.954"
+                        transform="rotate(90 17.608 2.454)"></circle>
+                    <circle
+                        class="medium-circule-feed"
+                        cx="5.938"
+                        cy="10.908"
+                        r="5.5"
+                        transform="rotate(90 5.938 10.908)"></circle>
+                    <circle
+                        class="bottom-circule-feed"
+                        cx="2.392"
+                        cy="19.362"
+                        r="1.954"
+                        transform="rotate(90 2.392 19.362)"></circle>
+                </g>
+                <defs>
+                    <clipPath id="a">
+                        <path fill="currentColor" d="M0 0h22v22H0z"></path>
+                    </clipPath>
+                </defs>
+            </svg>
+        </div>
+        <p class="split-texte">{about[1].texte}</p>
+    </article>
+</section>
+
+<section class="about">
+    <article class="about-block c">
+        <div class="title-about">
+            <h4>{about[2].titre}</h4>
+            <svg
+                class="swapIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="none"
+            >
+                <g clip-path="url(#a)">
+                    <circle
+                        class="circle-left"
+                        cx="5.906"
+                        cy="5.031"
+                        r="4.531"
+                        fill="none"
+                        stroke="currentColor"
+                        transform="rotate(90 5.906 5.031)"></circle>
+                    <path fill="currentColor" d="M21 11.062H.875v-1H21z"></path>
+                    <circle
+                        class="circle-right"
+                        cx="16.969"
+                        cy="16.094"
+                        r="4.531"
+                        fill="none"
+                        stroke="currentColor"
+                        transform="rotate(90 16.969 16.094)"></circle>
+                </g>
+                <defs>
+                    <clipPath id="a">
+                        <path fill="" d="M0 0h22v22H0z"></path>
+                    </clipPath>
+                </defs>
+            </svg>
+        </div>
+
+        <p class="split-texte">{about[2].texte}</p>
+    </article>
+</section>
+
+<style>
+    .about {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-32);
+        margin: 80px 0px 80px 0px;
+    }
+    .title-about {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .about-block:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .about-block:nth-child(2) {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .about-block:nth-child(3) {
+        grid-column: 1;
+        grid-row: 3;
+    }
+    h4 {
+        margin: 0;
+        font-size: clamp(20px, 2.2vw, 28px);
+    }
+    .about p {
+        font-size: var(--p-font-size);
+        font-weight: var(--font-weight-regular);
+        text-transform: none;
+    }
+
+    /* Tablet & mobile */
+    @media (max-width: 768px) {
+        .about {
+            display: flex;
+            flex-direction: column;
+            grid-template-columns: 1fr; /* 👈 casse la grille */
+            gap: var(--space-16);
+            margin: 24px 0;
+        }
+
+        .about-block {
+            grid-column: auto;
+            grid-row: auto;
+        }
+    }
+</style>
+<script>
+    import { animate, svg, stagger, splitText } from "animejs";
+
+    // Animation EQUILIBRE
+    const deltaX = 16.969 - 5.906;
+    const common = {
+        duration: 2100,
+        easing: "inOutExpo",
+        loop: true,
+        endDelay: 1000, // ⏸ pause entre chaque cycle
+    };
+
+    animate(".circle-left", {
+        ...common,
+        translateX: [0, deltaX, 0],
+    });
+
+    animate(".circle-right", {
+        ...common,
+        translateX: [0, -deltaX, 0],
+    });
+
+    // Animation Ce qui Nourrit...
+
+    const orbitCommon = {
+        duration: 8100,
+        easing: "inOutSine",
+        loop: true,
+        endDelay: 2000,
+    };
+
+    animate(".bottom-circule-feed", {
+        ...orbitCommon,
+        translateY: [0, -4, -4, 0],
+        translateX: [0, 2, 1, 0],
+    });
+
+    animate(".medium-circule-feed", {
+        ...orbitCommon,
+        translateY: [1, -4.5, -4.5, -3, 1],
+        translateX: [0, 1.5, 2, 0],
+    });
+    animate(".top-circule-feed", {
+        ...orbitCommon,
+        translateY: [0, 12, 0],
+        translateX: [0, 2, 0],
+    });
+
+    // Animation Ce qui APPROCHE .troke-circle-approche
+
+    const strokes = document.querySelectorAll<SVGGeometryElement>(
+        ".stroke-circle-approche",
+    );
+
+    strokes.forEach((el) => {
+        const length = el.getTotalLength();
+
+        el.style.strokeDasharray = `${length}`;
+        el.style.strokeDashoffset = `${length}`;
+    });
+
+    animate(strokes, {
+        strokeDashoffset: [strokes[0].getTotalLength(), 0],
+        duration: 8100,
+        easing: "inOutExpo",
+        delay: stagger(850),
+        loop: true,
+    });
+
+    // Split & animate ALL .split-texte paragraphs (individually)
+    document.querySelectorAll<HTMLElement>(".split-texte").forEach((p) => {
+        splitText(p, {
+            lines: { wrap: "clip" },
+        }).addEffect(({ lines }) =>
+            animate(lines, {
+                y: ["100%", "0%"],
+                duration: 650,
+                easing: "inOut",
+                delay: stagger(80),
+            }),
+        );
+    });
+</script>

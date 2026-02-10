@@ -10,6 +10,10 @@ const { project, lang } = Astro.props as Props;
 ---
 
 <li class="project-row">
+    <a
+        class="project-row-link"
+        href={`/projects/${project.slug}`}
+        aria-label={`Voir le projet ${project.entreprise}`}></a>
     <div class="project-title">
         <span class="project-year">{project.year}</span>
         <h3>{project.entreprise}</h3>
@@ -32,6 +36,7 @@ const { project, lang } = Astro.props as Props;
         position: relative;
         overflow: hidden;
         border-bottom: 0.5px solid var(--stroke-secondary);
+        cursor: pointer;
 
         /* 👇 hauteur stable */
         min-height: 140px;
@@ -208,5 +213,21 @@ const { project, lang } = Astro.props as Props;
             transform: none;
             clip-path: none;
         }
+    }
+
+    /* =====================================================
+   Clickable row overlay
+===================================================== */
+
+    .project-row-link {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .project-row-link:focus-visible {
+        outline: 2px solid var(--text-primary);
+        outline-offset: -2px;
     }
 </style>

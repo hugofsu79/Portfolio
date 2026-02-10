@@ -1,11 +1,13 @@
-<h2>Labo</h2>
-<p class="labo-baseline">
-    Explorations autour de l’interaction, du système et de la matière.
-</p>
+<div class="titleSoustitle">
+    <h2>Labo</h2>
+    <p class="labo-baseline">
+        Explorations autour de l’interaction, du système et de la matière.
+    </p>
+</div>
 <div class="all-articles">
     <article class="labo-card">
         <header class="labo-card-header">
-            <h3>Interaction</h3>
+            <h4>Interaction</h4>
             <p>Geste, feedback, continuité.</p>
         </header>
 
@@ -14,58 +16,42 @@
                 <canvas data-preview="interaction"> </canvas>
             </div>
         </div>
-
-        <footer class="labo-card-footer">
-            <a href="/labo#interaction">Continuer →</a>
-        </footer>
     </article>
     <article class="labo-card">
         <header class="labo-card-header">
-            <h3>Rythme</h3>
+            <h4>Rythme</h4>
             <p>Le temps fait partie du design</p>
         </header>
 
         <div class="labo-card-preview">
             <div class="labo-card-frame">
-                <canvas data-preview="interaction"></canvas>
+                <canvas data-preview="rythme"></canvas>
             </div>
         </div>
-
-        <footer class="labo-card-footer">
-            <a href="/labo#interaction">Continuer →</a>
-        </footer>
     </article>
     <article class="labo-card">
         <header class="labo-card-header">
-            <h3>Matière</h3>
+            <h4>Matière</h4>
             <p>L'interface peut être ressentie</p>
         </header>
 
         <div class="labo-card-preview">
             <div class="labo-card-frame">
-                <canvas data-preview="interaction"></canvas>
+                <canvas data-preview="matiere"></canvas>
             </div>
         </div>
-
-        <footer class="labo-card-footer">
-            <a href="/labo#interaction">Continuer →</a>
-        </footer>
     </article>
     <article class="labo-card">
         <header class="labo-card-header">
-            <h3>Système</h3>
+            <h4>Système</h4>
             <p>Chaque détail existe dans un ensemble</p>
         </header>
 
         <div class="labo-card-preview">
             <div class="labo-card-frame">
-                <canvas data-preview="interaction"></canvas>
+                <canvas data-preview="systeme"></canvas>
             </div>
         </div>
-
-        <footer class="labo-card-footer">
-            <a href="/labo#interaction">Continuer →</a>
-        </footer>
     </article>
 </div>
 
@@ -74,177 +60,644 @@
 </div>
 
 <style>
+    .titleSoustitle {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-12);
+    }
+
     .all-articles {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 40px;
-        align-items: start;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
-
-    /* Header */
-    .labo-card-header h3 {
-        font-weight: var(--font-weight-bold);
-        opacity: 0.2;
-
-        transition: opacity 300ms ease;
-    }
-
-    /* Base */
     .labo-card {
-        border-radius: var(--radius-8);
-        position: relative;
         display: flex;
         flex-direction: column;
-        gap: var(--space-16);
-        width: 100%;
-        align-self: stretch;
-
-        border: 0.5px solid var(--stroke-secondary);
-        padding: var(--space-16);
-
-        overflow: hidden;
-
-        transition:
-            border-color 300ms ease,
-            padding-block 820ms cubic-bezier(0.19, 1, 0.22, 1),
-            gap 820ms cubic-bezier(0.19, 1, 0.22, 1);
+        border: solid 1px black;
+        padding: var(--space-12);
+        gap: var(--space-12);
+        height: inherit;
+    }
+    .labo-card h4 {
+        /* font-size: ; */
+        font-weight: var(--font-weight-bold-card);
+        font-size: var(--h4-font-size-card);
+        font-weight: var(--h4-font-weight-card);
+        margin: 0;
+    }
+    .labo-card p {
+        margin: 0;
     }
 
-    /* Preview frame — non-existent state */
     .labo-card-frame {
-        transform: scale(0.88) translateY(6px);
-        pointer-events: none;
-        transition:
-            transform 720ms cubic-bezier(0.19, 1, 0.22, 1) 120ms,
-            border-color 300ms ease;
-        will-change: transform, opacity;
-        transform-origin: top center;
-    }
-
-    .labo-card-frame::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border: 0.5px solid var(--stroke-secondary);
-        border-radius: var(--radius-6);
-        background: var(--background-primary);
-        opacity: 0;
-        transition:
-            opacity 260ms cubic-bezier(0.19, 1, 0.22, 1),
-            transform 720ms cubic-bezier(0.19, 1, 0.22, 1) 120ms;
-    }
-
-    /* Hover / Open state */
-    .labo-card:hover {
-        border-color: var(--text-primary);
-        padding-block: calc(var(--space-16) * 2);
-        gap: calc(var(--space-16) * 1.25);
-    }
-
-    .labo-card:hover .labo-card-frame {
-        transform: scale(1) translateY(0);
-    }
-    .labo-card:hover .labo-card-frame::before {
-        opacity: 1;
-    }
-
-    /* Subtle emphasis on text when open */
-    .labo-card:hover .labo-card-header h3 {
-        letter-spacing: -0.015em;
-        opacity: 1;
-    }
-
-    /* Preview canvas */
-    .labo-card-preview {
         width: 100%;
-        display: grid;
-        grid-template-rows: 0fr; /* collapsed */
-        overflow: hidden;
-        transition: grid-template-rows 820ms cubic-bezier(0.19, 1, 0.22, 1);
+        aspect-ratio: 1/1;
     }
-    .labo-card:hover .labo-card-preview {
-        grid-template-rows: 1fr; /* expanded */
-    }
-    .labo-card-preview > * {
-        min-height: 0;
-    }
-
-    /* Inner preview frame */
+    /* Dans ton fichier CSS */
     .labo-card-frame {
         position: relative;
         width: 100%;
-        aspect-ratio: 1 / 1;
+        height: 300px; /* Ou la hauteur que tu souhaites */
         overflow: hidden;
-        padding: var(--space-16);
-
-        border: 0.5px solid var(--stroke-secondary);
-        border-radius: var(--radius-6);
-        background: var(--background-primary);
     }
-    .labo-card-preview canvas {
-        width: 100%;
+    .labo-card-frame {
+        border-radius: var(--radius-basic);
+        overflow: hidden;
+    }
+    canvas[data-preview="interaction"] {
         display: block;
-        border: solid 1px red;
+        width: 100%;
+        height: 100%;
     }
-
-    /* Footer CTA */
-    .labo-card-footer {
-        display: grid;
-        grid-template-rows: 0fr;
-        overflow: hidden;
-        opacity: 0;
-        transition:
-            grid-template-rows 620ms cubic-bezier(0.19, 1, 0.22, 1),
-            opacity 300ms ease;
-    }
-    .labo-card:hover .labo-card-footer {
-        grid-template-rows: 1fr;
-        opacity: 1;
-    }
-
-    /* Reduced motion support */
-    @media (prefers-reduced-motion: reduce) {
-        .labo-card,
-        .labo-card-preview,
-        .labo-card-footer {
-            transition: none;
-        }
+    canvas[data-preview="rythme"] {
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: crosshair; /* Rappelle les outils de précision */
     }
 </style>
-<script type="module">
-    import { animate } from "animejs";
 
-    if (typeof animate !== "function") {
-        console.warn("animejs animate() introuvable");
+<script>
+    // On définit la structure d'un point
+    interface GridPoint {
+        x: number;
+        y: number;
     }
 
-    const container = document.querySelector(".all-articles");
-    const cards = Array.from(container?.children ?? []);
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. On "cast" l'élément pour accéder aux méthodes du Canvas
+        const canvas = document.querySelector(
+            'canvas[data-preview="interaction"]',
+        ) as HTMLCanvasElement;
+        if (!canvas) return;
 
-    if (container && cards.length) {
-        const base = Array(cards.length).fill("1fr");
+        // 2. On précise le type du contexte
+        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const parent = canvas.parentElement as HTMLElement;
 
-        const apply = (index) => {
-            const cols = base.map((v, i) => (i === index ? "2fr" : "1fr"));
+        // 3. Typage explicite des variables (évite le type 'any')
+        let width: number;
+        let height: number;
+        let dpr: number;
+        let points: GridPoint[] = []; // Tableau d'objets respectant l'interface GridPoint
 
-            animate(container, {
-                gridTemplateColumns: cols.join(" "),
-                duration: 1800,
-                easing: "easeOutExpo",
-            });
+        const spacing: number = 60;
+        const detectionRadius: number = 160;
+        const mouse = { x: -2000, y: -2000, active: false };
+
+        const getBrandColor = (): string => {
+            return (
+                getComputedStyle(canvas)
+                    .getPropertyValue("--fill-brand")
+                    .trim() || "#342818"
+            );
         };
 
-        const reset = () => {
-            animate(container, {
-                gridTemplateColumns: base.join(" "),
-                duration: 1220,
-                easing: "easeOutExpo",
-            });
-        };
+        function init(): void {
+            dpr = window.devicePixelRatio || 1;
 
-        cards.forEach((card, i) => {
-            card.addEventListener("mouseenter", () => apply(i));
-            card.addEventListener("mouseleave", reset);
+            width = parent.clientWidth;
+            height = parent.clientHeight;
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+
+            ctx.scale(dpr, dpr);
+
+            points = [];
+            for (let x = spacing / 2; x < width; x += spacing) {
+                for (let y = spacing / 2; y < height; y += spacing) {
+                    points.push({ x, y });
+                }
+            }
+        }
+
+        window.addEventListener("mousemove", (e: MouseEvent) => {
+            const rect = canvas.getBoundingClientRect();
+            if (
+                e.clientX >= rect.left &&
+                e.clientX <= rect.right &&
+                e.clientY >= rect.top &&
+                e.clientY <= rect.bottom
+            ) {
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                mouse.active = true;
+            } else {
+                mouse.active = false;
+                mouse.x = -2000;
+                mouse.y = -2000;
+            }
         });
+
+        function animate(): void {
+            ctx.clearRect(0, 0, width, height);
+
+            const brandColor = getBrandColor();
+            ctx.fillStyle = brandColor;
+            ctx.strokeStyle = brandColor;
+            ctx.lineWidth = 0.5;
+
+            points.forEach((p: GridPoint) => {
+                const dx = mouse.x - p.x;
+                const dy = mouse.y - p.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                let currentSize = 1.5;
+
+                if (mouse.active && distance < detectionRadius) {
+                    const proximity = 1 - distance / detectionRadius;
+                    currentSize = 1.5 + 12 * Math.pow(proximity, 1.5);
+
+                    ctx.beginPath();
+                    ctx.moveTo(mouse.x, mouse.y);
+                    ctx.lineTo(p.x, p.y);
+                    ctx.stroke();
+                }
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener("resize", init);
+        init();
+        animate();
+    });
+
+    interface MusicDot {
+        x: number;
+        y: number;
+        z: number;
+        v: number;
+        row: number;
+        col: number;
+        lastTriggered: number;
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.querySelector(
+            'canvas[data-preview="rythme"]',
+        ) as HTMLCanvasElement;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const parent = canvas.parentElement as HTMLElement;
+
+        let audioCtx: AudioContext | null = null;
+        let mainGain: GainNode | null = null;
+        let width: number, height: number, dpr: number;
+        let dots: MusicDot[] = [];
+
+        // Configuration de la grille (24x24 comme demandé)
+        const rows = 24;
+        const cols = 24;
+        const damping = 0.65; // Ajusté pour une propagation plus fluide
+        const tension = 0.02;
+        const dotBaseSize = 0.8; // Plus petit pour la densité 24x24
+
+        function init(): void {
+            dpr = window.devicePixelRatio || 1;
+            width = parent.clientWidth;
+            height = parent.clientHeight;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            ctx.scale(dpr, dpr);
+
+            dots = [];
+            const spacingX = (width - 60) / (cols - 1);
+            const spacingY = (height - 60) / (rows - 1);
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    dots.push({
+                        x: 30 + c * spacingX,
+                        y: 30 + r * spacingY,
+                        z: 0,
+                        v: 0,
+                        row: r,
+                        col: c,
+                        lastTriggered: 0,
+                    });
+                }
+            }
+        }
+
+        function playAmbientNote(row: number): void {
+            if (!audioCtx) {
+                audioCtx = new (
+                    window.AudioContext || (window as any).webkitAudioContext
+                )();
+                mainGain = audioCtx.createGain();
+                mainGain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                mainGain.connect(audioCtx.destination);
+            }
+
+            // Ta gamme spécifique
+            const scale = [623.25, 223.25, 623.25, 559.25];
+            // Indexation sécurisée pour éviter les erreurs sur 24 lignes
+            const freq = scale[row % scale.length];
+            const now = audioCtx.currentTime;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const delay = audioCtx.createDelay();
+            const feedback = audioCtx.createGain();
+
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, now);
+
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.015, now + 0.25);
+
+            delay.delayTime.setValueAtTime(0.6, now);
+            feedback.gain.setValueAtTime(0.5, now);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            delay.connect(feedback);
+            delay.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 4.5);
+        }
+
+        canvas.addEventListener("mousemove", (e: MouseEvent) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            dots.forEach((dot) => {
+                const dist = Math.sqrt((mx - dot.x) ** 2 + (my - dot.y) ** 2);
+                if (dist < 25) {
+                    // Rayon d'influence légèrement augmenté pour 24x24
+                    const now = Date.now();
+                    if (now - dot.lastTriggered > 400) {
+                        dot.v += 12;
+                        dot.lastTriggered = now;
+                        playAmbientNote(dot.row);
+                    }
+                }
+            });
+        });
+
+        function animate(): void {
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. CALCUL PHYSIQUE
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const dot = dots[r * cols + c];
+                    let neighbors = 0;
+                    if (r > 0) neighbors += dots[(r - 1) * cols + c].z;
+                    if (r < rows - 1) neighbors += dots[(r + 1) * cols + c].z;
+                    if (c > 0) neighbors += dots[r * cols + (c - 1)].z;
+                    if (c < cols - 1) neighbors += dots[r * cols + (c + 1)].z;
+
+                    const force = (neighbors / 4 - dot.z) * tension;
+                    dot.v += force;
+                    dot.v *= damping;
+                    dot.z += dot.v;
+                }
+            }
+
+            // 2. RENDU DE LA GRILLE CHROMATIQUE
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const dot = dots[r * cols + c];
+                    const absZ = Math.abs(dot.z);
+
+                    // Effet Arc-en-ciel basé sur la tension (z)
+                    // On fait varier la teinte (Hue) de 180 à 360 selon l'amplitude
+                    const hue = 200 + absZ * 10;
+                    const opacity = 0.1 + Math.min(0.5, absZ / 10);
+
+                    ctx.lineWidth = 0.4;
+                    ctx.strokeStyle =
+                        absZ > 0.5
+                            ? `hsla(${hue}, 70%, 60%, ${opacity})`
+                            : "#eeeeee";
+
+                    if (c < cols - 1) {
+                        const next = dots[r * cols + c + 1];
+                        ctx.beginPath();
+                        ctx.moveTo(dot.x, dot.y - dot.z);
+                        ctx.lineTo(next.x, next.y - next.z);
+                        ctx.stroke();
+                    }
+                    if (r < rows - 1) {
+                        const next = dots[(r + 1) * cols + c];
+                        ctx.beginPath();
+                        ctx.moveTo(dot.x, dot.y - dot.z);
+                        ctx.lineTo(next.x, next.y - next.z);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 3. RENDU DES POINTS (Lisibilité avec variables neutres)
+            dots.forEach((dot) => {
+                const absZ = Math.abs(dot.z);
+                const drawY = dot.y - dot.z;
+
+                // Point principal
+                ctx.beginPath();
+                ctx.arc(dot.x, drawY, dotBaseSize, 0, Math.PI * 2);
+
+                // Utilisation des variables neutres pour les contours
+                if (absZ > 1.5) {
+                    ctx.fillStyle = "#4d4d4d"; // core-neutral-700
+                } else if (absZ > 0.5) {
+                    ctx.fillStyle = "#808080"; // core-neutral-500
+                } else {
+                    ctx.fillStyle = "#cccccc"; // core-neutral-200
+                }
+                ctx.fill();
+
+                // Ondes de choc subtiles (Arc-en-ciel)
+                if (absZ > 1.2) {
+                    ctx.beginPath();
+                    ctx.arc(dot.x, drawY, absZ * 8, 0, Math.PI * 2);
+                    ctx.strokeStyle = `hsla(${200 + absZ * 15}, 80%, 70%, 0.2)`;
+                    ctx.lineWidth = 0.3;
+                    ctx.stroke();
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener("resize", init);
+        init();
+        animate();
+    });
+
+    // Matiere
+    document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.querySelector(
+            'canvas[data-preview="matiere"]',
+        ) as HTMLCanvasElement;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const parent = canvas.parentElement as HTMLElement;
+
+        let width: number, height: number, dpr: number;
+        let particles: any[] = [];
+        let mouse = { x: -1000, y: -1000, active: false };
+
+        // --- CONFIGURATION BRUTALISTE ---
+        const colCount = 7;
+        const brandColor =
+            getComputedStyle(document.documentElement)
+                .getPropertyValue("--fill-brand")
+                .trim() || "#000";
+
+        // Filtre SVG optimisé pour l'étirement de la matière
+        const svgFilter = `
+        <svg style="display:none;">
+            <filter id="brutal-metaball-heavy">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -14" result="contrast" />
+            </filter>
+        </svg>
+    `;
+        if (!document.getElementById("brutal-metaball-heavy")) {
+            document.body.insertAdjacentHTML("beforeend", svgFilter);
+        }
+        canvas.style.filter = "url(#brutal-metaball-heavy)";
+
+        function init() {
+            dpr = window.devicePixelRatio || 1;
+            width = parent.clientWidth;
+            height = parent.clientHeight;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.scale(dpr, dpr);
+
+            particles = [];
+            const colWidth = width / colCount;
+
+            for (let c = 0; c < colCount; c++) {
+                const dir = c % 2 === 0 ? 1 : -1;
+                const count = 12; // Plus de particules pour une masse plus dense
+                for (let r = 0; r < count; r++) {
+                    particles.push({
+                        x: c * colWidth + colWidth / 2,
+                        y: (height / count) * r,
+                        baseX: c * colWidth + colWidth / 2,
+                        radius: colWidth * 0.85,
+                        speed: (0.4 + Math.random() * 0.4) * dir,
+                        vx: 0,
+                        phase: Math.random() * Math.PI * 2,
+                    });
+                }
+            }
+        }
+
+        canvas.addEventListener("mousemove", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+            mouse.active = true;
+        });
+
+        canvas.addEventListener("mouseleave", () => (mouse.active = false));
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = brandColor;
+
+            particles.forEach((p) => {
+                // 1. Mouvement vertical constant
+                p.y += p.speed;
+                if (p.y > height + p.radius) p.y = -p.radius;
+                if (p.y < -p.radius) p.y = height + p.radius;
+
+                // 2. Physique d'écartement radicale
+                if (mouse.active) {
+                    const dx = p.x - mouse.x;
+                    const dy = p.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const repelRadius = 150; // Zone d'influence élargie
+
+                    if (dist < repelRadius) {
+                        // Force de répulsion exponentielle pour un écartement net
+                        const force = Math.pow(
+                            (repelRadius - dist) / repelRadius,
+                            2,
+                        );
+                        const direction = dx > 0 ? 1 : -1;
+
+                        // On pousse violemment sur les côtés
+                        p.vx += direction * force * 8;
+                    }
+                }
+
+                // 3. Amortissement et rappel élastique "mou"
+                p.vx *= 0.85;
+                p.x += p.vx;
+
+                // Le rappel est lent pour laisser la matière "ouverte" un instant
+                const springForce = (p.baseX - p.x) * 0.03;
+                p.x += springForce;
+
+                // 4. Rendu de la masse
+                // On ajoute une déformation visuelle (squash & stretch) selon la vélocité
+                const stretchX = 1 + Math.abs(p.vx) * 0.02;
+                const squashY = 1 - Math.abs(p.vx) * 0.01;
+
+                ctx.beginPath();
+                ctx.ellipse(
+                    p.x,
+                    p.y,
+                    p.radius * stretchX,
+                    p.radius * squashY,
+                    0,
+                    0,
+                    Math.PI * 2,
+                );
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener("resize", init);
+        init();
+        animate();
+    });
+
+    interface Crawler {
+        t: number;
+        size: number;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.querySelector(
+            'canvas[data-preview="systeme"]',
+        ) as HTMLCanvasElement;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const size = 300;
+
+        const getThemeColor = (name: string) =>
+            getComputedStyle(document.documentElement)
+                .getPropertyValue(name)
+                .trim();
+        const strokeColor = getThemeColor("--stroke-primary") || "#ccc";
+        const bgColor = getThemeColor("--layer-background") || "#fff";
+
+        // Création d'un chemin SVG précis pour un "S" Helvetica Bold
+        // Ce tracé représente le squelette central de la lettre pour un contournement total
+        const sPath = new Path2D(
+            "M150,55 C230,55 240,110 150,135 C60,160 70,245 150,245 C230,245 240,190 240,190",
+        );
+
+        const crawlers: Crawler[] = [
+            { t: 0.0, size: 5 },
+            { t: 0.2, size: 3 },
+            { t: 0.4, size: 6 },
+            { t: 0.6, size: 4 },
+            { t: 0.8, size: 5 },
+        ];
+
+        const speed = 0.0005; // Vitesse lente
+
+        function init() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.height = size * dpr;
+            canvas.style.width = canvas.style.height = `${size}px`;
+            ctx.scale(dpr, dpr);
+        }
+
+        // Fonction pour obtenir un point sur le Path2D
+        // Comme Path2D n'a pas de méthode native "getPointAtLength" en Canvas standard,
+        // on simule le tracé pour garantir le contournement.
+        function getPointOnS(t: number) {
+            // Paramétrage manuel de la courbe du S pour une précision totale
+            const p0 = { x: 150, y: 55 }; // Sommet
+            const p1 = { x: 280, y: 55 }; // Arrondi haut
+            const p2 = { x: 280, y: 135 }; // Milieu droite
+            const p3 = { x: 150, y: 135 }; // Centre
+            const p4 = { x: 20, y: 135 }; // Milieu gauche
+            const p5 = { x: 20, y: 245 }; // Arrondi bas
+            const p6 = { x: 150, y: 245 }; // Base
+
+            let x, y;
+            if (t < 0.5) {
+                const nt = t * 2;
+                x =
+                    (1 - nt) ** 3 * p0.x +
+                    3 * (1 - nt) ** 2 * nt * p1.x +
+                    3 * (1 - nt) * nt ** 2 * p2.x +
+                    nt ** 3 * p3.x;
+                y =
+                    (1 - nt) ** 3 * p0.y +
+                    3 * (1 - nt) ** 2 * nt * p1.y +
+                    3 * (1 - nt) * nt ** 2 * p2.y +
+                    nt ** 3 * p3.y;
+            } else {
+                const nt = (t - 0.5) * 2;
+                x =
+                    (1 - nt) ** 3 * p3.x +
+                    3 * (1 - nt) ** 2 * nt * p4.x +
+                    3 * (1 - nt) * nt ** 2 * p5.x +
+                    nt ** 3 * p6.x;
+                y =
+                    (1 - nt) ** 3 * p3.y +
+                    3 * (1 - nt) ** 2 * nt * p4.y +
+                    3 * (1 - nt) * nt ** 2 * p5.y +
+                    nt ** 3 * p6.y;
+            }
+            return { x, y };
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, size, size);
+
+            // 1. Rendu de la lettre S Helvetica Bold
+            ctx.font = "900 250px Helvetica, Arial, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            ctx.fillStyle = bgColor;
+            ctx.fillText("S", size / 2, size / 2 + 10);
+
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 1.5;
+            ctx.strokeText("S", size / 2, size / 2 + 10);
+
+            // 2. Rendu des ronds sur le contour
+            crawlers.forEach((c) => {
+                c.t = (c.t + speed) % 1;
+                const pos = getPointOnS(c.t);
+
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, c.size, 0, Math.PI * 2);
+                ctx.fillStyle = bgColor;
+                ctx.fill();
+                ctx.strokeStyle = strokeColor;
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    });
 </script>

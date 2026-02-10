@@ -7,7 +7,7 @@ import Footer from "../components/layout/Footer.astro";
 import Hero from "../components/hero/Hero.astro";
 import LaboSection from "../components/sections/Labo.astro"
 import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
-import { useProjectScrollActive } from "../scripts/useProjectScrollActive";
+import About from "../components/sections/About.astro"
 
 
 
@@ -51,7 +51,7 @@ const homeProjects = getProjectsList(lang);
 
 		<Section>
 			<Container>
-				<h2>About</h2>
+				<About/>
 			</Container>
 		</Section>
 	</div>

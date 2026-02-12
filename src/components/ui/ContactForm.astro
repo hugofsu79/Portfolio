@@ -3,15 +3,60 @@ import Button from "../ui/Button.astro";
 ---
 
 <form id="contact-form" class="all-form">
-    <input type="text" name="firstname" placeholder="Prénom · Nom" required />
+    <div class="topForm">
+        <input
+            type="text"
+            name="firstname"
+            placeholder="Prénom · Nom"
+            required
+        />
+        <input type="email" name="email" placeholder="Email" required />
+    </div>
 
-    <input type="email" name="email" placeholder="Email" required />
+    <textarea name="message" placeholder="Votre message" required></textarea>
 
-    <textarea name="Votre message" placeholder="Votre message" required
-    ></textarea>
-
-    <Button size="lg" type="button">Envoyer</Button>
+    <Button size="lg" type="submit">Envoyer</Button>
 </form>
 
 <div id="toast" class="toast"></div>
 
+<script>
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+    const toast = document.getElementById("toast");
+
+    form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!toast) return;
+
+        // Récupération des données du formulaire
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        toast.innerText = "Envoi en cours...";
+        toast.classList.add("show");
+
+        try {
+            const response = await fetch("/api/contact", {
+                // Vérifie que ton fichier API est bien dans /src/pages/api/contact.ts
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" },
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                toast.innerText = "Message envoyé avec succès !";
+                form.reset();
+            } else {
+                toast.innerText = "Erreur : " + result.error;
+            }
+        } catch (error) {
+            toast.innerText = "Une erreur est survenue.";
+        }
+
+        // Cache le message après 5 secondes
+        setTimeout(() => toast.classList.remove("show"), 5000);
+    });
+</script>

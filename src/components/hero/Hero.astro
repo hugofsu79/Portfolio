@@ -12,39 +12,19 @@ const content = heroContent[lang];
 import LanguageToggle from "../../components/ui/LanguageToggle.astro";
 ---
 
-<section class="hero">
+<section id="/" class="hero">
     <div class="hero-header container--wide">
         <h1 class="hero-name">HUGO FOISSEAU</h1>
 
         <LanguageToggle />
     </div>
+    <p class="hero-hint">
+        {content.subtitle}
+    </p>
 
-    <div class="hero-canvas container--wide">
-        <div class="hero-meta hero-meta--left">
-            <span>PARIS</span>
-            <span class="dot"></span>
-        </div>
-        <div class="hero-rect">
-            <div class="hero-rect-inner">
-                <!-- contenu à venir -->
-            </div>
-        </div>
-
-        <div class="hero-meta hero-meta--right">
-            <span class="dot"></span>
-            <span id="hero-time" aria-label="Heure actuelle"></span>
-        </div>
-    </div>
-
-    <div class="hero-footer container--wide">
-        <p class="hero-hint">
-            {content.subtitle}
-        </p>
-
-        <h2 class="hero-intro">
-            {content.intro}
-        </h2>
-    </div>
+    <h2 class="hero-intro">
+        {content.intro}
+    </h2>
 </section>
 
 <style>
@@ -127,9 +107,7 @@ import LanguageToggle from "../../components/ui/LanguageToggle.astro";
     }
 
     .hero-hint {
-        max-width: 320px;
-        font-size: 12px;
-        line-height: 1.4;
+        font-size: clamp(80px, 4.2vw, 64px);
     }
 
     .hero-role {
@@ -149,29 +127,14 @@ import LanguageToggle from "../../components/ui/LanguageToggle.astro";
     }
 
     @media (max-width: 768px) {
-.hero{
-    min-height: 80vh;
-}
+        .hero {
+            min-height: 80vh;
+        }
 
         .hero-rect {
             width: 100%;
             aspect-ratio: 1 / 1;
         }
     }
+
 </style>
-
-<script>
-    const timeElement = document.getElementById("hero-time");
-
-    if (timeElement) {
-        const updateTime = () => {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, "0");
-            const minutes = String(now.getMinutes()).padStart(2, "0");
-            timeElement.textContent = `${hours}:${minutes}`;
-        };
-
-        updateTime();
-        setInterval(updateTime, 60_000);
-    }
-</script>

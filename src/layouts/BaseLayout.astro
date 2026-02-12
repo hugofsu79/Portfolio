@@ -1,6 +1,8 @@
 ---
 import "../styles/globals.css";
 import MobileNav from "../components/navigation/MobileNav.astro";
+// 1. On utilise le nouveau nom
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
 	title?: string;
@@ -15,97 +17,27 @@ const { title = "Portfolio" } = Astro.props;
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{title}</title>
+		<ClientRouter />
 	</head>
 
 	<body class="app-root">
-		<!-- CONTENT GRID -->
 		<header class="app-header">
 			<nav class="mobile-nav">
 				<MobileNav />
 			</nav>
 		</header>
-		<main class="main-content">
+
+		<main class="app-main">
 			<slot />
 		</main>
+
+		<script>
+			import "../scripts/app";
+
+			document.addEventListener("astro:page-load", () => {
+				const savedLang = localStorage.getItem("lang") || "fr";
+				document.documentElement.dataset.lang = savedLang;
+			});
+		</script>
 	</body>
 </html>
-
-<style is:global>
-	/* =========================================================
-   ROOT LAYOUT
-   ========================================================= */
-
-	.app-root {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-	}
-
-	/* =========================================================
-   HEADER / NAVIGATION
-   ========================================================= */
-
-	.app-header {
-		position: relative;
-		width: 100%;
-	}
-
-	/* Mobile first */
-	.mobile-nav {
-		display: block;
-	}
-
-	.desktop-nav {
-		display: none;
-	}
-
-	/* =========================================================
-   MAIN CONTENT
-   ========================================================= */
-
-	.app-main {
-		flex: 1;
-		width: 100%;
-	}
-
-	/* =========================================================
-   DESKTOP LAYOUT
-   ========================================================= */
-
-	@media (min-width: 769px) {
-		/* Header devient le rail de navigation */
-		.app-header {
-			position: sticky;
-			top: 0;
-
-			display: flex;
-			justify-content: center;
-			align-items: flex-start;
-		}
-
-		.desktop-nav {
-			display: flex;
-		}
-
-		.mobile-nav {
-			display: none;
-		}
-
-		/* Contenu principal */
-		.app-main {
-			flex: 1;
-			min-width: 0;
-		}
-	}
-</style>
-
-<script is:inline>
-	const savedLang = localStorage.getItem("lang") || "fr";
-	document.documentElement.dataset.lang = savedLang;
-</script>
-
-<script type="module">
-	import { useProjectScrollActive } from "../scripts/useProjectScrollActive";
-
-	useProjectScrollActive(".project-row");
-</script>

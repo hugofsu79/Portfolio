@@ -10,7 +10,6 @@ import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
 import About from "../components/sections/About.astro"
 
 
-
 import { getProjectsList, type Lang } from "../data/projects";
 
 const lang: Lang = Astro.url.searchParams.get("lang") === "en" ? "en" : "fr";
@@ -28,6 +27,7 @@ const homeProjects = getProjectsList(lang);
 		<main class="page-content">
 			<Section>
 				<Container>
+					<section id="projects">
 					<h2>Mes projets</h2>
 					<ul class="projects-list">
 						{
@@ -39,6 +39,7 @@ const homeProjects = getProjectsList(lang);
 							))
 						}
 					</ul>
+					</section>
 				</Container>
 			</Section>
 		</main>
@@ -64,10 +65,10 @@ const homeProjects = getProjectsList(lang);
 		display: grid;
 		align-items: start;
 	}
-
+@media (max-width: 720px) {
 	.desktop-nav {
 		position: sticky;
-		top: 0;
+		top: 25%;
 		height: fit-content;
 	}
 
@@ -86,7 +87,7 @@ const homeProjects = getProjectsList(lang);
             margin: 0;
             list-style: none;
         }
-
+	}
 </style>
 
 <script type="module" src="/src/scripts/useProjectHover.ts"></script>

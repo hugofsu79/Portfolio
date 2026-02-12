@@ -1,79 +1,108 @@
-<div class="titleSoustitle">
-    <h2>Labo</h2>
-    <p class="labo-baseline">
-        Explorations autour de l’interaction, du système et de la matière.
-    </p>
-</div>
-<div class="all-articles">
-    <article class="labo-card">
-        <header class="labo-card-header">
-            <h4>Interaction</h4>
-            <p>Geste, feedback, continuité.</p>
-        </header>
+---
+import Button from "../ui/Button.astro";
+---
 
-        <div class="labo-card-preview">
-            <div class="labo-card-frame">
-                <canvas data-preview="interaction"> </canvas>
+<section id="labo">
+    <div class="titleSoustitle">
+        <h2>Labo</h2>
+        <p class="labo-baseline">
+            Explorations autour de l’interaction, du système et de la matière.
+        </p>
+    </div>
+    <div class="all-articles">
+        <article class="labo-card">
+            <header class="labo-card-header">
+                <h4>Interaction</h4>
+                <p>Geste, feedback, continuité.</p>
+            </header>
+
+            <div class="labo-card-preview">
+                <div class="labo-content-wrapper">
+                    <div class="labo-card-frame">
+                        <canvas data-preview="interaction"> </canvas>
+                    </div>
+                </div>
             </div>
-        </div>
-    </article>
-    <article class="labo-card">
-        <header class="labo-card-header">
-            <h4>Rythme</h4>
-            <p>Le temps fait partie du design</p>
-        </header>
+        </article>
+        <article class="labo-card">
+            <header class="labo-card-header">
+                <h4>Rythme</h4>
+                <p>Le temps fait partie du design</p>
+            </header>
 
-        <div class="labo-card-preview">
-            <div class="labo-card-frame">
-                <canvas data-preview="rythme"></canvas>
+            <div class="labo-card-preview">
+                <div class="labo-content-wrapper">
+                    <div class="labo-card-frame">
+                        <canvas data-preview="rythme"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
-    </article>
-    <article class="labo-card">
-        <header class="labo-card-header">
-            <h4>Matière</h4>
-            <p>L'interface peut être ressentie</p>
-        </header>
+        </article>
+        <article class="labo-card">
+            <header class="labo-card-header">
+                <h4>Matière</h4>
+                <p>L'interface peut être ressentie</p>
+            </header>
 
-        <div class="labo-card-preview">
-            <div class="labo-card-frame">
-                <canvas data-preview="matiere"></canvas>
+            <div class="labo-card-preview">
+                <div class="labo-content-wrapper">
+                    <div class="labo-card-frame">
+                        <canvas data-preview="matiere"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
-    </article>
-    <article class="labo-card">
-        <header class="labo-card-header">
-            <h4>Système</h4>
-            <p>Chaque détail existe dans un ensemble</p>
-        </header>
+        </article>
+        <article class="labo-card">
+            <header class="labo-card-header">
+                <h4>Système</h4>
+                <p>Chaque détail existe dans un ensemble</p>
+            </header>
 
-        <div class="labo-card-preview">
-            <div class="labo-card-frame">
-                <canvas data-preview="systeme"></canvas>
+            <div class="labo-card-preview">
+                <div class="labo-content-wrapper">
+                    <div class="labo-card-frame">
+                        <canvas data-preview="systeme"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
-    </article>
-</div>
+        </article>
+    </div>
 
-<div class="labo-cta">
-    <a href="/labo">Explorer le laboratoire →</a>
-</div>
+    <div class="labo-cta">
+        <!-- <a href="/labo">Explorer le laboratoire →</a> -->
+        <Button
+            href="/labo"
+            variant="secondary"
+            size="lg"
+            aria-label="Voir plus de projet de la sorte"
+            >Explorer le laboratoire →</Button
+        >
+    </div>
+</section>
+
 <style>
     .all-articles {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         gap: 20px;
-        align-items: flex-start;
         width: 100%;
     }
-
+    .all-articles article {
+        border-radius: var(--radius-basic);
+        min-width: 200px;
+    }
     .labo-card {
-        flex: 1;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        border: 1px solid black;
+        border: 0.25px solid var(--stroke-primary);
         padding: 15px;
-        background: white;
+        background-color: var(--layer-background);
         min-width: 0;
+        /* On s'assure qu'aucune hauteur n'est imposée */
+        height: auto;
+        cursor: pointer;
+        overflow: hidden; /* Pour éviter les débordements pendant l'anim */
     }
 
     .labo-card-header {
@@ -81,43 +110,70 @@
         transition: margin-bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .labo-card:hover .labo-card-header {
-        margin-bottom: 15px;
-    }
-
     .labo-card-preview {
+        height: 100%;
         display: grid;
+        /* État fermé : la ligne de grille est à 0 */
         grid-template-rows: 0fr;
         opacity: 0;
         transition:
-            grid-template-rows 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-            opacity 0.5s ease;
+            grid-template-rows 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 0.4s ease,
+            margin-top 0.6s ease;
+        overflow: hidden;
     }
 
     .labo-card:hover .labo-card-preview {
+        /* État ouvert : la ligne de grille prend la taille naturelle du contenu */
         grid-template-rows: 1fr;
         opacity: 1;
+        margin-top: 20px;
+    }
+    .labo-content-wrapper {
+        min-height: 0;
     }
 
     .labo-card-frame {
-        overflow: hidden;
-        min-height: 0;
-        /* INDISPENSABLE : On force un ratio ici pour que le JS calcule la taille même à 0fr */
-        aspect-ratio: 1 / 1;
         width: 100%;
+        aspect-ratio: 1 / 1;
+        display: block;
     }
 
     canvas {
         display: block;
         width: 100% !important;
         height: 100% !important;
-        background: #1a1a1a;
+        object-fit: contain; /* Force le canvas à tenir dans le cadre */
+    }
+
+    .labo-card-frame {
+        min-height: 0;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+    }
+
+    .labo-card:hover .labo-card-header {
+        transform: translateY(-2px);
+    }
+
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: var(--layer-background);
         transform: scale(1.1);
         transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .labo-card:hover canvas {
         transform: scale(1);
+    }
+
+    @media (max-width: 720px) {
+        .all-articles {
+            display: flex;
+            flex-direction: row;
+        }
     }
 </style>
 
@@ -157,15 +213,18 @@
             );
         };
 
-        function init(): void {
+        function init() {
             dpr = window.devicePixelRatio || 1;
 
-            width = parent.clientWidth;
-            height = parent.clientHeight;
+            // On mesure la largeur disponible dans la carte
+            const rect = parent.getBoundingClientRect();
+            width = rect.width;
+
+            // On force la hauteur à être identique pour garder le carré
+            height = width;
 
             canvas.width = width * dpr;
             canvas.height = height * dpr;
-
             canvas.style.width = `${width}px`;
             canvas.style.height = `${height}px`;
 

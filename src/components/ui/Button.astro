@@ -20,7 +20,7 @@ const {
     href,
     target,
     rel,
-    
+
     type = "button",
     disabled = false,
     ...rest
@@ -33,7 +33,9 @@ const Tag = href ? "a" : "button";
     {...rest}
     href={href}
     target={href ? target : undefined}
-    rel={href && target === "_blank" ? rel ?? "noopener noreferrer" : undefined}
+    rel={href && target === "_blank"
+        ? (rel ?? "noopener noreferrer")
+        : undefined}
     type={!href ? type : undefined}
     disabled={!href ? disabled : undefined}
     class={["btn", `btn--${variant}`, `btn--${size}`].join(" ")}
@@ -103,12 +105,16 @@ const Tag = href ? "a" : "button";
     /* Secondary */
     .btn--secondary {
         background-color: transparent;
-        color: var(--text-tertiary);
+        color: var(--text-primary);
+        font-weight: var(--font-weight-medium);
         border: 1px solid var(--stroke-primary);
+        transition: opacity 360ms ease;
+        opacity: 1;
     }
 
     .btn--secondary:hover:not(:disabled) {
-        background-color: var(--fill-hover);
+        border: 1px solid var(--stroke-primary);
+        opacity: 0.6;
     }
 
     /* =========================

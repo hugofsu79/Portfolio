@@ -13,18 +13,20 @@ const { project, lang } = Astro.props as Props;
     <a
         class="project-row-link"
         href={`/projects/${project.slug}`}
-        aria-label={`Voir le projet ${project.entreprise}`}></a>
-    <div class="project-title">
-        <span class="project-year">{project.year}</span>
-        <h3>{project.entreprise}</h3>
-        <span class="project-subtitle">
-            {project.title[lang]}
-        </span>
-    </div>
+        aria-label={`Voir le projet ${project.entreprise}`}
+    >
+        <div class="project-title">
+            <span class="project-year">{project.year}</span>
+            <h3>{project.entreprise}</h3>
+            <span class="project-subtitle">
+                {project.title[lang]}
+            </span>
+        </div>
 
-    <div class="project-preview">
-        <img src={project.cover} alt={project.entreprise} />
-    </div>
+        <div class="project-preview">
+            <img src={project.cover} alt={project.entreprise} />
+        </div>
+    </a>
 </li>
 
 <style>

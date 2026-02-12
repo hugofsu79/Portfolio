@@ -3,20 +3,73 @@
 @import "./tokens/typography.css";
 @import "./tokens/space.css";
 @import "./footer.css";
+@import "./carousel.css";
+@import "./projects.css";
 
 :root {
     --font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif;
     --text-transform: uppercase;
 
-    --font-family-accent: "Times New Roman";
+    --font-family-accent: "Courier New";
 }
 
 html {
     font-family: var(--font-family-base);
     text-transform: var(--text-transform);
+    scroll-behavior: smooth;
 }
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.app-root {
+    margin: 0;
+}
+
+
+
+.page-with-rail{
+    margin: var(--space-8);
+}
+
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
+}
+
 
 body {
     color: var(--text-primary);
     background-color: var(--layer-background);
+}
+
+.split-texte {
+    font-size: var(--p-font-size);
+    letter-spacing: var(--p-letter-spacing);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.split-texte:has(.anim-word) {
+    opacity: 1;
 }

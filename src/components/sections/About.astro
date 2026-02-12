@@ -4,7 +4,7 @@ import { about } from "../../data/textesAbout";
 
 <h2>Ma pomme</h2>
 
-<section class="about">
+<section id="about" class="about">
     <article class="about-block a">
         <div class="title-about">
             <h4>{about[0].titre}</h4>
@@ -115,13 +115,6 @@ import { about } from "../../data/textesAbout";
 </section>
 
 <style>
-    .split-texte {
-        opacity: 0;
-    }
-    .split-texte.is-visible {
-        opacity: 1;
-    }
-
     .about {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -260,53 +253,4 @@ import { about } from "../../data/textesAbout";
 
     // Pour Astro : relancer si tu utilises les View Transitions
     document.addEventListener("astro:after-swap", initApprocheAnimation);
-
-    // Split <p>
-
-    const initTextObserver = () => {
-        const textElements =
-            document.querySelectorAll<HTMLElement>(".split-texte");
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const target = entry.target as HTMLElement;
-
-                        // 1. On rend le paragraphe visible
-                        target.classList.add("is-visible");
-
-                        // 2. On split et on anime
-                        // On ne le fait qu'une fois par apparition pour éviter de multiplier les spans
-                        const split = splitText(target, {
-                            lines: { wrap: "clip" },
-                        });
-
-                        split.addEffect(({ lines }) =>
-                            animate(lines, {
-                                y: ["100%", "0%"],
-                                duration: 800,
-                                easing: "outExpo", // Un peu plus fluide pour du texte
-                                delay: stagger(100),
-                            }),
-                        );
-
-                        // Si tu ne veux pas que ça se "rembobine", décommente la ligne suivante :
-                        // observer.unobserve(target);
-                    } else {
-                        // EFFET REMBOBINAGE :
-                        // On retire la classe et on peut éventuellement reset l'état
-                        entry.target.classList.remove("is-visible");
-                    }
-                });
-            },
-            { threshold: 0.1 },
-        );
-
-        textElements.forEach((el) => observer.observe(el));
-    };
-
-    // Initialisation Astro
-    initTextObserver();
-    document.addEventListener("astro:after-swap", initTextObserver);
 </script>

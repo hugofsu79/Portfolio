@@ -38,7 +38,7 @@
   --h4-font-weight: var(--font-weight-regular);
   --h4-letter-spacing: -0.01em;
 
-/* H4 — Sub-sections-card */
+  /* H4 — Sub-sections-card */
   --h4-font-size-card: clamp(24px, 1.6vw, 31px);
   --h4-line-height-card: 1.3;
   --h4-font-weight-card: var(--font-weight-bold);
@@ -76,44 +76,14 @@ h3 {
   margin: 0;
 }
 
-.labo-card-header p {
+.labo-card-header p,
+th,
+tr {
   font-family: var(--font-family-accent);
   text-transform: none;
   color: var(--text-secondary);
+}
+
+.labo-card-header p {
   font-size: var(--p-font-size);
-}
-
-/* Hover / Open state */
-.labo-card {
-  height: 120px;
-}
-
-.labo-card:hover {
-  aspect-ratio: 1 / 1;
-  padding-bottom: calc(var(--space-16) * 2);
-  border-color: var(--text-primary);
-}
-
-.labo-card:hover .labo-card-preview {
-  opacity: 1;
-}
-
-.labo-card:hover .labo-card-footer {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Subtle emphasis on text when open */
-.labo-card:hover .labo-card-header h3 {
-  letter-spacing: -0.015em;
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-
-  .labo-card,
-  .labo-card-preview,
-  .labo-card-footer {
-    transition: none;
-  }
 }

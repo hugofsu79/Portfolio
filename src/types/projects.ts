@@ -39,9 +39,9 @@ export type Project = {
     };
 
     leftCorridor: {
-        skills: {
+        skills: I18n<{
             value: string[];
-        };
+        }>;
     };
 
     sections: {

@@ -1,0 +1,160 @@
+---
+import Footer from "../../components/layout/Footer.astro";
+import { projects } from "../../data/projects";
+import Carousel from "../../components/ui/Carousel.astro";
+import Layout from "../../layouts/BaseLayout.astro";
+import TableauProjet from "../../components/ui/TableauProjet.astro";
+
+export function getStaticPaths() {
+    return projects.map((project) => ({
+        params: { slug: project.slug },
+        props: { project },
+    }));
+}
+
+const { project } = Astro.props;
+const lang = "fr";
+---
+
+<Layout title={project.hero.entreprise}>
+    <header class="project-hero">
+        <img src={project.hero.cover} alt={project.slug} />
+    </header>
+
+    <section class="projetAll">
+        <div class="headerProject">
+            <h2 class="project-title project-title--hero" id="hero-title">
+                {project.hero.content[lang].title}
+            </h2>
+            <div class="elementproject">
+                <p class="split-texte">{project.hero.year}</p>
+                <p class="split-texte">{project.hero.tags}</p>
+            </div>
+        </div>
+        <div class="grid-project">
+            <div class="leftCorridor">
+                {}
+                {
+                    project.sections.context && (
+                        <section class="context">
+                            <h2 class="project-title-sticky" id="sticky-title">
+                                {project.hero.content[lang].title}
+                            </h2>
+                            {/* Suppression du fragment vide <> inutile ici car <section> englobe tout */}
+                            <div>
+                                <ul class="skill">
+                                    {(() => {
+                                        const skillsObj = project.leftCorridor
+                                            .skills as any;
+                                        const skillsArray = (skillsObj[lang]
+                                            ?.value ||
+                                            skillsObj.value ||
+                                            []) as string[];
+
+                                        return skillsArray.map(
+                                            (skill: string) => {
+                                                const hue = Math.floor(
+                                                    Math.random() * 360,
+                                                );
+                                                return (
+                                                    <li
+                                                        style={`--tag-color: hsl(${hue}, 70%, 50%)`}
+                                                    >
+                                                        {skill}
+                                                    </li>
+                                                );
+                                            },
+                                        );
+                                    })()}
+                                </ul>
+                            </div>
+                            <h4>Contexte</h4>
+                            <div class="section-content">
+                                <p class="split-texte">
+                                    {
+                                        project.sections.context.content[lang]
+                                            .description
+                                    }
+                                </p>
+                                <TableauProjet project={project} lang={lang} />
+                            </div>
+                        </section>
+                    )
+                }
+            </div>
+            <div class="strokes"></div>
+            <div class="rightCorridor">
+                {
+                    project.sections.objectifs && (
+                        <div class="grid-mini">
+                            <div class="blocText">
+                                <h4>Objectifs</h4>
+                                <p class="split-texte">
+                                    {
+                                        project.sections.objectifs.content[lang]
+                                            .description
+                                    }
+                                </p>
+                            </div>
+                            <div class="blocImage">
+                                {project.sections.objectifs.image?.[0] && (
+                                    <img
+                                        class="objectifIllustration"
+                                        src={
+                                            project.sections.objectifs.image[0]
+                                                .src
+                                        }
+                                        alt={
+                                            project.sections.objectifs.image[0]
+                                                .alt || "Illustration objectifs"
+                                        }
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    )
+                }
+
+                <div class="carousel">
+                    <Carousel images={project.carousel.images} />
+                </div>
+
+                <div class="role">
+                    {
+                        project.sections.role && (
+                            <>
+                                {project.sections.role.image?.[0] && (
+                                    <img
+                                        src={project.sections.role.image[0].src}
+                                        alt={
+                                            project.sections.role.image[0]
+                                                .alt || "Illustration rôle"
+                                        }
+                                    />
+                                )}
+                                <div class="grid-mini">
+                                    <div class="textGrid">
+                                        <div class="title__grid">
+                                            <h4>Mon rôle</h4>
+                                            <hr />
+                                        </div>
+                                        <div class="section-content">
+                                            <p class="split-texte">
+                                                {
+                                                    project.sections.role
+                                                        .content[lang]
+                                                        .description
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>
+<Footer />

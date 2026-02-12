@@ -1,5 +1,8 @@
-import type { Project } from "../types/project";
+import type { Project } from "../types/projects";
+export type { Project };
 
+export type Lang = "fr" | "en";
+export type I18n<T> = { fr: T; en: T };
 
 export const projects: Project[] = [
     {
@@ -40,14 +43,14 @@ export const projects: Project[] = [
                     {
                         content: {
                             fr: { label: "Temps de travail" },
-                            en: { label: "Temps de travail" }
+                            en: { label: "Working time" }
                         },
-                        value: ["02.10.2024 à 27.10.2025"],
+                        value: ["02.10.2024|27.10.2025"],
                     },
                     {
                         content: {
                             fr: { label: "Collaborateurs" },
-                            en: { label: "Collaborateurs" }
+                            en: { label: "Collaborators" }
                         },
                         value: [
                             {
@@ -120,7 +123,7 @@ export const projects: Project[] = [
                     {
                         content: {
                             fr: { label: "Catégorie" },
-                            en: { label: "Catégorie" }
+                            en: { label: "Category" }
                         },
                         value: ["Fintech"],
                     },
@@ -219,7 +222,10 @@ export const projects: Project[] = [
         },
         leftCorridor: {
             skills: {
-                value: ["Product Design", "UX Research", "Design System"]
+                fr: {
+                    value: ["Product Design", "UX Research", "Design System"]
+                },
+                en: { value: ["Product Design", "UX Research", "Design System"] },
             }
         },
         sections: {
@@ -238,14 +244,14 @@ export const projects: Project[] = [
                     {
                         content: {
                             fr: { label: "Temps de travail" },
-                            en: { label: "Temps de travail" }
+                            en: { label: "Working time" }
                         },
-                        value: ["14.12.2024 à 27.08.2025"],
+                        value: ["14.12.2024|27.08.2025"],
                     },
                     {
                         content: {
                             fr: { label: "Collaborateurs" },
-                            en: { label: "Collaborateurs" }
+                            en: { label: "Collaborators" }
                         },
                         value: ["Ma pomme"],
                     },
@@ -264,7 +270,7 @@ export const projects: Project[] = [
                             {
                                 content: {
                                     fr: { label: "Concepteur d’application" },
-                                    en: { label: "Concepteur d’application" }
+                                    en: { label: "Product designer" }
                                 }
                             }
                         ],
@@ -280,7 +286,7 @@ export const projects: Project[] = [
                     {
                         content: {
                             fr: { label: "Catégorie" },
-                            en: { label: "Catégorie" }
+                            en: { label: "Category" }
                         },
                         value: ["Marketplace"],
                     },
@@ -385,7 +391,10 @@ export const projects: Project[] = [
         },
         leftCorridor: {
             skills: {
-                value: ["Ux Strategy", "Interface B2B", "Prototypage avancé"]
+                fr: {
+                    value: ["Ux Strategy", "Interface B2B", "Prototypage avancé"]
+                },
+                en: { value: ["UX Strategy", "B2B Interface", "Advanced Prototyping"] },
             }
         },
         sections: {
@@ -404,14 +413,14 @@ export const projects: Project[] = [
                     {
                         content: {
                             fr: { label: "Temps de travail" },
-                            en: { label: "Temps de travail" }
+                            en: { label: "Working time" }
                         },
-                        value: ["14.12.2024 à 27.08.2025"],
+                        value: ["14.12.2024|27.08.2025"],
                     },
                     {
                         content: {
                             fr: { label: "Collaborateurs" },
-                            en: { label: "Collaborateurs" }
+                            en: { label: "Collaborators" }
                         },
                         value: ["Ma pomme"],
                     },
@@ -424,7 +433,7 @@ export const projects: Project[] = [
                             {
                                 content: {
                                     fr: { label: "Concepteur d’application" },
-                                    en: { label: "Concepteur d’application" }
+                                    en: { label: "Product designer" }
                                 }
                             }
                         ],
@@ -439,7 +448,7 @@ export const projects: Project[] = [
                     {
                         content: {
                             fr: { label: "Catégorie" },
-                            en: { label: "Catégorie" }
+                            en: { label: "Category" }
                         },
                         value: ["Marketplace"],
                     },
@@ -538,7 +547,10 @@ export const projects: Project[] = [
         },
         leftCorridor: {
             skills: {
-                value: ["Ux Narratif", "Interface éducative", "IA Générative"]
+                fr: {
+                    value: ["Ux Narratif", "Interface éducative", "IA Générative"]
+                },
+                en: { value: ["Narrative UX", "Educational Interface", "Generative AI"] },
             }
         },
         sections: {
@@ -550,40 +562,40 @@ export const projects: Project[] = [
                     },
                     en: {
                         description:
-                            "Oneiro est un projet de conception d’application visant à explorer les usages de l’IA générative dans un contexte éducatif et créatif destiné aux enfants. L’ambition du projet était de proposer une expérience ludique permettant à l’enfant de participer activement à la création d’une histoire, en choisissant le type de récit, le héros et les péripéties. L’application générait ensuite une histoire personnalisée, disponible en version écrite ou audio, accompagnée d’une illustration en noir et blanc. Le projet portait une attention particulière à la simplicité d’usage, à l’autonomie de l’enfant et à la transformation du numérique en support créatif tangible, notamment via l’export des histoires en PDF imprimable.",
+                            "Oneiro is an application design project exploring the use of generative AI in an educational and creative context for children. The goal was to create a playful experience where children actively participate in building a story by choosing the type of narrative, the hero, and key events. The application then generated a personalized story, available in written or audio format, accompanied by a black- and - white illustration.Particular attention was given to ease of use, children’s autonomy, and turning digital interaction into a tangible creative outcome, notably through the ability to export stories as printable PDFs.",
                     }
                 },
                 details: [
                     {
                         content: {
                             fr: { label: "Temps de travail" },
-                            en: { label: "Temps de travail" }
+                            en: { label: "Working time" }
                         },
-                        value: ["23.06.2023 à 12.08.2023"],
+                        value: ["23.06.2023|12.08.2023"],
                     },
                     {
                         content: {
                             fr: { label: "Collaborateurs" },
-                            en: { label: "Collaborateurs" }
+                            en: { label: "Collaborators" }
                         },
                         value: ["Thibaut Colin"],
                     },
                     {
                         content: {
                             fr: { label: "Rôle" },
-                            en: { label: "Rôle" }
+                            en: { label: "Role" }
                         },
                         value: [
                             {
                                 content: {
                                     fr: { label: "Concepteur d’application" },
-                                    en: { label: "Concepteur d’application" }
+                                    en: { label: "Product designer" }
                                 }
                             },
                             {
                                 content: {
                                     fr: { label: "Développeur full stack" },
-                                    en: { label: "Développeur full stack" }
+                                    en: { label: "Full-stack developer" }
                                 }
                             }
                         ],
@@ -599,7 +611,7 @@ export const projects: Project[] = [
                     {
                         content: {
                             fr: { label: "Catégorie" },
-                            en: { label: "Catégorie" }
+                            en: { label: "Category" }
                         },
                         value: ["Application éducative"],
                     },
@@ -611,7 +623,7 @@ export const projects: Project[] = [
                         description: "Concevoir une expérience créative accessible aux enfants, leur permettant de co-créer des histoires à l’aide de l’IA, tout en favorisant l’imaginaire, l’autonomie et le passage du numérique à une activité créative hors écran."
                     },
                     en: {
-                        description: "Concevoir une expérience créative accessible aux enfants, leur permettant de co-créer des histoires à l’aide de l’IA, tout en favorisant l’imaginaire, l’autonomie et le passage du numérique à une activité créative hors écran."
+                        description: "Design an accessible creative experience for children, enabling them to co-create stories with AI while fostering imagination, autonomy, and the transition from digital interaction to offline creative activity."
                     }
                 },
                 image: [{
@@ -622,10 +634,10 @@ export const projects: Project[] = [
             role: {
                 content: {
                     fr: {
-                        description: "J’ai conçu le projet de bout en bout : définition du concept, réflexion sur les parcours enfants, conception UX/UI, structuration des choix narratifs et design des supports générés (texte, audio et illustration), avec une attention particulière portée à la simplicité, à l’accessibilité et à l’expérience utilisateur enfant."
+                        description: "J’ai conçu le projet de bout en bout, définition du concept, réflexion sur les parcours enfants, conception UX/UI, structuration des choix narratifs et design des supports générés (texte, audio et illustration), avec une attention particulière portée à la simplicité, à l’accessibilité et à l’expérience utilisateur enfant."
                     },
                     en: {
-                        description: "J’ai conçu le projet de bout en bout : définition du concept, réflexion sur les parcours enfants, conception UX/UI, structuration des choix narratifs et design des supports générés (texte, audio et illustration), avec une attention particulière portée à la simplicité, à l’accessibilité et à l’expérience utilisateur enfant."
+                        description: "I designed the project end to end: defining the concept, shaping the children’s user flows, leading UX/UI design, structuring the narrative choices, and designing the generated outputs (text, audio, and illustration), with a strong focus on simplicity, accessibility, and a child-friendly user experience."
                     }
                 },
                 image: [{
@@ -639,7 +651,7 @@ export const projects: Project[] = [
                         description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
                     },
                     en: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        description: "As the project lead, I handled the entire design process: defining the concept, conducting UX research, designing user flows, creating UI mockups, and implementing the product on WordPress, including C2C marketplace features."
                     }
                 },
                 image: [{
@@ -653,7 +665,7 @@ export const projects: Project[] = [
                         description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
                     },
                     en: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        description: "As the project lead, I handled the entire design process: defining the concept, conducting UX research, designing user flows, creating UI mockups, and implementing the product on WordPress, including C2C marketplace features."
                     }
                 },
                 image: [{
@@ -705,4 +717,3 @@ export const getProjectsList = (lang: Lang): HomeProject[] =>
         },
         skills: project.leftCorridor?.skills?.value,
     }));
-export type Lang = "fr" | "en";

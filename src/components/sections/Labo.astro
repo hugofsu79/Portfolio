@@ -9,78 +9,84 @@ import Button from "../ui/Button.astro";
             Explorations autour de l’interaction, du système et de la matière.
         </p>
     </div>
-    <div class="all-articles">
-        <article class="labo-card">
-            <header class="labo-card-header">
-                <h4>Interaction</h4>
-                <p>Geste, feedback, continuité.</p>
-            </header>
+    <div class="linkLabo">
+        <div class="all-articles">
+            <article class="labo-card">
+                <header class="labo-card-header">
+                    <h4>Interaction</h4>
+                    <p>Geste, feedback, continuité.</p>
+                </header>
 
-            <div class="labo-card-preview">
-                <div class="labo-content-wrapper">
-                    <div class="labo-card-frame">
-                        <canvas data-preview="interaction"> </canvas>
+                <div class="labo-card-preview">
+                    <div class="labo-content-wrapper">
+                        <div class="labo-card-frame">
+                            <canvas data-preview="interaction"> </canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </article>
-        <article class="labo-card">
-            <header class="labo-card-header">
-                <h4>Rythme</h4>
-                <p>Le temps fait partie du design</p>
-            </header>
+            </article>
+            <article class="labo-card">
+                <header class="labo-card-header">
+                    <h4>Rythme</h4>
+                    <p>Le temps fait partie du design</p>
+                </header>
 
-            <div class="labo-card-preview">
-                <div class="labo-content-wrapper">
-                    <div class="labo-card-frame">
-                        <canvas data-preview="rythme"></canvas>
+                <div class="labo-card-preview">
+                    <div class="labo-content-wrapper">
+                        <div class="labo-card-frame">
+                            <canvas data-preview="rythme"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </article>
-        <article class="labo-card">
-            <header class="labo-card-header">
-                <h4>Matière</h4>
-                <p>L'interface peut être ressentie</p>
-            </header>
+            </article>
+            <article class="labo-card">
+                <header class="labo-card-header">
+                    <h4>Matière</h4>
+                    <p>L'interface peut être ressentie</p>
+                </header>
 
-            <div class="labo-card-preview">
-                <div class="labo-content-wrapper">
-                    <div class="labo-card-frame">
-                        <canvas data-preview="matiere"></canvas>
+                <div class="labo-card-preview">
+                    <div class="labo-content-wrapper">
+                        <div class="labo-card-frame">
+                            <canvas data-preview="matiere"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </article>
-        <article class="labo-card">
-            <header class="labo-card-header">
-                <h4>Système</h4>
-                <p>Chaque détail existe dans un ensemble</p>
-            </header>
+            </article>
+            <article class="labo-card">
+                <header class="labo-card-header">
+                    <h4>Système</h4>
+                    <p>Chaque détail existe dans un ensemble</p>
+                </header>
 
-            <div class="labo-card-preview">
-                <div class="labo-content-wrapper">
-                    <div class="labo-card-frame">
-                        <canvas data-preview="systeme"></canvas>
+                <div class="labo-card-preview">
+                    <div class="labo-content-wrapper">
+                        <div class="labo-card-frame">
+                            <canvas data-preview="systeme"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </article>
-    </div>
+            </article>
+        </div>
 
-    <div class="labo-cta">
-        <!-- <a href="/labo">Explorer le laboratoire →</a> -->
-        <Button
-            href="/labo"
-            variant="secondary"
-            size="lg"
-            aria-label="Voir plus de projet de la sorte"
-            >Explorer le laboratoire →</Button
-        >
+        <div class="labo-cta">
+            <Button
+                href="/labo"
+                variant="secondary"
+                size="lg"
+                aria-label="Voir plus de projet de la sorte"
+                >Explorer le laboratoire →</Button
+            >
+        </div>
     </div>
 </section>
 
 <style>
+    .linkLabo {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
     .all-articles {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -168,7 +174,11 @@ import Button from "../ui/Button.astro";
     .labo-card:hover canvas {
         transform: scale(1);
     }
-
+    .labo-cta {
+        display: flex;
+        justify-content: end;
+        align-items: end;
+    }
     @media (max-width: 720px) {
         .all-articles {
             display: flex;

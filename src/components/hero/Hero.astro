@@ -9,22 +9,24 @@ const lang: HeroLang = isHeroLang(urlLang) ? urlLang : "fr";
 
 const content = heroContent[lang];
 
-import LanguageToggle from "../../components/ui/LanguageToggle.astro";
+import LogoHero from "../ui/Logohero.astro";
 ---
 
 <section id="/" class="hero">
-    <div class="hero-header container--wide">
-        <h1 class="hero-name">HUGO FOISSEAU</h1>
-
-        <LanguageToggle />
+    <div class="top-hero">
+        <p id="real-time-clock" class="clock">
+            <span class="digit">0</span><span class="digit">0</span>:<span
+                class="digit">0</span
+            ><span class="digit">0</span>
+        </p>
+        <p id="hero-job" class="cipher-text">Concepteur d'application</p>
     </div>
-    <p class="hero-hint">
-        {content.subtitle}
-    </p>
-
-    <h2 class="hero-intro">
-        {content.intro}
-    </h2>
+    <LogoHero />
+    <div class="bottom-hero">
+        <p id="hero-name" class="cipher-text">hugo Foisseau</p>
+        <p id="hero-city" class="cipher-text">Paris</p>
+    </div>
+    <!-- <p>{heroContent[lang].subtitle}</p> -->
 </section>
 
 <style>
@@ -33,108 +35,149 @@ import LanguageToggle from "../../components/ui/LanguageToggle.astro";
         margin: 0;
     }
     .hero {
+        padding: var(--space-14);
         scroll-snap-align: start;
-        min-height: 100vh;
+        height: 100vh;
         padding-block: var(--space-48);
 
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
-
-    .hero-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
+    .top-hero {
+        margin-top: 64px;
     }
-
-    .hero-name {
-        font-size: clamp(40px, 6vw, 72px);
-        font-weight: var(--font-weight-bold);
-        letter-spacing: -0.02em;
-    }
-
-    .hero-lang {
-        background: none;
-        border: none;
-        font-weight: var(--font-weight-bold);
-        cursor: pointer;
-    }
-
-    .hero-canvas {
-        position: relative;
-        margin-block: var(--space-32);
-    }
-
-    .hero-rect {
+    .top-hero,
+    .bottom-hero {
         width: 100%;
-        aspect-ratio: 16 / 7;
-        background: red;
-
-        overflow: hidden;
-        position: relative;
-    }
-
-    /* .hero-rect-inner {
-        position: absolute;
-        inset: 0;
 
         display: flex;
-        align-items: center;
-        justify-content: center;
-    } */
-    .hero-meta {
-        position: absolute;
-        top: 50%;
-        display: flex;
-        align-items: center;
-        gap: var(--space-8);
-        font-size: 12px;
-        transform: translateY(-50%);
-    }
-
-    .hero-meta .dot {
-        width: 10px;
-        height: 10px;
-        border: 1px solid currentColor;
-        border-radius: 50%;
-    }
-
-    .hero-footer {
-        display: flex;
+        flex-direction: row;
         justify-content: space-between;
-        align-items: flex-end;
     }
 
-    .hero-hint {
-        font-size: clamp(80px, 4.2vw, 64px);
+    .cipher-text,
+    .clock {
+        font-family:
+            "JetBrains Mono", "Roboto Mono", monospace; /* Crucial pour la width */
+        font-variant-numeric: tabular-nums;
+        display: inline-block;
+        letter-spacing: 0;
     }
 
-    .hero-role {
-        text-align: right;
+    :global(.char) {
+        display: inline-block;
+        min-width: 1ch; /* Fixe la largeur de chaque lettre */
+        text-align: center;
+        /* Amorti fluide (Spring effect) */
+        transition:
+            opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+            transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+            filter 0.4s ease;
+        will-change: transform, opacity;
     }
 
-    @keyframes heroFloat {
-        0% {
-            transform: translate(-2%, -2%);
-        }
-        50% {
-            transform: translate(2%, 1%);
-        }
-        100% {
-            transform: translate(-2%, -2%);
-        }
+    :global(.char.shuffling) {
+        opacity: 0.3;
+        transform: scale(0.85);
+        filter: blur(1px);
     }
 
-    @media (max-width: 768px) {
-        .hero {
-            min-height: 80vh;
-        }
-
-        .hero-rect {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-        }
+    :global(.char.fixed) {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
     }
-
 </style>
+
+<script>
+    const glyphs = "0123456789@#$%&*";
+
+    const animateCipher = (el: HTMLElement, delay: number = 0) => {
+        const originalText = el.textContent || "";
+        const finalChars = originalText.split("");
+        el.textContent = "";
+
+        // On pré-génère les spans pour figer la largeur
+        const spans = finalChars.map((char) => {
+            const span = document.createElement("span");
+            span.className = "char shuffling";
+            // On utilise l'espace insécable pour garder la structure
+            span.textContent =
+                char === " "
+                    ? "\u00A0"
+                    : glyphs[Math.floor(Math.random() * glyphs.length)];
+            el.appendChild(span);
+            return { span, final: char };
+        });
+
+        setTimeout(() => {
+            let iterations = 0;
+            const step = 4; // Vitesse de fixation (plus haut = plus lent)
+
+            const timer = setInterval(() => {
+                spans.forEach((obj, index) => {
+                    // Calcul de fixation avec amorti progressif
+                    const isFixed = iterations > index * step;
+
+                    if (isFixed) {
+                        if (!obj.span.classList.contains("fixed")) {
+                            obj.span.textContent =
+                                obj.final === " " ? "\u00A0" : obj.final;
+                            obj.span.classList.replace("shuffling", "fixed");
+                        }
+                    } else if (obj.final !== " ") {
+                        // On change de glyphe de manière fluide
+                        if (iterations % 2 === 0) {
+                            obj.span.textContent =
+                                glyphs[
+                                    Math.floor(Math.random() * glyphs.length)
+                                ];
+                        }
+                    }
+                });
+
+                if (iterations > spans.length * step + 10) clearInterval(timer);
+                iterations++;
+            }, 30); // 30ms pour une fluidité "60fps"
+        }, delay);
+    };
+
+    const initHeroAnimations = () => {
+        // Animation de l'horloge (réutilisant les spans .digit existants)
+        const clockDigits = document.querySelectorAll<HTMLElement>(".digit");
+        if (clockDigits.length) {
+            let clockIter = 0;
+            const clockTimer = setInterval(() => {
+                const now = new Date();
+                const timeStr =
+                    String(now.getHours()).padStart(2, "0") +
+                    String(now.getMinutes()).padStart(2, "0");
+
+                clockDigits.forEach((d, i) => {
+                    const fixed = clockIter > i * 8;
+                    if (fixed) {
+                        d.textContent = timeStr[i];
+                        d.classList.replace("shuffling", "fixed");
+                    } else {
+                        d.textContent = Math.floor(
+                            Math.random() * 10,
+                        ).toString();
+                        d.classList.add("shuffling");
+                    }
+                });
+                if (clockIter > 40) clearInterval(clockTimer);
+                clockIter++;
+            }, 40);
+        }
+
+        // Animation des textes en cascade
+        const texts = document.querySelectorAll<HTMLElement>(".cipher-text");
+        texts.forEach((text, i) => {
+            animateCipher(text, 300 + i * 250);
+        });
+    };
+
+    document.addEventListener("astro:page-load", initHeroAnimations);
+    if (document.readyState === "complete") initHeroAnimations();
+</script>

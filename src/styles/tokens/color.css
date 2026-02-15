@@ -44,6 +44,14 @@
     --core-green-700: #1b810d;
 
     /* =========================
+        Core — Mono
+     ========================= */
+    --core-purple-light: #9747FF;
+    --core-purple-dark: #eee1ff;
+
+
+
+    /* =========================
         Core — Red
      ========================= */
     --core-red-100: #ffe6e1;
@@ -69,12 +77,14 @@
         Semantic — Layer
      ========================= */
     --layer-background: var(--core-beige-50);
+    --layer-background-negat: var(--core-beige-900);
     --layer-surface: var(--core-neutral-50);
 
     /* =========================
         Semantic — Text
      ========================= */
     --text-primary: var(--core-brown-900);
+    --text-primary-negat: var(--core-brown-50);
     --text-secondary: var(--core-neutral-800);
     --text-tertiary: var(--core-beige-50);
     --text-on-accent: var(--core-blue-500);
@@ -90,6 +100,7 @@
     --fill-hover: var(--core-beige-100);
     --fill-success: var(--core-green-500);
     --fill-error: var(--core-red-500);
+    --fill-hero: var(--core-beige-100);
     /* =========================
         Semantic — Stroke
          ========================= */
@@ -97,6 +108,7 @@
     --stroke-secondary: var(--core-neutral-200);
     --stroke-tertiary: var(--core-beige-50);
     --stroke-section: var(--core-beige-400);
+    --stroke-section: var(--core-purple-light);
 
 
     /* =========================
@@ -117,9 +129,11 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --layer-background: var(--core-neutral-900);
+        --layer-background-negat: var(--core-neutral-800);
         --layer-surface: var(--core-neutral-800);
 
         --text-primary: var(--core-neutral-50);
+        --text-primary-negat: var(--core-neutral-100);
         --text-secondary: var(--core-neutral-200);
         --text-tertiary: var(--core-neutral-300);
         --text-on-accent: var(--core-blue-300);
@@ -131,13 +145,18 @@
         --fill-hover: var(--core-beige-800);
         --fill-success: var(--core-green-100);
         --fill-error: var(--core-red-200);
+        --fill-hero: var(--core-neutral-800);
 
         --stroke-primary: var(--core-beige-50);
         --stroke-secondary: var(--core-neutral-800);
         --stroke-tertiary: var(--core-neutral-600);
         --stroke-section: var(--static-opacit-1);
+        --stroke-section: var(--core-purple-dark);
 
         --static-gradient-to: var(--core-neutral-800);
         --static-gradient-end: var(--core-neutral-800);
+
+
+
     }
 }

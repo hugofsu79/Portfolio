@@ -5,10 +5,8 @@ import Container from "../components/layout/Container.astro";
 import Section from "../components/layout/Section.astro";
 import Footer from "../components/layout/Footer.astro";
 import Hero from "../components/hero/Hero.astro";
-import LaboSection from "../components/sections/Labo.astro"
-import BreadCrumbNav from "../components/navigation/BreadcrumbNav.astro";
-import About from "../components/sections/About.astro"
-
+import LaboSection from "../components/sections/Labo.astro";
+import About from "../components/sections/About.astro";
 
 import { getProjectsList, type Lang } from "../data/projects";
 
@@ -16,29 +14,22 @@ const lang: Lang = Astro.url.searchParams.get("lang") === "en" ? "en" : "fr";
 const homeProjects = getProjectsList(lang);
 ---
 
-<BaseLayout title="Home">
+<BaseLayout title="Hugo Folio">
 	<Hero />
 
 	<div class="page-with-rail">
-		<aside class="desktop-nav">
-			<BreadCrumbNav />
-		</aside>
-
 		<main class="page-content">
 			<Section>
 				<Container>
 					<section id="projects">
-					<h2>Mes projets</h2>
-					<ul class="projects-list">
-						{
-							homeProjects.map((project) => (
-								<ProjectRow
-									project={project}
-									lang={lang}
-								/>
-							))
-						}
-					</ul>
+						<h2>Mes projets</h2>
+						<ul class="projects-list">
+							{
+								homeProjects.map((project) => (
+									<ProjectRow project={project} lang={lang} />
+								))
+							}
+						</ul>
 					</section>
 				</Container>
 			</Section>
@@ -46,13 +37,13 @@ const homeProjects = getProjectsList(lang);
 
 		<Section>
 			<Container>
-				<LaboSection/>
+				<LaboSection />
 			</Container>
 		</Section>
 
 		<Section>
 			<Container>
-				<About/>
+				<About />
 			</Container>
 		</Section>
 	</div>
@@ -65,28 +56,26 @@ const homeProjects = getProjectsList(lang);
 		display: grid;
 		align-items: start;
 	}
-@media (max-width: 720px) {
-	.desktop-nav {
-		position: sticky;
-		top: 25%;
-		height: fit-content;
-	}
+	@media (max-width: 720px) {
+		.page-with-rail {
+			gap: 40px;
+			margin: 0px 12px 0px 12px;
+		}
+		.desktop-nav {
+			position: sticky;
+			top: 25%;
+			height: fit-content;
+		}
 
-	.page-content {
-		min-width: 0;
-	}
-
-@media (max-width: 768px) {
-	.page-with-rail {
-		display: block;
-	}	
-
-	ul.projects-list {
-            padding-inline-start: 0;
-            padding-left: 0;
-            margin: 0;
-            list-style: none;
-        }
+		.page-content {
+			min-width: 0;
+		}
+		ul.projects-list {
+			padding-inline-start: 0;
+			padding-left: 0;
+			margin: 0;
+			list-style: none;
+		}
 	}
 </style>
 
@@ -99,9 +88,9 @@ const homeProjects = getProjectsList(lang);
 </script>
 
 <script type="module">
-    import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
+	import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
 
-    window.addEventListener("load", () => {
-        useProjectScrollActive(".project-row");
-    });
+	window.addEventListener("load", () => {
+		useProjectScrollActive(".project-row");
+	});
 </script>

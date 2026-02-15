@@ -1,3 +1,8 @@
+.main-container {
+    display: flex;
+    align-items: flex-start;
+}
+
 .project-hero {
     height: 60vh;
     overflow: hidden;
@@ -41,8 +46,8 @@
 }
 
 .context {
-    top: calc(48px + 12px);
     position: sticky;
+    top: 60px;
 }
 
 .leftCorridor {
@@ -97,8 +102,9 @@ tr:last-child {
 
 .project-title-sticky {
     position: sticky;
-    top: 2rem;
+    top: 60px;
     z-index: 10;
+    background: inherit;
 
     /* 1. État "Size 0" */
     opacity: 0;
@@ -500,7 +506,9 @@ tr:last-child {
         gap: 20px;
     }
 
-
+    .project-hero {
+        height: 20vh;
+    }
 
 
     /* Mobile toggle sections */

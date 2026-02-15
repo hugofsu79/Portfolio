@@ -1,0 +1,231 @@
+---
+import LogoNav from "../navigation/LogoNav.astro";
+---
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo-link">
+            <LogoNav />
+        </a>
+
+        <ul class="nav-links desktop-only" id="main-nav-links">
+            <li class="home-only"><a href="#projects">Mes projets</a></li>
+            <li class="home-only"><a href="/#labo">Labo</a></li>
+            <li class="home-only"><a href="/#about">Ma pomme</a></li>
+            <li class="project-only"><a href="/rhyzome">Rhyzome</a></li>
+            <li class="project-only"><a href="/siko">Siko Mobility</a></li>
+            <li class="project-only"><a href="/oneiro">Oneiro</a></li>
+            <li class="project-only"><a href="/kiro">Kiro</a></li>
+            <li><a href="#contact" class="btn-contact">Me contacter</a></li>
+        </ul>
+
+        <button class="hamburger" aria-label="Menu" id="hamburger-btn">
+            <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <g>
+                    <rect
+                        id="rect-1"
+                        x="0"
+                        y="16"
+                        width="48"
+                        height="4"
+                        rx="0.6"
+                        fill="currentColor"></rect>
+                    <rect
+                        id="rect-2"
+                        x="0"
+                        y="28"
+                        width="48"
+                        height="4"
+                        rx="0.6"
+                        fill="currentColor"></rect>
+                </g>
+            </svg>
+        </button>
+    </div>
+</nav>
+
+<div id="mobile-menu" class="mobile-menu">
+    <ul id="mobile-links-container" class="mobile-links"></ul>
+</div>
+
+<script>
+    // @ts-ignore
+    import anime from "https://cdn.skypack.dev/animejs@3.2.1";
+
+    const initNavbar = () => {
+        const btn = document.getElementById("hamburger-btn");
+        const r1 = document.getElementById("rect-1");
+        const r2 = document.getElementById("rect-2");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const navbar = document.querySelector(".navbar");
+
+        // Sélecteurs pour le contenu
+        const desktopLinks = document.getElementById("main-nav-links");
+        const mobileLinksContainer = document.getElementById(
+            "mobile-links-container",
+        );
+
+        if (!btn || !r1 || !r2) return;
+
+        let isOpen = false;
+        let lastScrollY = window.scrollY;
+
+        if (
+            desktopLinks &&
+            mobileLinksContainer &&
+            mobileLinksContainer.children.length === 0
+        ) {
+            const isProject =
+                document.body.classList.contains("is-project-page");
+
+            // On sélectionne les bons liens selon la page
+            const selector = isProject
+                ? ".project-only, li:not(.home-only)"
+                : ".home-only, li:not(.project-only)";
+
+            const links = desktopLinks.querySelectorAll(selector);
+            links.forEach((link) => {
+                const clone = link.cloneNode(true);
+                mobileLinksContainer.appendChild(clone);
+            });
+        }
+
+        // --- 2. GESTION DU CLIC ---
+        btn.addEventListener("click", () => {
+            isOpen = !isOpen;
+
+            const springConfig = "spring(1, 100, 15, 0)";
+
+            anime({
+                targets: r1,
+                y: isOpen ? 22.5 : 16, // Ajusté à 16 selon ton HTML précédent
+                rotate: isOpen ? 45 : 0,
+                duration: 600,
+                easing: springConfig,
+            });
+
+            anime({
+                targets: r2,
+                y: isOpen ? 22.5 : 28, // Ajusté à 28 selon ton HTML précédent
+                rotate: isOpen ? -45 : 0,
+                duration: 600,
+                easing: springConfig,
+            });
+
+            mobileMenu?.classList.toggle("active", isOpen);
+            document.body.style.overflow = isOpen ? "hidden" : "";
+        });
+
+        // --- 3. LOGIQUE SCROLL ---
+        window.addEventListener(
+            "scroll",
+            () => {
+                if (isOpen || !navbar) return;
+                if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                    navbar.classList.add("navbar--hidden");
+                } else {
+                    navbar.classList.remove("navbar--hidden");
+                }
+                lastScrollY = window.scrollY;
+            },
+            { passive: true },
+        );
+    };
+
+    document.addEventListener("astro:page-load", initNavbar);
+    if (document.readyState !== "loading") initNavbar();
+
+
+
+
+    const glyphs = "0123456789";
+
+    // On ajoute un paramètre pour stocker/récupérer l'intervalle
+    const runSmoothCipher = (
+        el: HTMLElement,
+        spans: { span: HTMLElement; final: string }[],
+    ) => {
+        // 1. IMPORTANT : On stoppe l'animation précédente si elle existe
+        if (el.dataset.intervalId) {
+            clearInterval(parseInt(el.dataset.intervalId));
+        }
+
+        let iterations = 0;
+        const step = 2;
+
+        spans.forEach((obj) => {
+            if (obj.final !== " ")
+                obj.span.classList.replace("fixed", "shuffling");
+        });
+
+        const timer = setInterval(() => {
+            spans.forEach((obj, index) => {
+                const isFixed = iterations > index * step;
+
+                if (isFixed) {
+                    // On ne vérifie plus seulement la classe, on force le texte final
+                    obj.span.textContent =
+                        obj.final === " " ? "\u00A0" : obj.final;
+                    obj.span.classList.replace("shuffling", "fixed");
+                } else if (obj.final !== " ") {
+                    if (iterations % 3 === 0) {
+                        obj.span.textContent =
+                            glyphs[Math.floor(Math.random() * glyphs.length)];
+                    }
+                }
+            });
+
+            if (iterations > spans.length * step + 10) {
+                clearInterval(timer);
+                el.removeAttribute("data-interval-id");
+
+                // Sécurité ultime : on s'assure que tout est bien fixe à la fin
+                spans.forEach((obj) => {
+                    obj.span.textContent =
+                        obj.final === " " ? "\u00A0" : obj.final;
+                    obj.span.classList.replace("shuffling", "fixed");
+                });
+            }
+            iterations++;
+        }, 30);
+
+        // On enregistre l'ID de l'intervalle sur l'élément
+        el.dataset.intervalId = timer.toString();
+    };
+
+    const initNavHover = () => {
+        const navItems =
+            document.querySelectorAll<HTMLElement>("#main-nav-links li");
+
+        navItems.forEach((li) => {
+            const anchor = li.querySelector("a");
+            if (!anchor || anchor.dataset.initialized) return;
+
+            const originalText = anchor.textContent || "";
+            anchor.textContent = "";
+            anchor.dataset.initialized = "true";
+
+            const spans = originalText.split("").map((char) => {
+                const span = document.createElement("span");
+                span.className = "char fixed";
+                span.textContent = char === " " ? "\u00A0" : char;
+                anchor.appendChild(span);
+                return { span, final: char };
+            });
+
+            // On passe 'anchor' à la fonction pour gérer son intervalle propre
+            li.addEventListener("mouseenter", () =>
+                runSmoothCipher(anchor, spans),
+            );
+        });
+    };
+
+    document.addEventListener("astro:page-load", initNavHover);
+    if (document.readyState === "complete") initNavHover();
+</script>

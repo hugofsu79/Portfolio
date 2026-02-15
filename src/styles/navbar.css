@@ -1,0 +1,221 @@
+/* --- 1. VARIABLES & RESET --- */
+:root {
+    --nav-height: 80px;
+    --nav-max-width: 1200px;
+}
+
+.nav-links a,
+.mobile-links a,
+.logo-link {
+    font-size: var(--p-nav-font-size);
+    display: inline-flex !important;
+    white-space: nowrap;
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* --- 2. STRUCTURE DE LA NAVBAR --- */
+.navbar {
+    border-bottom: solid 0.25px var(--stroke-primary);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* height: var(--nav-height); */
+    background-color: var(--layer-background);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 3000;
+    /* Augmenté pour rester au-dessus du menu mobile */
+    display: flex;
+
+    justify-content: space-between;
+}
+
+.nav-container {
+    width: 100%;
+    height: 100%;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar--hidden {
+    transform: translateY(-100%) !important;
+}
+
+/* --- 3. LIENS & LOGIQUE HOME/PROJET --- */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.project-only {
+    display: none;
+}
+
+:global(body.is-project-page) .home-only {
+    display: none;
+}
+
+:global(body.is-project-page) .project-only {
+    display: block;
+}
+
+/* --- 4. HAMBURGER (Pivot Logic) --- */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    z-index: 3001;
+    color: var(--fill-brand);
+}
+
+/* On définit le centre du SVG comme point de pivot pour les rect */
+#rect-1,
+#rect-2 {
+    /* Le centre du SVG 48x48 est à 24 24 */
+    transform-origin: 24px 24px;
+    transition: fill 0.3s ease;
+}
+
+.hamburger svg {
+    width: 48px;
+    height: 48px;
+    display: block;
+    overflow: visible;
+    /* Évite que les barres soient coupées durant le spring */
+}
+
+/* --- 5. MOBILE MENU --- */
+.mobile-menu {
+    position: fixed !important;
+    inset: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    background-color: var(--layer-background);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.mobile-menu.active {
+    transform: translateY(0) !important;
+    visibility: visible;
+    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), visibility 0s 0s;
+}
+
+.mobile-links {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-links li a {
+    display: inline-block;
+    text-decoration: none;
+    white-space: nowrap;
+    font-family: monospace;
+    /* Indispensable pour la largeur fixe */
+}
+
+:global(.char) {
+    display: inline-block;
+    width: 1ch;
+    text-align: center;
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform, opacity;
+}
+
+:global(.char.shuffling) {
+    opacity: 0.4;
+    transform: translateY(-2px);
+}
+
+:global(.char.fixed) {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+/* --- 6. RESPONSIVE --- */
+@media (max-width: 783px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .mobile-links {
+        gap: 40px;
+    }
+
+    .mobile-links :global(li) a,
+    .mobile-links li a {
+        font-size: 32px;
+        font-weight: 500;
+    }
+
+    .mobile-links li {
+        font-weight: var(--font-weight-bold);
+        font-size: 45px;
+    }
+
+    /* Force l'affichage du container et des lettres */
+    #mobile-links-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center;
+        width: 100%;
+    }
+
+    #mobile-links-container li {
+        display: block !important;
+        /* Overide le display none des classes clonées */
+        opacity: 1 !important;
+        margin: 15px 0;
+    }
+
+    #mobile-links-container .letter {
+        color: #000 !important;
+        /* Force la couleur pour le test */
+        font-size: 32px;
+        font-family: sans-serif;
+        /* Pour être sûr que la police ne bug pas */
+    }
+
+    /* L'effet de masque */
+    .word-wrap {
+        display: inline-block !important;
+        overflow: hidden !important;
+    }
+
+    #mobile-links-container a {
+        display: inline-flex !important;
+        /* Colle les lettres entre elles */
+        text-decoration: none;
+        color: inherit;
+    }
+}

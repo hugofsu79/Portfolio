@@ -13,18 +13,19 @@ const { size = "sm", class: className } = Astro.props;
 
 <style>
     .section {
-        width: 100%;
+        display: block;
+        max-width: none;
     }
 
     .section--sm {
-        padding-block: var(--space-48);
+        width: 100%;
     }
 
     .section--md {
-        padding-block: var(--space-64);
+        width: 100%;
     }
 
     .section--lg {
-        padding-block: var(--space-96);
+        width: 100%;
     }
 </style>

@@ -50,13 +50,18 @@
   --h5-font-weight: var(--font-weight-regular);
   --h5-letter-spacing: -0.005em;
   /* P — Labels / meta */
-  --p-font-size: clamp(12px, 1vw, 18px);
+  --p-font-size: clamp(12px, 1vw, 16px);
   --p-line-height: 1.5;
   --p-font-weight: var(--font-weight-light);
   --p-letter-spacing: -0.005em;
 
+  /* P navbar — Labels / type de balise <a> */
+  --p-nav-font-size: clamp(12px, 0.8vw, 12px);
+  --p-nav-line-height: 1.6;
+  --p-nav-letter-spacing: -0.006em;
+
   /* P Footer — Labels / meta */
-  --p-footer-font-size: clamp(8px, 0.8vw, 14px);
+  --p-footer-font-size: clamp(12px, 0.8vw, 14px);
   --p-footer-line-height: 1.6;
   --p-footer-letter-spacing: -0.006em;
 }

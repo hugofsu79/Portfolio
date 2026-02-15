@@ -10,12 +10,63 @@ import LogoNav from "../navigation/LogoNav.astro";
 
         <ul class="nav-links desktop-only" id="main-nav-links">
             <li class="home-only"><a href="#projects">Mes projets</a></li>
+            <svg
+                class="rectangle home-only"
+                viewBox="0 0 220 100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect x="0" y="0" width="100" height="100"></rect>
+            </svg>
             <li class="home-only"><a href="/#labo">Labo</a></li>
+            <svg
+                class="rectangle home-only"
+                viewBox="0 0 220 100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect x="0" y="0" width="100" height="100"></rect>
+            </svg>
             <li class="home-only"><a href="/#about">Ma pomme</a></li>
+            <svg
+                class="rectangle home-only"
+                viewBox="0 0 220 100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect x="0" y="0" width="100" height="100"></rect>
+            </svg>
+
             <li class="project-only"><a href="/rhyzome">Rhyzome</a></li>
+            <svg
+                class="rectangle project-only"
+                viewBox="0 0 220 100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect x="0" y="0" width="100" height="100"></rect>
+            </svg>
             <li class="project-only"><a href="/siko">Siko Mobility</a></li>
+            <svg
+                class="rectangle project-only"
+                viewBox="0 0 220 100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect x="0" y="0" width="100" height="100"></rect>
+            </svg>
+
             <li class="project-only"><a href="/oneiro">Oneiro</a></li>
+            <svg
+                class="rectangle project-only"
+                viewBox="0 0 220 100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect x="0" y="0" width="100" height="100"></rect>
+            </svg>
             <li class="project-only"><a href="/kiro">Kiro</a></li>
+            <svg
+                class="rectangle project-only"
+                viewBox="0 0 220 100"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect x="0" y="0" width="100" height="100"></rect>
+            </svg>
             <li><a href="#contact" class="btn-contact">Me contacter</a></li>
         </ul>
 
@@ -141,9 +192,6 @@ import LogoNav from "../navigation/LogoNav.astro";
     document.addEventListener("astro:page-load", initNavbar);
     if (document.readyState !== "loading") initNavbar();
 
-
-
-
     const glyphs = "0123456789";
 
     // On ajoute un paramètre pour stocker/récupérer l'intervalle
@@ -225,7 +273,55 @@ import LogoNav from "../navigation/LogoNav.astro";
             );
         });
     };
+</script>
 
-    document.addEventListener("astro:page-load", initNavHover);
-    if (document.readyState === "complete") initNavHover();
+<script is:inline>
+    // On utilise une fonction auto-exécutée pour isoler le scope
+    (function initNavBorder() {
+        const trigger = () => {
+            const nav = document.querySelector(".navbar");
+            if (nav) {
+                // On retire la classe si elle y était (pour les transitions Astro)
+                nav.classList.remove("is-drawn");
+
+                // On force un "reflow" (petit hack pour redémarrer l'anim)
+                void nav.offsetWidth;
+
+                nav.classList.add("is-drawn");
+                console.log("Animation bordure lancée");
+            }
+        };
+
+        // On écoute l'événement de navigation d'Astro
+        document.addEventListener("astro:page-load", trigger);
+
+        // Sécurité pour le premier chargement
+        if (document.readyState === "complete") {
+            trigger();
+        } else {
+            window.addEventListener("load", trigger);
+        }
+    })();
+
+    const initNavbarAnimation = () => {
+        // On retire l'assertion "as HTMLElement" pour que ce soit du JS pur
+        const nav = document.querySelector(".navbar");
+
+        if (nav) {
+            nav.classList.remove("is-drawn");
+
+            // Le hack du reflow fonctionne aussi en JS pur
+            void nav.offsetWidth;
+
+            setTimeout(() => {
+                nav.classList.add("is-drawn");
+            }, 100);
+        }
+    };
+
+    document.addEventListener("astro:page-load", initNavbarAnimation);
+
+    if (document.readyState === "complete") {
+        initNavbarAnimation();
+    }
 </script>

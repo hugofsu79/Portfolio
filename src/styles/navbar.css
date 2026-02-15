@@ -55,6 +55,10 @@
     padding: 0;
 }
 
+.nav-links .rectangle {
+    height: 4vh;
+}
+
 .project-only {
     display: none;
 }

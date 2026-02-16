@@ -106,101 +106,14 @@ import LogoNav from "../navigation/LogoNav.astro";
 </div>
 
 <script>
+    // @ts-nocheck
     // @ts-ignore
     import anime from "https://cdn.skypack.dev/animejs@3.2.1";
 
-    const initNavbar = () => {
-        const btn = document.getElementById("hamburger-btn");
-        const r1 = document.getElementById("rect-1");
-        const r2 = document.getElementById("rect-2");
-        const mobileMenu = document.getElementById("mobile-menu");
-        const navbar = document.querySelector(".navbar");
-
-        // Sélecteurs pour le contenu
-        const desktopLinks = document.getElementById("main-nav-links");
-        const mobileLinksContainer = document.getElementById(
-            "mobile-links-container",
-        );
-
-        if (!btn || !r1 || !r2) return;
-
-        let isOpen = false;
-        let lastScrollY = window.scrollY;
-
-        if (
-            desktopLinks &&
-            mobileLinksContainer &&
-            mobileLinksContainer.children.length === 0
-        ) {
-            const isProject =
-                document.body.classList.contains("is-project-page");
-
-            // On sélectionne les bons liens selon la page
-            const selector = isProject
-                ? ".project-only, li:not(.home-only)"
-                : ".home-only, li:not(.project-only)";
-
-            const links = desktopLinks.querySelectorAll(selector);
-            links.forEach((link) => {
-                const clone = link.cloneNode(true);
-                mobileLinksContainer.appendChild(clone);
-            });
-        }
-
-        // --- 2. GESTION DU CLIC ---
-        btn.addEventListener("click", () => {
-            isOpen = !isOpen;
-
-            const springConfig = "spring(1, 100, 15, 0)";
-
-            anime({
-                targets: r1,
-                y: isOpen ? 22.5 : 16, // Ajusté à 16 selon ton HTML précédent
-                rotate: isOpen ? 45 : 0,
-                duration: 600,
-                easing: springConfig,
-            });
-
-            anime({
-                targets: r2,
-                y: isOpen ? 22.5 : 28, // Ajusté à 28 selon ton HTML précédent
-                rotate: isOpen ? -45 : 0,
-                duration: 600,
-                easing: springConfig,
-            });
-
-            mobileMenu?.classList.toggle("active", isOpen);
-            document.body.style.overflow = isOpen ? "hidden" : "";
-        });
-
-        // --- 3. LOGIQUE SCROLL ---
-        window.addEventListener(
-            "scroll",
-            () => {
-                if (isOpen || !navbar) return;
-                if (window.scrollY > lastScrollY && window.scrollY > 100) {
-                    navbar.classList.add("navbar--hidden");
-                } else {
-                    navbar.classList.remove("navbar--hidden");
-                }
-                lastScrollY = window.scrollY;
-            },
-            { passive: true },
-        );
-    };
-
-    document.addEventListener("astro:page-load", initNavbar);
-    if (document.readyState !== "loading") initNavbar();
-
     const glyphs = "0123456789";
 
-    // On ajoute un paramètre pour stocker/récupérer l'intervalle
-    const runSmoothCipher = (
-        el: HTMLElement,
-        spans: { span: HTMLElement; final: string }[],
-    ) => {
-        // 1. IMPORTANT : On stoppe l'animation précédente si elle existe
-        if (el.dataset.intervalId) {
+    const runSmoothCipher = (el, spans) => {
+        if (el && el.dataset && el.dataset.intervalId) {
             clearInterval(parseInt(el.dataset.intervalId));
         }
 
@@ -217,7 +130,6 @@ import LogoNav from "../navigation/LogoNav.astro";
                 const isFixed = iterations > index * step;
 
                 if (isFixed) {
-                    // On ne vérifie plus seulement la classe, on force le texte final
                     obj.span.textContent =
                         obj.final === " " ? "\u00A0" : obj.final;
                     obj.span.classList.replace("shuffling", "fixed");
@@ -232,8 +144,6 @@ import LogoNav from "../navigation/LogoNav.astro";
             if (iterations > spans.length * step + 10) {
                 clearInterval(timer);
                 el.removeAttribute("data-interval-id");
-
-                // Sécurité ultime : on s'assure que tout est bien fixe à la fin
                 spans.forEach((obj) => {
                     obj.span.textContent =
                         obj.final === " " ? "\u00A0" : obj.final;
@@ -243,14 +153,85 @@ import LogoNav from "../navigation/LogoNav.astro";
             iterations++;
         }, 30);
 
-        // On enregistre l'ID de l'intervalle sur l'élément
         el.dataset.intervalId = timer.toString();
     };
 
-    const initNavHover = () => {
-        const navItems =
-            document.querySelectorAll<HTMLElement>("#main-nav-links li");
+    const initNavAnimations = () => {
+        const navElement = document.querySelector(".navbar");
 
+        if (navElement) {
+            navElement.classList.remove("is-drawn");
+            // Utilisation des crochets pour éviter l'erreur sur Element
+            const _reflow = navElement["offsetWidth"];
+            setTimeout(() => navElement.classList.add("is-drawn"), 100);
+        }
+
+        const btn = document.getElementById("hamburger-btn");
+        const r1 = document.getElementById("rect-1");
+        const r2 = document.getElementById("rect-2");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const desktopLinks = document.getElementById("main-nav-links");
+        const mobileLinksContainer = document.getElementById(
+            "mobile-links-container",
+        );
+
+        if (btn && r1 && r2) {
+            let isOpen = false;
+            let lastScrollY = window.scrollY;
+
+            if (
+                desktopLinks &&
+                mobileLinksContainer &&
+                mobileLinksContainer.children.length === 0
+            ) {
+                const isProject =
+                    document.body.classList.contains("is-project-page");
+                const selector = isProject
+                    ? ".project-only, li:not(.home-only)"
+                    : ".home-only, li:not(.project-only)";
+
+                desktopLinks.querySelectorAll(selector).forEach((link) => {
+                    mobileLinksContainer.appendChild(link.cloneNode(true));
+                });
+            }
+
+            btn.addEventListener("click", () => {
+                isOpen = !isOpen;
+                const spring = "spring(1, 100, 15, 0)";
+                anime({
+                    targets: r1,
+                    y: isOpen ? 22.5 : 16,
+                    rotate: isOpen ? 45 : 0,
+                    duration: 600,
+                    easing: spring,
+                });
+                anime({
+                    targets: r2,
+                    y: isOpen ? 22.5 : 28,
+                    rotate: isOpen ? -45 : 0,
+                    duration: 600,
+                    easing: spring,
+                });
+                mobileMenu?.classList.toggle("active", isOpen);
+                document.body.style.overflow = isOpen ? "hidden" : "";
+            });
+
+            window.addEventListener(
+                "scroll",
+                () => {
+                    if (isOpen || !navElement) return;
+                    if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                        navElement.classList.add("navbar--hidden");
+                    } else {
+                        navElement.classList.remove("navbar--hidden");
+                    }
+                    lastScrollY = window.scrollY;
+                },
+                { passive: true },
+            );
+        }
+
+        const navItems = document.querySelectorAll("#main-nav-links li");
         navItems.forEach((li) => {
             const anchor = li.querySelector("a");
             if (!anchor || anchor.dataset.initialized) return;
@@ -267,61 +248,62 @@ import LogoNav from "../navigation/LogoNav.astro";
                 return { span, final: char };
             });
 
-            // On passe 'anchor' à la fonction pour gérer son intervalle propre
-            li.addEventListener("mouseenter", () =>
-                runSmoothCipher(anchor, spans),
-            );
+            li.addEventListener("mouseenter", () => {
+                runSmoothCipher(anchor, spans);
+            });
         });
     };
-</script>
 
-<script is:inline>
-    // On utilise une fonction auto-exécutée pour isoler le scope
-    (function initNavBorder() {
-        const trigger = () => {
-            const nav = document.querySelector(".navbar");
-            if (nav) {
-                // On retire la classe si elle y était (pour les transitions Astro)
-                nav.classList.remove("is-drawn");
+    document.addEventListener("astro:page-load", initNavAnimations);
 
-                // On force un "reflow" (petit hack pour redémarrer l'anim)
-                void nav.offsetWidth;
+    if (document.readyState !== "loading") {
+        initNavAnimations();
+    } else {
+        document.addEventListener("DOMContentLoaded", initNavAnimations);
+    }
 
-                nav.classList.add("is-drawn");
-                console.log("Animation bordure lancée");
-            }
-        };
-
-        // On écoute l'événement de navigation d'Astro
-        document.addEventListener("astro:page-load", trigger);
-
-        // Sécurité pour le premier chargement
-        if (document.readyState === "complete") {
-            trigger();
-        } else {
-            window.addEventListener("load", trigger);
-        }
-    })();
-
-    const initNavbarAnimation = () => {
-        // On retire l'assertion "as HTMLElement" pour que ce soit du JS pur
+    // border progression navbar \\
+    const updateScrollProgress = () => {
         const nav = document.querySelector(".navbar");
+        if (!nav) return;
 
-        if (nav) {
-            nav.classList.remove("is-drawn");
+        const winScroll = window.scrollY || document.documentElement.scrollTop;
+        const height =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
 
-            // Le hack du reflow fonctionne aussi en JS pur
-            void nav.offsetWidth;
+        // Sécurité pour éviter la division par zéro sur les pages courtes
+        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
 
-            setTimeout(() => {
-                nav.classList.add("is-drawn");
-            }, 100);
-        }
+        nav.style.setProperty("--scroll-width", `${scrolled}%`);
     };
 
-    document.addEventListener("astro:page-load", initNavbarAnimation);
+    // On l'ajoute à l'initialisation générale
+    const setupAll = () => {
+        initNavAnimations();
+        updateScrollProgress(); // Calcul immédiat au chargement
+    };
 
-    if (document.readyState === "complete") {
-        initNavbarAnimation();
+    document.addEventListener("astro:page-load", setupAll);
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+
+    if (document.readyState !== "loading") {
+        setupAll();
+    } else {
+        document.addEventListener("DOMContentLoaded", setupAll);
     }
+
+    //animation navbar ouverture site
+    document.addEventListener("DOMContentLoaded", () => {
+        const navbar = document.querySelector(".navbar, scroll-wrapper");
+
+        // On vérifie si l'utilisateur a déjà vu l'animation pendant sa session
+        if (!sessionStorage.getItem("navAnimated")) {
+            // C'est sa première visite : on enregistre qu'il a vu l'animation
+            sessionStorage.setItem("navAnimated", "true");
+        } else {
+            // Il a déjà vu l'animation : on la supprime pour que la navbar soit là immédiatement
+            navbar.style.animation = "none";
+        }
+    });
 </script>

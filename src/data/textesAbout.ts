@@ -15,4 +15,9 @@ export const about: contexte[] = [
         titre: "Équilibre",
         icon: "",
         texte: "En dehors des temps de conception, je consacre volontairement de l’espace à d’autres pratiques. La musique, le sport et la cuisine font partie de ces moments de respiration, qui me permettent de déplacer mon attention, de prendre du recul et de revenir avec un regard plus clair. Cet équilibre fait partie intégrante de ma manière de travailler sur le long terme.",
+    },
+    {
+        titre: "Mes alliés",
+        icon: "",
+        texte: "En dehors des temps de conception, je consacre volontairement de l’espace à d’autres pratiques. La musique, le sport et la cuisine font partie de ces moments de respiration, qui me permettent de déplacer mon attention, de prendre du recul et de revenir avec un regard plus clair. Cet équilibre fait partie intégrante de ma manière de travailler sur le long terme.",
     }]

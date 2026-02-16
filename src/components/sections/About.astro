@@ -1,5 +1,6 @@
 ---
 import { about } from "../../data/textesAbout";
+import Software from "../ui/Software.astro";
 ---
 
 <h2>Ma pomme</h2>
@@ -112,14 +113,28 @@ import { about } from "../../data/textesAbout";
 
         <p class="split-texte">{about[2].texte}</p>
     </article>
+    <article class="about-block c">
+        <div class="software">
+            <h4>{about[3].titre}</h4>
+            <Software />
+        </div>
+    </article>
 </section>
-
 <style>
+    .software {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        max-width: 40vw;
+    }
     .about {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--space-32);
         margin: 80px 0px 80px 0px;
+        justify-items: center;
+        align-items: center;
     }
     .title-about {
         display: flex;

@@ -16,20 +16,55 @@
 
 
 /* --- 2. STRUCTURE DE LA NAVBAR --- */
+
+/* --- 2. STRUCTURE DE LA NAVBAR --- */
+
 .navbar {
-    border-bottom: solid 0.25px var(--stroke-primary);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    /* height: var(--nav-height); */
     background-color: var(--layer-background);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 3000;
-    /* Augmenté pour rester au-dessus du menu mobile */
     display: flex;
-
     justify-content: space-between;
+    border-bottom: none;
+
+
+}
+
+.navbar,
+.top-hero {
+    will-change: transform;
+    /* L'animation de base (1.2s c'est plus doux) */
+    animation: slideDownNav 1.2s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
+}
+
+/* Pseudo-élément pour la barre de scroll (inchangé) */
+.navbar::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background-color: var(--static-opacit-2);
+    width: var(--scroll-width, 0%);
+    z-index: 3001;
+    pointer-events: none;
+    transition: width 0.1s ease-out;
+}
+
+/* --- DÉFINITION DE L'ANIMATION --- */
+@keyframes slideDownNav {
+    0% {
+        /* Hors champ vers le HAUT avec translate3d pour la fluidité GPU */
+        transform: translate3d(0, -150%, 0);
+    }
+
+    100% {
+        /* Position finale */
+        transform: translate3d(0, 0, 0);
+    }
 }
 
 .nav-container {
@@ -41,9 +76,6 @@
     align-items: center;
 }
 
-.navbar--hidden {
-    transform: translateY(-100%) !important;
-}
 
 /* --- 3. LIENS & LOGIQUE HOME/PROJET --- */
 .nav-links {
@@ -71,7 +103,6 @@
     display: block;
 }
 
-/* --- 4. HAMBURGER (Pivot Logic) --- */
 .hamburger {
     display: none;
     background: none;
@@ -84,10 +115,8 @@
     color: var(--fill-brand);
 }
 
-/* On définit le centre du SVG comme point de pivot pour les rect */
 #rect-1,
 #rect-2 {
-    /* Le centre du SVG 48x48 est à 24 24 */
     transform-origin: 24px 24px;
     transition: fill 0.3s ease;
 }
@@ -97,7 +126,6 @@
     height: 48px;
     display: block;
     overflow: visible;
-    /* Évite que les barres soient coupées durant le spring */
 }
 
 /* --- 5. MOBILE MENU --- */

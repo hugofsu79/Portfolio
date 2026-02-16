@@ -24,6 +24,10 @@ import LogoHero from "../ui/Logohero.astro";
     <LogoHero />
     <div class="bottom-hero">
         <p id="hero-name" class="cipher-text">hugo Foisseau</p>
+
+        <div class="scroll-wrapper">
+            <p id="scroll-text">↓↓↓ Scroll ↓↓↓</p>
+        </div>
         <p id="hero-city" class="cipher-text">Paris</p>
     </div>
     <!-- <p>{heroContent[lang].subtitle}</p> -->
@@ -88,21 +92,48 @@ import LogoHero from "../ui/Logohero.astro";
         transform: scale(1);
         filter: blur(0);
     }
-</style>
 
+    .scroll-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50px;
+        overflow: hidden;
+    }
+    #scroll-text {
+        display: flex;
+        font-family: monospace;
+        font-size: var(--p-font-size);
+        color: var(--text-primary);
+        margin: 0;
+        visibility: hidden;
+    }
+    #scroll-text.ready {
+        visibility: visible;
+    }
+    :global(.char-container) {
+        display: inline-block;
+        overflow: hidden;
+        height: 1.2em;
+    }
+    :global(.char-item) {
+        display: inline-block;
+    }
+</style>
 <script>
     const glyphs = "0123456789@#$%&*";
 
-    const animateCipher = (el: HTMLElement, delay: number = 0) => {
+    const animateCipher = (el, delay = 0) => {
+        if (el.dataset.animated === "true") return; // Évite de relancer
+        el.dataset.animated = "true";
+
         const originalText = el.textContent || "";
         const finalChars = originalText.split("");
         el.textContent = "";
 
-        // On pré-génère les spans pour figer la largeur
         const spans = finalChars.map((char) => {
             const span = document.createElement("span");
             span.className = "char shuffling";
-            // On utilise l'espace insécable pour garder la structure
             span.textContent =
                 char === " "
                     ? "\u00A0"
@@ -113,13 +144,10 @@ import LogoHero from "../ui/Logohero.astro";
 
         setTimeout(() => {
             let iterations = 0;
-            const step = 4; // Vitesse de fixation (plus haut = plus lent)
-
+            const step = 4;
             const timer = setInterval(() => {
                 spans.forEach((obj, index) => {
-                    // Calcul de fixation avec amorti progressif
                     const isFixed = iterations > index * step;
-
                     if (isFixed) {
                         if (!obj.span.classList.contains("fixed")) {
                             obj.span.textContent =
@@ -127,7 +155,6 @@ import LogoHero from "../ui/Logohero.astro";
                             obj.span.classList.replace("shuffling", "fixed");
                         }
                     } else if (obj.final !== " ") {
-                        // On change de glyphe de manière fluide
                         if (iterations % 2 === 0) {
                             obj.span.textContent =
                                 glyphs[
@@ -136,16 +163,15 @@ import LogoHero from "../ui/Logohero.astro";
                         }
                     }
                 });
-
                 if (iterations > spans.length * step + 10) clearInterval(timer);
                 iterations++;
-            }, 30); // 30ms pour une fluidité "60fps"
+            }, 30);
         }, delay);
     };
 
     const initHeroAnimations = () => {
-        // Animation de l'horloge (réutilisant les spans .digit existants)
-        const clockDigits = document.querySelectorAll<HTMLElement>(".digit");
+        // Horloge
+        const clockDigits = document.querySelectorAll(".digit");
         if (clockDigits.length) {
             let clockIter = 0;
             const clockTimer = setInterval(() => {
@@ -153,7 +179,6 @@ import LogoHero from "../ui/Logohero.astro";
                 const timeStr =
                     String(now.getHours()).padStart(2, "0") +
                     String(now.getMinutes()).padStart(2, "0");
-
                 clockDigits.forEach((d, i) => {
                     const fixed = clockIter > i * 8;
                     if (fixed) {
@@ -171,13 +196,70 @@ import LogoHero from "../ui/Logohero.astro";
             }, 40);
         }
 
-        // Animation des textes en cascade
-        const texts = document.querySelectorAll<HTMLElement>(".cipher-text");
+        // Textes
+        const texts = document.querySelectorAll(".cipher-text");
         texts.forEach((text, i) => {
             animateCipher(text, 300 + i * 250);
         });
     };
 
+    // --- LES DÉCLENCHEURS ---
     document.addEventListener("astro:page-load", initHeroAnimations);
-    if (document.readyState === "complete") initHeroAnimations();
+    if (document.readyState !== "loading") {
+        initHeroAnimations();
+    } else {
+        document.addEventListener("DOMContentLoaded", initHeroAnimations);
+    }
+</script>
+
+<script>
+    // @ts-ignore
+    import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
+
+    function initScrollEffect() {
+        const p = document.getElementById("scroll-text");
+        if (!p || p.dataset.initialized === "true") return;
+
+        const text = p.textContent.trim();
+        p.textContent = "";
+        p.dataset.initialized = "true";
+        p.classList.add("ready");
+
+        const charElements = text.split("").map((char) => {
+            const container = document.createElement("span");
+            container.className = "char-container";
+            const span = document.createElement("span");
+            span.className = "char-item";
+            span.textContent = char === " " ? "\u00A0" : char;
+            container.appendChild(span);
+            p.appendChild(container);
+            return span;
+        });
+
+        // @ts-ignore
+        anime({
+            targets: charElements,
+            translateY: [
+                { value: "110%", duration: 0 },
+                { value: "0%", duration: 800, easing: "easeOutQuart" },
+                {
+                    value: "110%",
+                    duration: 800,
+                    delay: 0,
+                    easing: "easeInQuart",
+                },
+            ],
+            delay: anime.stagger(120, {
+                from: "center",
+                start: 0,
+            }),
+            loop: true,
+        });
+    }
+
+    // Crucial pour Astro : relancer au changement de page
+    document.addEventListener("astro:page-load", initScrollEffect);
+
+    // Premier lancement
+    initScrollEffect();
 </script>

@@ -16,7 +16,7 @@ const { project } = Astro.props;
 const lang = "fr";
 ---
 
-<Layout title={project.hero.entreprise}>
+<Layout title={`Portfolio - ${project.hero.entreprise}`}>
     <header class="project-hero">
         <img src={project.hero.cover} alt={project.slug} />
     </header>

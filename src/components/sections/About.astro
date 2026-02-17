@@ -121,13 +121,6 @@ import Software from "../ui/Software.astro";
     </article>
 </section>
 <style>
-    .software {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-
-        max-width: 40vw;
-    }
     .about {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -160,10 +153,14 @@ import Software from "../ui/Software.astro";
         margin: 0;
         font-size: clamp(20px, 2.2vw, 28px);
     }
-    .about p {
-        font-size: var(--p-font-size);
-        font-weight: var(--font-weight-regular);
-        text-transform: none;
+ 
+
+    .software {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        max-width: 40vw;
     }
 
     /* Tablet & mobile */
@@ -178,7 +175,17 @@ import Software from "../ui/Software.astro";
 
         .about-block {
             grid-column: auto;
+            width: 100%;
             grid-row: auto;
+        }
+
+        .software {
+            max-width: none;
+        }
+        .iconSoftware {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
         }
     }
 </style>

@@ -14,7 +14,12 @@ const { size = "sm", class: className } = Astro.props;
 <style>
     .section {
         display: block;
-        max-width: none;
+        width: 100%;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        overflow-x: hidden;
+        word-wrap: break-word;
     }
 
     .section--sm {
@@ -28,4 +33,6 @@ const { size = "sm", class: className } = Astro.props;
     .section--lg {
         width: 100%;
     }
-</style>
+
+    @media (max-width: 768px) {
+    }

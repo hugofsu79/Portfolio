@@ -13,17 +13,56 @@ import LogoHero from "../ui/Logohero.astro";
 ---
 
 <section id="/" class="hero">
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+        <filter id="hero-rgb-filter" filterUnits="userSpaceOnUse">
+            <feOffset
+                in="SourceGraphic"
+                dx="-80"
+                dy="0"
+                result="red-ptr"
+                id="intro-red"></feOffset>
+            <feColorMatrix
+                in="red-ptr"
+                type="matrix"
+                values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+                result="red-layer"></feColorMatrix>
+
+            <feColorMatrix
+                in="SourceGraphic"
+                type="matrix"
+                values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+                result="green-layer"></feColorMatrix>
+
+            <feOffset
+                in="SourceGraphic"
+                dx="80"
+                dy="0"
+                result="blue-ptr"
+                id="intro-blue"></feOffset>
+            <feColorMatrix
+                in="blue-ptr"
+                type="matrix"
+                values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+                result="blue-layer"></feColorMatrix>
+
+            <feBlend
+                in="red-layer"
+                in2="green-layer"
+                mode="screen"
+                result="rg-blend"></feBlend>
+            <feBlend in="rgb-blend" in2="blue-layer" mode="screen"></feBlend>
+        </filter>
+    </svg>
     <div class="top-hero">
         <p id="real-time-clock" class="clock">
             <span class="digit">0</span><span class="digit">0</span>:<span
                 class="digit">0</span
             ><span class="digit">0</span>
         </p>
-        <p id="hero-job" class="cipher-text">Concepteur d'application</p>
     </div>
     <LogoHero />
     <div class="bottom-hero">
-        <p id="hero-name" class="cipher-text">hugo Foisseau</p>
+        <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
 
         <div class="scroll-wrapper">
             <p id="scroll-text">↓↓↓ Scroll ↓↓↓</p>
@@ -31,6 +70,29 @@ import LogoHero from "../ui/Logohero.astro";
         <p id="hero-city" class="cipher-text">Paris</p>
     </div>
     <!-- <p>{heroContent[lang].subtitle}</p> -->
+
+    <div class="definiton">
+        <p id="hero-job" class="cipher-text">Concepteur d'application</p>
+        <div class="linerDefinition">
+            <p>
+                <b>n.m </b>(Du latin designare (projeter) et inter-agere (agir
+                entre).
+            </p>
+            <div class="definitionText">
+                <ol class="definitionList">
+                    <li>
+                        Concepteur d’interfaces pensées pour être comprises et
+                        utilisées.
+                    </li>
+                    <li>Médiateur entre usage, design et technique.</li>
+                    <li>
+                        Architecte de systèmes visuels et comportementaux
+                        cohérents.
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
 </section>
 
 <style>
@@ -39,6 +101,9 @@ import LogoHero from "../ui/Logohero.astro";
         margin: 0;
     }
     .hero {
+        position: relative;
+        background-color: var(--layer-background-hero);
+        overflow: hidden;
         padding: var(--space-14);
         scroll-snap-align: start;
         height: 100vh;
@@ -47,6 +112,43 @@ import LogoHero from "../ui/Logohero.astro";
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
+        filter: url(#hero-intro-filter);
+        transition: filter 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: filter;
+    }
+    .is-clear {
+        filter: none !important;
+    }
+
+    .top-hero,
+    .bottom-hero,
+    LogoHero {
+        position: relative;
+        will-change: filter, transform;
+    }
+
+    .distort-active {
+        /* Le filtre est appliqué mais masqué partout sauf au niveau de la souris */
+        filter: url(#distort-filter);
+        mask-image: radial-gradient(
+            circle var(--mask-size) at var(--mouse-x) var(--mouse-y),
+            black 0%,
+            rgba(0, 0, 0, 0.5) 50%,
+            transparent 100%
+        );
+        -webkit-mask-image: radial-gradient(
+            circle var(--mask-size) at var(--mouse-x) var(--mouse-y),
+            black 0%,
+            rgba(0, 0, 0, 0.5) 50%,
+            transparent 100%
+        );
+    }
+
+    .cipher-text,
+    .clock,
+    .scroll-wrapper {
+        transition: transform 0.2s ease-out;
     }
     .top-hero {
         margin-top: 64px;
@@ -118,6 +220,36 @@ import LogoHero from "../ui/Logohero.astro";
     }
     :global(.char-item) {
         display: inline-block;
+    }
+    #hero-job {
+        margin: 0;
+        font-size: clamp(14px, 0.8vw, 12px);
+    }
+    .definiton {
+        position: fixed;
+        right: var(--space-24);
+        top: 10%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+    .linerDefinition {
+        opacity: 0;
+        transform: translateY(
+            10px
+        ); /* Décalage vers le bas pour l'effet de montée */
+        border-left: solid 1px var(--stroke-tertiary);
+        margin-left: var(--space-8);
+        padding-left: var(--space-4);
+        will-change: opacity, transform; /* Optimisation performance */
+    }
+    .linerDefinition p {
+        margin: 2px 0px 2px 0px;
+    }
+
+    .definitionList {
+        padding-left: 18px;
+        margin-bottom: 0;
     }
 </style>
 <script>
@@ -257,9 +389,70 @@ import LogoHero from "../ui/Logohero.astro";
         });
     }
 
-    // Crucial pour Astro : relancer au changement de page
     document.addEventListener("astro:page-load", initScrollEffect);
 
-    // Premier lancement
     initScrollEffect();
+</script>
+<script>
+    // @ts-ignore
+    import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
+
+    const startImpactRGB = () => {
+        const hero = document.getElementById("/");
+        if (!hero) return;
+
+        hero.style.filter = "url(#hero-rgb-filter)";
+
+        const tl = anime.timeline({
+            complete: () => {
+                hero.style.filter = "none";
+            },
+        });
+
+        tl.add(
+            {
+                targets: ["#intro-red", "#intro-blue"],
+                dx: (el: HTMLElement) =>
+                    el.id === "intro-red" ? [-150, 0] : [150, 0],
+                duration: 3500,
+                easing: "easeOutExpo",
+            },
+            0,
+        )
+            .add(
+                {
+                    targets: hero,
+                    scale: [1.15, 1],
+                    opacity: [0, 1],
+                    duration: 2500,
+                    easing: "easeOutExpo",
+                },
+                0,
+            )
+            .add(
+                {
+                    targets: ".linerDefinition",
+                    opacity: [0, 1],
+                    translateY: [10, 0],
+                    duration: 2000,
+                    easing: "easeOutCubic",
+                },
+                "-=2200",
+            )
+            // -----------------------------
+            .add(
+                {
+                    targets: hero,
+                    filter: [
+                        "url(#hero-rgb-filter) blur(10px)",
+                        "url(#hero-rgb-filter) blur(0px)",
+                    ],
+                    duration: 2000,
+                    easing: "easeOutQuart",
+                },
+                0,
+            );
+    };
+
+    document.addEventListener("astro:page-load", startImpactRGB);
 </script>

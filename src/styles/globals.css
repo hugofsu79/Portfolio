@@ -18,6 +18,11 @@ html {
     font-family: var(--font-family-base);
     text-transform: var(--text-transform);
     scroll-behavior: smooth;
+
+}
+
+a {
+    text-decoration: none;
 }
 
 html,
@@ -62,10 +67,21 @@ html.lenis body {
     pointer-events: none;
 }
 
+p,ol {
+    font-size: var(--p-font-size);
+    font-weight: var(--font-weight-regular);
+    text-transform: none;
+    color: var(--text-secondary);
+}
 
 body {
     color: var(--text-primary);
+
+    /* 1. On définit la couleur de fond via ton token */
     background-color: var(--layer-background);
+    position: relative;
+    min-height: 100vh;
+
 }
 
 .split-texte {

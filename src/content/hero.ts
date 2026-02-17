@@ -17,3 +17,4 @@ export const heroContent = {
 } as const;
 
 export type HeroLang = keyof typeof heroContent;
+

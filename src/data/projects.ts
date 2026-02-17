@@ -24,7 +24,12 @@ export const projects: Project[] = [
         },
         leftCorridor: {
             skills: {
-                value: ["Fintech", "B2C-B2B", "Méthodologie"]
+                fr: {
+                    value: ["Fintech", "B2C-B2B", "Méthodologie"]
+                },
+                en: {
+                    value: ["Fintech", "B2C-B2B", "Methodology"]
+                },
             }
         },
         sections: {
@@ -698,12 +703,10 @@ export type HomeProject = {
     entreprise: string;
     year: number;
     cover: string;
-    title: {
-        fr: string;
-        en: string;
-    };
-    skills?: string[];
+    title: string;
+    skills: string[];
 };
+
 
 export const getProjectsList = (lang: Lang): HomeProject[] =>
     projects.map((project) => ({
@@ -711,9 +714,6 @@ export const getProjectsList = (lang: Lang): HomeProject[] =>
         entreprise: project.hero.entreprise,
         year: project.hero.year,
         cover: project.hero.cover,
-        title: {
-            fr: project.hero.content.fr.title,
-            en: project.hero.content.en.title,
-        },
-        skills: project.leftCorridor?.skills?.value,
+        title: project.hero.content[lang].title,
+        skills: project.leftCorridor.skills[lang].value,
     }));

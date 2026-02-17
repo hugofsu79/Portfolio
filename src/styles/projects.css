@@ -45,14 +45,26 @@
     text-decoration: none;
 }
 
-.context {
-    position: sticky;
-    top: 60px;
+.grid-project {
+    display: grid;
+    grid-template-columns: 20vw 1fr 4fr;
+    gap: var(--space-8);
+    width: 100%;
+    align-items: start;
 }
 
 .leftCorridor {
-    width: 20vw;
-    table-layout: fixed;
+    height: 100%;
+}
+
+.context {
+    position: sticky;
+    top: 60px;
+    width: 100%;
+
+    /* Pour eviter que le contenu ne déborde */
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .rightCorridor {
@@ -68,15 +80,23 @@
 th {
     color: var(--text-primary);
     text-align: left;
-    font-size: var(--p-font-size-card);
+    font-size: var(--p-font-size);
     font-family: var(--font-family-base);
     font-weight: var(--font-weight-medium);
 }
 
 table {
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
+
     width: 100%;
+}
+
+tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 tbody,
@@ -86,6 +106,8 @@ tr {
 
 tr {
     border-bottom: 0.25px solid var(--stroke-section);
+    display: flex;
+    flex-direction: column;
 }
 
 tr:last-child {
@@ -98,7 +120,10 @@ tr:last-child {
     padding: 0.35rem 0;
     vertical-align: middle;
 }
-
+td span {
+    font-size: var(--p-font-size);
+    color: var(--text-secondary);
+}
 
 .project-title-sticky {
     position: sticky;
@@ -276,14 +301,6 @@ tr:last-child {
     padding: var(--space-8);
 }
 
-.grid-project {
-    display: grid;
-    max-width: 20vw;
-    justify-items: center;
-    grid-template-columns: 2fr 1fr 4fr;
-    gap: var(--space-8);
-}
-
 .strokes {
     width: 0.25px;
     height: 100%;
@@ -308,9 +325,6 @@ tr:last-child {
     gap: 40px;
 }
 
-.grid p {
-    color: var(--color-text-all);
-}
 
 .grid-mini {
     display: grid;

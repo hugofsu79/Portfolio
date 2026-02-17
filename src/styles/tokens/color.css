@@ -46,7 +46,6 @@
     /* =========================
         Core — Mono
      ========================= */
-    --core-purple-light: #9747FF;
     --core-purple-dark: #eee1ff;
 
 
@@ -76,16 +75,17 @@
     /* =========================
         Semantic — Layer
      ========================= */
-    --layer-background: var(--core-beige-50);
+    --layer-background: var(--core-neutral-700);
+    --layer-background-hero: var(--core-neutral-800);
     --layer-background-negat: var(--core-beige-900);
     --layer-surface: var(--core-neutral-50);
 
     /* =========================
         Semantic — Text
      ========================= */
-    --text-primary: var(--core-brown-900);
+    --text-primary: var(--core-neutral-100);
     --text-primary-negat: var(--core-brown-50);
-    --text-secondary: var(--core-neutral-800);
+    --text-secondary: var(--core-neutral-200);
     --text-tertiary: var(--core-beige-50);
     --text-on-accent: var(--core-blue-500);
     --text-initial: var(--core-neutral-200);
@@ -95,20 +95,19 @@
     /* =========================
         Semantic — Fill
      ========================= */
-    --fill-brand: var(--core-brown-800);
+    --fill-brand: var(--core-neutral-50);
     --fill-accent: var(--core-beige-100);
-    --fill-hover: var(--core-beige-100);
+    --fill-hover: var(--core-neutral-500);
     --fill-success: var(--core-green-500);
     --fill-error: var(--core-red-500);
     --fill-hero: var(--core-beige-100);
     /* =========================
         Semantic — Stroke
          ========================= */
-    --stroke-primary: var(--core-brown-900);
-    --stroke-secondary: var(--core-neutral-200);
-    --stroke-tertiary: var(--core-beige-50);
-    --stroke-section: var(--core-beige-400);
-    --stroke-section: var(--core-purple-light);
+    --stroke-primary: var(--core-neutral-200);
+    --stroke-secondary: var(--core-neutral-700);
+    --stroke-tertiary: var(--core-neutral-600);
+    --stroke-section: var(--core-neutral-100);
 
 
     /* =========================
@@ -121,14 +120,15 @@
 
     --static-black: black;
     --static-transparent: transparent;
-    --static-gradient-to: var(--core-brown-800);
-    --static-gradient-end: var(--core-brown-900);
+    --static-gradient-to: var(--core-neutral-600);
+    --static-gradient-end: var(--core-neutral-700);
 }
 
 
 @media (prefers-color-scheme: dark) {
     :root {
         --layer-background: var(--core-neutral-900);
+        --layer-background-hero: var(--core-neutral-700);
         --layer-background-negat: var(--core-neutral-800);
         --layer-surface: var(--core-neutral-800);
 
@@ -142,7 +142,7 @@
 
         --fill-brand: var(--core-beige-50);
         --fill-accent: var(--core-blue-700);
-        --fill-hover: var(--core-beige-800);
+        --fill-hover: var(--core-neutral-400);
         --fill-success: var(--core-green-100);
         --fill-error: var(--core-red-200);
         --fill-hero: var(--core-neutral-800);
@@ -151,7 +151,6 @@
         --stroke-secondary: var(--core-neutral-800);
         --stroke-tertiary: var(--core-neutral-600);
         --stroke-section: var(--static-opacit-1);
-        --stroke-section: var(--core-purple-dark);
 
         --static-gradient-to: var(--core-neutral-800);
         --static-gradient-end: var(--core-neutral-800);

@@ -372,10 +372,10 @@ import LogoHero from "../ui/Logohero.astro";
         anime({
             targets: charElements,
             translateY: [
-                { value: "110%", duration: 0 },
-                { value: "0%", duration: 800, easing: "easeOutQuart" },
+                { value: "90%", duration: 0 },
+                { value: "0%", duration: 500, easing: "easeOutQuart" },
                 {
-                    value: "110%",
+                    value: "90%",
                     duration: 800,
                     delay: 0,
                     easing: "easeInQuart",
@@ -413,7 +413,7 @@ import LogoHero from "../ui/Logohero.astro";
             {
                 targets: ["#intro-red", "#intro-blue"],
                 dx: (el: HTMLElement) =>
-                    el.id === "intro-red" ? [-150, 0] : [150, 0],
+                    el.id === "intro-blue" ? [-60, 0] : [150, 0],
                 duration: 3500,
                 easing: "easeOutExpo",
             },
@@ -422,9 +422,9 @@ import LogoHero from "../ui/Logohero.astro";
             .add(
                 {
                     targets: hero,
-                    scale: [1.15, 1],
+                    scale: [1.05, 1],
                     opacity: [0, 1],
-                    duration: 2500,
+                    duration: 2000,
                     easing: "easeOutExpo",
                 },
                 0,
@@ -447,7 +447,7 @@ import LogoHero from "../ui/Logohero.astro";
                         "url(#hero-rgb-filter) blur(10px)",
                         "url(#hero-rgb-filter) blur(0px)",
                     ],
-                    duration: 2000,
+                    duration: 1000,
                     easing: "easeOutQuart",
                 },
                 0,

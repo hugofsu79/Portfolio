@@ -6,10 +6,11 @@
 @import "./footer.css";
 @import "./carousel.css";
 @import "./projects.css";
+@import "./i18n.css";
 
 :root {
     --font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --text-transform: uppercase;
+
 
     --font-family-accent: "Courier New";
 }
@@ -67,7 +68,8 @@ html.lenis body {
     pointer-events: none;
 }
 
-p,ol {
+p,
+ol {
     font-size: var(--p-font-size);
     font-weight: var(--font-weight-regular);
     text-transform: none;

@@ -1,10 +1,7 @@
-import type { Project } from "../types/projects";
-export type { Project };
-
-export type Lang = "fr" | "en";
-export type I18n<T> = { fr: T; en: T };
+import type { Project, Lang, HomeProject } from "../types/projects";
 
 export const projects: Project[] = [
+    // Siko
     {
         slug: "siko-mobility",
         hero: {
@@ -14,10 +11,10 @@ export const projects: Project[] = [
             tags: ["Développeur web", "Tailwind CSS"],
             content: {
                 fr: {
-                    title: "Concepteur d’application chez Siko Mobility"
+                    title: "Fintech qui simplifie le financement de véhicules en proposant une expérience digitale fluide"
                 },
                 en: {
-                    title: "Concepteur d’application chez Siko Mobility"
+                    title: "A fintech company that simplifies vehicle financing by delivering a seamless digital experience."
                 }
             },
             year: 2025,
@@ -25,10 +22,10 @@ export const projects: Project[] = [
         leftCorridor: {
             skills: {
                 fr: {
-                    value: ["Fintech", "B2C-B2B", "Méthodologie"]
+                    values: ["Fintech", "B2C-B2B", "Méthodologie"]
                 },
                 en: {
-                    value: ["Fintech", "B2C-B2B", "Methodology"]
+                    values: ["Fintech", "B2C-B2B", "Methodology"]
                 },
             }
         },
@@ -36,12 +33,10 @@ export const projects: Project[] = [
             context: {
                 content: {
                     fr: {
-                        description:
-                            "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance, dans un contexte startup à forte autonomie, nécessitant une compréhension rapide des mécanismes de financement et des enjeux contractuels.",
+                        description: "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance, dans un contexte startup à forte autonomie, nécessitant une compréhension rapide des mécanismes de financement et des enjeux contractuels.",
                     },
                     en: {
-                        description:
-                            "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance, dans un contexte startup à forte autonomie, nécessitant une compréhension rapide des mécanismes de financement et des enjeux contractuels.",
+                        description: "Siko Mobility is a fintech startup specializing in vehicle financing. I worked there for a year as an apprentice in a high-autonomy startup environment, requiring a quick understanding of financing mechanisms and contractual issues.",
                     }
                 },
                 details: [
@@ -50,7 +45,7 @@ export const projects: Project[] = [
                             fr: { label: "Temps de travail" },
                             en: { label: "Working time" }
                         },
-                        value: ["02.10.2024|27.10.2025"],
+                        value: ["02.10.2024 | 27.10.2025"],
                     },
                     {
                         content: {
@@ -58,78 +53,32 @@ export const projects: Project[] = [
                             en: { label: "Collaborators" }
                         },
                         value: [
-                            {
-                                content: {
-                                    fr: { label: "Kader Bakayoko" },
-                                    en: { label: "Kader Bakayoko" }
-                                },
-                                href: "https://www.linkedin.com/in/kader-bakayoko-341b53190/?skipRedirect=true"
-                            },
-                            {
-                                content: {
-                                    fr: { label: "Jugurta Mahious" },
-                                    en: { label: "Jugurta Mahious" }
-                                },
-                                href: "https://www.linkedin.com/in/jugurta-mahious-0a2760237/"
-                            },
-                            {
-                                content: {
-                                    fr: { label: "Thibault Andriamasionro" },
-                                    en: { label: "Thibault Andriamasionro" }
-                                },
-                                href: "https://www.linkedin.com/in/thibault-andriamasinoro/"
-                            },
-                            {
-                                content: {
-                                    fr: { label: "Louis Leveneur" },
-                                    en: { label: "Louis Leveneur" }
-                                },
-                                href: "https://www.linkedin.com/in/louis-leveneur-74410b1b9/"
-                            }
+                            { content: { fr: { label: "Kader Bakayoko" }, en: { label: "Kader Bakayoko" } }, href: "..." },
+                            { content: { fr: { label: "Jugurta Mahious" }, en: { label: "Jugurta Mahious" } }, href: "..." },
+                            { content: { fr: { label: "Thibault Andriamasionro" }, en: { label: "Thibault Andriamasionro" } }, href: "..." },
+                            { content: { fr: { label: "Louis Leveneur" }, en: { label: "Louis Leveneur" } }, href: "..." }
                         ],
                         marquee: true,
                     },
                     {
                         content: {
                             fr: { label: "Rôle" },
-                            en: { label: "Rôle" }
+                            en: { label: "Role" }
                         },
                         value: [
-                            {
-                                content: {
-                                    fr: { label: "Designer UI" },
-                                    en: { label: "Designer UI" }
-                                }
-                            },
-                            {
-                                content: {
-                                    fr: { label: "Concepteur d’application" },
-                                    en: { label: "Concepteur d’application" }
-                                }
-                            }
+                            { content: { fr: { label: "Designer UI" }, en: { label: "UI Designer" } } },
+                            { content: { fr: { label: "Concepteur d’application" }, en: { label: "App Designer" } } }
                         ],
                         marquee: true,
                     },
                     {
-                        content: {
-                            fr: { label: "Link" },
-                            en: { label: "Link" }
-                        },
+                        content: { fr: { label: "Lien" }, en: { label: "Link" } },
                         value: [
-                            {
-                                content: {
-                                    fr: { label: "www.sikomobility.com" },
-                                    en: { label: "www.sikomobility.com" }
-                                },
-                                href: "https://www.sikomobility.com/"
-                            }
+                            { content: { fr: { label: "www.sikomobility.com" }, en: { label: "www.sikomobility.com" } }, href: "https://www.sikomobility.com/" }
                         ]
                     },
                     {
-                        content: {
-                            fr: { label: "Catégorie" },
-                            en: { label: "Category" }
-                        },
+                        content: { fr: { label: "Catégorie" }, en: { label: "Category" } },
                         value: ["Fintech"],
                     },
                 ],
@@ -137,77 +86,72 @@ export const projects: Project[] = [
             objectifs: {
                 content: {
                     fr: {
-                        description: "Les objectifs se sont construits progressivement au fil de l’alternance. À mon arrivée, la place du design au sein de l’équipe technique n’était pas clairement définie : les fondateurs n’étaient pas encore convaincus de la valeur d’un designer UI/UX, en partie par méconnaissance du rôle. Les interfaces existantes reposaient principalement sur des composants Tailwind, avec des éléments graphiques peu structurés et difficilement exploitables par les développeurs.\n\nMon objectif principal a donc été de poser des bases solides pour le design produit, en collaboration étroite avec le CTO. Cela a impliqué un important travail de clarification et de structuration, reprendre l’ensemble des écrans, trier et organiser les fichiers Figma, et transformer un environnement de travail proche d’un véritable « syndrome de Diogène » graphique en un espace cohérent, lisible et réutilisable.\n\nJ’ai également cherché à donner un rôle fonctionnel au design, en construisant des composants et des règles UI capables de servir de véritable béquille pour l’équipe de développement, plutôt que de simples maquettes esthétiques. Enfin, un enjeu clé a été de dépasser les limites d’un design purement utilitaire lié à Tailwind, afin d’apporter plus de personnalité, de cohérence visuelle et de lisibilité aux interfaces, tout en restant compatible avec les contraintes techniques de la startup."
+                        title: "Objectifs",
+                        description: "Les objectifs se sont construits progressivement au fil de l’alternance. À mon arrivée, la place du design au sein de l’équipe technique n’était pas clairement définie..."
                     },
                     en: {
-                        description: "Les objectifs se sont construits progressivement au fil de l’alternance. À mon arrivée, la place du design au sein de l’équipe technique n’était pas clairement définie : les fondateurs n’étaient pas encore convaincus de la valeur d’un designer UI/UX, en partie par méconnaissance du rôle. Les interfaces existantes reposaient principalement sur des composants Tailwind, avec des éléments graphiques peu structurés et difficilement exploitables par les développeurs.\n\nMon objectif principal a donc été de poser des bases solides pour le design produit, en collaboration étroite avec le CTO. Cela a impliqué un important travail de clarification et de structuration, reprendre l’ensemble des écrans, trier et organiser les fichiers Figma, et transformer un environnement de travail proche d’un véritable « syndrome de Diogène » graphique en un espace cohérent, lisible et réutilisable.\n\nJ’ai également cherché à donner un rôle fonctionnel au design, en construisant des composants et des règles UI capables de servir de véritable béquille pour l’équipe de développement, plutôt que de simples maquettes esthétiques. Enfin, un enjeu clé a été de dépasser les limites d’un design purement utilitaire lié à Tailwind, afin d’apporter plus de personnalité, de cohérence visuelle et de lisibilité aux interfaces, tout en restant compatible avec les contraintes techniques de la startup."
+                        title: "Objectives",
+                        description: "Objectives were built progressively. Upon arrival, the design's place within the tech team wasn't clearly defined..."
                     }
                 },
-                image: [{
+                images: [{
                     src: "/images/projects/siko-mobility/Objectifs_image_siko.png",
-                    alt: "",
+                    alt: { fr: { text: "Interface de Siko Mobility" }, en: { text: "Siko Mobility Interface" } },
                 }]
             },
             role: {
                 content: {
                     fr: {
-                        description: "Chez Siko Mobility, mon rôle consistait à structurer et faire évoluer les parcours clés du produit dans un contexte fintech en forte croissance. J’ai travaillé sur la conception d’un nouveau parcours assurance, ainsi que sur la création et l’amélioration des dashboards marchands, en tenant compte des enjeux B2B et des besoins opérationnels des partenaires\n\nJ’ai également mené une refonte des parcours de financement, en les adaptant aux différents types d’offres proposées(paiement fractionné, crédit, LLD, LOA).Chaque parcours impliquait des contraintes spécifiques, notamment en matière d’informations utilisateurs, de documents requis et de règles contractuelles, nécessitant une conception précise et rigoureuse.\n\n En parallèle, j’ai initié et construit un Design System, avec pour objectif d’apporter une interface plus cohérente, lisible et moderne, tout en servant de véritable support pour l’équipe de développement.Ce travail visait à dépasser un design purement utilitaire pour renforcer la clarté des interfaces, la cohérence visuelle et la maintenabilité du produit."
+                        title: "Mon Rôle",
+                        description: "Chez Siko Mobility, mon rôle consistait à structurer et faire évoluer les parcours clés du produit..."
                     },
                     en: {
-                        description: "Chez Siko Mobility, mon rôle consistait à structurer et faire évoluer les parcours clés du produit dans un contexte fintech en forte croissance. J’ai travaillé sur la conception d’un nouveau parcours assurance, ainsi que sur la création et l’amélioration des dashboards marchands, en tenant compte des enjeux B2B et des besoins opérationnels des partenaires\n\nJ’ai également mené une refonte des parcours de financement, en les adaptant aux différents types d’offres proposées(paiement fractionné, crédit, LLD, LOA).Chaque parcours impliquait des contraintes spécifiques, notamment en matière d’informations utilisateurs, de documents requis et de règles contractuelles, nécessitant une conception précise et rigoureuse.\n\n En parallèle, j’ai initié et construit un Design System, avec pour objectif d’apporter une interface plus cohérente, lisible et moderne, tout en servant de véritable support pour l’équipe de développement.Ce travail visait à dépasser un design purement utilitaire pour renforcer la clarté des interfaces, la cohérence visuelle et la maintenabilité du produit."
+                        title: "My Role",
+                        description: "At Siko Mobility, my role was to structure and evolve key product journeys..."
                     }
                 },
-                image: [{
-                    src: "/public/icons/projets/Siko/role_svg.svg",
-                    alt: "",
+                images: [{
+                    src: "/icons/projets/Siko/role_svg.svg",
+                    alt: { fr: { text: "Schéma du rôle" }, en: { text: "Role diagram" } },
                 }]
             },
             demarche: {
                 content: {
                     fr: {
-                        description: "En tant que designer UI et concepteur d’application, j’ai travaillé sur la conception UX, les wireframes, l’UI finale et l’évolution des parcours de financement et des dashboards, dans un contexte de forte autonomie."
+                        title: "Démarche",
+                        description: "En tant que designer UI et concepteur d’application, j’ai travaillé sur la conception UX, les wireframes..."
                     },
                     en: {
-                        description: "En tant que designer UI et concepteur d’application, j’ai travaillé sur la conception UX, les wireframes, l’UI finale et l’évolution des parcours de financement et des dashboards, dans un contexte de forte autonomie."
+                        title: "Approach",
+                        description: "As a UI Designer and App Designer, I worked on UX design, wireframes..."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             resultat: {
                 content: {
                     fr: {
-                        description: "Mon année chez Siko Mobility a marqué un vrai tournant. Les débuts ont été déroutants: nouvelle ville, nouvelle startup, et un cadre où l’initiative est indispensable.Sans supervision directe, j’ai dû apprendre à prendre ma place, proposer et structurer. Progressivement, la confiance accordée par les fondateurs m’a permis d’évoluer d’un rôle exécutant à un rôle moteur: animation de points réguliers, ateliers pédagogiques avec les équipes, conception d’un dashboard marchand, refonte du parcours assurance et création d’un nouveau parcours crédit. Cette expérience m’a donné une vraie assurance dans le travail en équipe et dans une approche produit agile"
+                        title: "Résultat",
+                        description: "Mon année chez Siko Mobility a marqué un vrai tournant. Les débuts ont été déroutants..."
                     },
                     en: {
-                        description: "Mon année chez Siko Mobility a marqué un vrai tournant. Les débuts ont été déroutants: nouvelle ville, nouvelle startup, et un cadre où l’initiative est indispensable.Sans supervision directe, j’ai dû apprendre à prendre ma place, proposer et structurer. Progressivement, la confiance accordée par les fondateurs m’a permis d’évoluer d’un rôle exécutant à un rôle moteur: animation de points réguliers, ateliers pédagogiques avec les équipes, conception d’un dashboard marchand, refonte du parcours assurance et création d’un nouveau parcours crédit. Cette expérience m’a donné une vraie assurance dans le travail en équipe et dans une approche produit agile"
+                        title: "Results",
+                        description: "My year at Siko Mobility was a real turning point. The beginnings were confusing..."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
         },
         carousel: {
             images: [
                 {
                     src: "/images/projects/siko-mobility/carousel/paysage.png",
-                    alt: "Dashboard Siko Mobility",
-                },
-                {
-                    src: "/images/projects/siko-mobility/carousel/AdobeStock_282275837.png",
-                    alt: "Parcours utilisateur",
-                },
-                {
-                    src: "/images/projects/siko-mobility/carousel/Sophora-prostrata-Little-Baby.jpg",
-                    alt: "Écran mobile",
-                },
+                    alt: { fr: { text: "Dashboard Siko Mobility" }, en: { text: "Siko Mobility Dashboard" } },
+                }
             ],
         },
     },
+    // Rhizome
     {
         slug: "rhizome",
         hero: {
@@ -217,10 +161,10 @@ export const projects: Project[] = [
             tags: ["UI/UX Designer"],
             content: {
                 fr: {
-                    title: "Rhizome, le vinted des plantes"
+                    title: "Rhizome, le Vinted des plantes pour les passionnés de botanique"
                 },
                 en: {
-                    title: "Rhizome, le vinted des plantes"
+                    title: "Rhizome, the Vinted-style marketplace dedicated to plant lovers"
                 }
             },
             year: 2025,
@@ -228,71 +172,50 @@ export const projects: Project[] = [
         leftCorridor: {
             skills: {
                 fr: {
-                    value: ["Product Design", "UX Research", "Design System"]
+                    values: ["Product Design", "UX Research", "Design System"]
                 },
-                en: { value: ["Product Design", "UX Research", "Design System"] },
+                en: {
+                    values: ["Product Design", "UX Research", "Design System"]
+                },
             }
         },
         sections: {
             context: {
                 content: {
                     fr: {
-                        description:
-                            "Ce projet fictif a été développé dans le cadre de mon année de licence, avec pour objectif de simuler la conception d’un produit numérique réaliste. Le travail portait sur l’analyse d’un besoin utilisateur, la définition des parcours clés et la conception d’une interface cohérente et exploitable. Le projet intégrait des contraintes proches d’un contexte professionnel, notamment en termes de clarté des parcours, de priorisation des fonctionnalités et de lisibilité de l’interface. Il m’a permis de mettre en pratique une méthodologie de conception structurée, en justifiant chaque choix par des enjeux d’usage.",
+                        description: "Ce projet fictif a été développé dans le cadre de mon année de licence. Le travail portait sur l’analyse d’un besoin utilisateur, la définition des parcours clés et la conception d’une interface cohérente et exploitable.",
                     },
                     en: {
-                        description:
-                            "Ce projet fictif a été développé dans le cadre de mon année de licence, avec pour objectif de simuler la conception d’un produit numérique réaliste. Le travail portait sur l’analyse d’un besoin utilisateur, la définition des parcours clés et la conception d’une interface cohérente et exploitable. Le projet intégrait des contraintes proches d’un contexte professionnel, notamment en termes de clarté des parcours, de priorisation des fonctionnalités et de lisibilité de l’interface. Il m’a permis de mettre en pratique une méthodologie de conception structurée, en justifiant chaque choix par des enjeux d’usage.",
+                        description: "This fictional project was developed during my Bachelor's year. The work focused on user needs analysis, defining key user journeys, and designing a consistent, usable interface.",
                     }
                 },
                 details: [
                     {
-                        content: {
-                            fr: { label: "Temps de travail" },
-                            en: { label: "Working time" }
-                        },
-                        value: ["14.12.2024|27.08.2025"],
+                        content: { fr: { label: "Temps de travail" }, en: { label: "Timeline" } },
+                        value: ["14.12.2024 | 27.08.2025"],
                     },
                     {
-                        content: {
-                            fr: { label: "Collaborateurs" },
-                            en: { label: "Collaborators" }
-                        },
-                        value: ["Ma pomme"],
-                    },
-                    {
-                        content: {
-                            fr: { label: "Rôle" },
-                            en: { label: "Rôle" }
-                        },
+                        content: { fr: { label: "Collaborateurs" }, en: { label: "Collaborators" } },
                         value: [
-                            {
-                                content: {
-                                    fr: { label: "Designer UI" },
-                                    en: { label: "Designer UI" }
-                                }
-                            },
-                            {
-                                content: {
-                                    fr: { label: "Concepteur d’application" },
-                                    en: { label: "Product designer" }
-                                }
-                            }
+                            { content: { fr: { label: "Ma pomme" }, en: { label: "Myself" } } }
+                        ],
+                    },
+                    {
+                        content: { fr: { label: "Rôle" }, en: { label: "Role" } },
+                        value: [
+                            { content: { fr: { label: "Designer UI" }, en: { label: "UI Designer" } } },
+                            { content: { fr: { label: "Product Designer" }, en: { label: "Product Designer" } } }
                         ],
                         marquee: true,
                     },
                     {
-                        content: {
-                            fr: { label: "Link" },
-                            en: { label: "Link" }
-                        },
-                        value: ["www.rhizome.com/lienFigma"],
+                        content: { fr: { label: "Lien" }, en: { label: "Link" } },
+                        value: [
+                            { content: { fr: { label: "Fichier Figma" }, en: { label: "Figma File" } }, href: "#" }
+                        ],
                     },
                     {
-                        content: {
-                            fr: { label: "Catégorie" },
-                            en: { label: "Category" }
-                        },
+                        content: { fr: { label: "Catégorie" }, en: { label: "Category" } },
                         value: ["Marketplace"],
                     },
                 ],
@@ -300,83 +223,73 @@ export const projects: Project[] = [
             objectifs: {
                 content: {
                     fr: {
-                        title: "Concevoir un produit de marketplace de A à Z autour des plantes",
-                        description: "En structurant des parcours simples et engageants, tout en posant les bases d’un design system léger et cohérent pour garantir la scalabilité du projet."
+                        title: "Concevoir une marketplace de A à Z",
+                        description: "L'objectif était de structurer des parcours simples et engageants, tout en posant les bases d’un design system léger pour garantir la scalabilité du projet."
                     },
                     en: {
-                        title: "Concevoir un produit de marketplace de A à Z autour des plantes",
-                        description: "En structurant des parcours simples et engageants, tout en posant les bases d’un design system léger et cohérent pour garantir la scalabilité du projet."
+                        title: "Designing a marketplace from scratch",
+                        description: "The goal was to structure simple and engaging user journeys, while laying the foundations for a lightweight design system to ensure project scalability."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
+                images: [{
+                    src: "/images/projects/rhizome/objectifs.png",
+                    alt: { fr: { text: "Aperçu des objectifs" }, en: { text: "Objectives overview" } },
                 }]
             },
             role: {
                 content: {
                     fr: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress."
+                        title: "Mon Rôle",
+                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours et création des maquettes UI."
                     },
                     en: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress."
+                        title: "My Role",
+                        description: "As the project lead, I handled the entire design process: concept definition, UX research, journey mapping, and UI mockups."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             demarche: {
                 content: {
                     fr: {
-                        title: "Rhizome est né d’un constat simple",
-                        description: "Les plateformes de vente généralistes ne sont pas adaptées aux plantes.Elles ignorent leur saisonnalité, leur fragilité, leur entretien et la valeur affective qu’on leur accorde. En parallèle, de plus en plus de particuliers savent bouturer, multiplier et entretenir leurs plantes, sans avoir d’espace dédié pour les transmettre, les vendre ou leur offrir une seconde vie. Rhizome répond à ce manque en proposant une plateforme pensée spécifiquement pour l’échange de plantes entre particuliers.Au - delà de l’achat et de la vente, le projet valorise les circuits locaux, les savoir- faire(bouturage, rempotage, entretien) et la mise en relation entre passionnés. Inscrit dans une logique d’économie circulaire, Rhizome encourage la seconde vie des plantes, une consommation plus responsable et une approche communautaire du végétal."
+                        title: "Un constat simple",
+                        description: "Les plateformes généralistes ignorent la saisonnalité et la fragilité des plantes. Rhizome répond à ce manque en proposant une plateforme pensée spécifiquement pour l’échange végétal."
                     },
                     en: {
-                        title: "Rhizome est né d’un constat simple",
-                        description: "Les plateformes de vente généralistes ne sont pas adaptées aux plantes.Elles ignorent leur saisonnalité, leur fragilité, leur entretien et la valeur affective qu’on leur accorde. En parallèle, de plus en plus de particuliers savent bouturer, multiplier et entretenir leurs plantes, sans avoir d’espace dédié pour les transmettre, les vendre ou leur offrir une seconde vie. Rhizome répond à ce manque en proposant une plateforme pensée spécifiquement pour l’échange de plantes entre particuliers.Au - delà de l’achat et de la vente, le projet valorise les circuits locaux, les savoir- faire(bouturage, rempotage, entretien) et la mise en relation entre passionnés. Inscrit dans une logique d’économie circulaire, Rhizome encourage la seconde vie des plantes, une consommation plus responsable et une approche communautaire du végétal."
+                        title: "A simple observation",
+                        description: "General platforms ignore the seasonality and fragility of plants. Rhizome addresses this by offering a platform specifically designed for plant exchanges."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             resultat: {
                 content: {
                     fr: {
-                        title: "Cette V2 explore le potentiel complet de Rhizome.",
-                        description: "L’objectif est de dépasser la simple marketplace C2C de plantes pour construire un écosystème communautaire dédié aux passionnés de nature. Rhizome évolue vers un réseau social centré sur la culture du végétal: partage de conseils, transmission de savoir- faire et suivi des plantes dans une logique de collection.Les profils utilisateurs s’enrichissent au fil du temps, avec des badges reflétant l’expérience, l’engagement et les pratiques. La plateforme introduit également des profils référents — éco- influenceurs — sélectionnés selon des critères stricts, afin de garantir la fiabilité des conseils partagés. Enfin, un journal éditorial accueille des contenus produits par des partenaires spécialisés, prolongeant Rhizome comme un espace de référence autour des pratiques végétales."
+                        title: "Une vision communautaire",
+                        description: "Cette V2 dépasse la simple marketplace pour construire un écosystème dédié aux passionnés : partage de conseils, transmission de savoir-faire et suivi de collection."
                     },
                     en: {
-                        title: "Cette V2 explore le potentiel complet de Rhizome.",
-                        description: "L’objectif est de dépasser la simple marketplace C2C de plantes pour construire un écosystème communautaire dédié aux passionnés de nature. Rhizome évolue vers un réseau social centré sur la culture du végétal: partage de conseils, transmission de savoir- faire et suivi des plantes dans une logique de collection.Les profils utilisateurs s’enrichissent au fil du temps, avec des badges reflétant l’expérience, l’engagement et les pratiques. La plateforme introduit également des profils référents — éco- influenceurs — sélectionnés selon des critères stricts, afin de garantir la fiabilité des conseils partagés. Enfin, un journal éditorial accueille des contenus produits par des partenaires spécialisés, prolongeant Rhizome comme un espace de référence autour des pratiques végétales."
+                        title: "A community vision",
+                        description: "This V2 goes beyond a simple marketplace to build a dedicated ecosystem for enthusiasts: advice sharing, skills transmission, and collection tracking."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: ""
-                }]
+                images: []
             }
         },
         carousel: {
             images: [
                 {
                     src: "/images/projects/rhizome/Rhiziome_slide3.webp",
-                    alt: "Logo Rhizome",
+                    alt: { fr: { text: "Logo Rhizome" }, en: { text: "Rhizome Logo" } },
                 },
                 {
                     src: "/images/projects/rhizome/Rhiziome_slide2.webp",
-                    alt: "écran",
-                },
-                {
-                    src: "/images/projects/rhizome/Rhiziome_slide1.webp",
-                    alt: "Écran",
-                },
+                    alt: { fr: { text: "Ecran interface" }, en: { text: "Interface screen" } },
+                }
             ],
         },
     },
+    // Kiro
     {
         slug: "kiro",
         hero: {
@@ -386,10 +299,10 @@ export const projects: Project[] = [
             tags: ["UI/UX Designer"],
             content: {
                 fr: {
-                    title: "Kiro, concevoir une expérience de suivi pour kinésithérapeutes"
+                    title: "Kiro, optimiser l'expérience de suivi de rééducation pour les kinésithérapeutes"
                 },
                 en: {
-                    title: "Kiro, concevoir une expérience de suivi pour kinésithérapeutes"
+                    title: "Kiro, optimizing the rehabilitation tracking experience for physiotherapists"
                 }
             },
             year: 2025,
@@ -397,155 +310,132 @@ export const projects: Project[] = [
         leftCorridor: {
             skills: {
                 fr: {
-                    value: ["Ux Strategy", "Interface B2B", "Prototypage avancé"]
+                    values: ["UX Strategy", "Interface B2B", "Prototypage avancé"]
                 },
-                en: { value: ["UX Strategy", "B2B Interface", "Advanced Prototyping"] },
+                en: {
+                    values: ["UX Strategy", "B2B Interface", "Advanced Prototyping"]
+                },
             }
         },
         sections: {
             context: {
                 content: {
                     fr: {
-                        description:
-                            "Kiro est une application existante dédiée au suivi de la rééducation fonctionnelle. Ce projet a été réalisé dans le cadre d’un exercice de conception lors d’un entretien, avec pour objectif de travailler sur une problématique concrète liée aux pratiques des kinésithérapeutes. L’exercice consistait à proposer une expérience claire et adaptée aux usages terrain, en tenant compte des contraintes propres au suivi des patients, de la lisibilité des informations et de la fiabilité des parcours. Le travail s’inscrit dans une logique proche d’un cas réel, avec une attention particulière portée à la compréhension des besoins métier et à la simplicité d’usage.",
+                        description: "Kiro est une application dédiée au suivi de la rééducation fonctionnelle. Ce projet, réalisé lors d'un test technique, visait à proposer une expérience claire adaptée aux usages terrain des praticiens.",
                     },
                     en: {
-                        description:
-                            "Kiro est une application existante dédiée au suivi de la rééducation fonctionnelle. Ce projet a été réalisé dans le cadre d’un exercice de conception lors d’un entretien, avec pour objectif de travailler sur une problématique concrète liée aux pratiques des kinésithérapeutes. L’exercice consistait à proposer une expérience claire et adaptée aux usages terrain, en tenant compte des contraintes propres au suivi des patients, de la lisibilité des informations et de la fiabilité des parcours. Le travail s’inscrit dans une logique proche d’un cas réel, avec une attention particulière portée à la compréhension des besoins métier et à la simplicité d’usage.",
+                        description: "Kiro is an application dedicated to functional rehabilitation tracking. This project, created during a technical test, aimed to provide a clear experience adapted to the daily needs of practitioners.",
                     }
                 },
                 details: [
                     {
-                        content: {
-                            fr: { label: "Temps de travail" },
-                            en: { label: "Working time" }
-                        },
-                        value: ["14.12.2024|27.08.2025"],
+                        content: { fr: { label: "Temps de travail" }, en: { label: "Timeline" } },
+                        value: ["Exercice technique | 2025"],
                     },
                     {
-                        content: {
-                            fr: { label: "Collaborateurs" },
-                            en: { label: "Collaborators" }
-                        },
-                        value: ["Ma pomme"],
-                    },
-                    {
-                        content: {
-                            fr: { label: "Rôle" },
-                            en: { label: "Rôle" }
-                        },
+                        content: { fr: { label: "Collaborateurs" }, en: { label: "Collaborators" } },
                         value: [
-                            {
-                                content: {
-                                    fr: { label: "Concepteur d’application" },
-                                    en: { label: "Product designer" }
-                                }
-                            }
+                            { content: { fr: { label: "Ma pomme" }, en: { label: "Myself" } } }
                         ],
                     },
                     {
-                        content: {
-                            fr: { label: "Link" },
-                            en: { label: "Link" }
-                        },
-                        value: ["https://www.figma.com/design/XujzwV1i7ogDs52f51IDTG/Kiro?node-id=30-192"],
+                        content: { fr: { label: "Rôle" }, en: { label: "Role" } },
+                        value: [
+                            { content: { fr: { label: "Product Designer" }, en: { label: "Product Designer" } } }
+                        ],
                     },
                     {
-                        content: {
-                            fr: { label: "Catégorie" },
-                            en: { label: "Category" }
-                        },
-                        value: ["Marketplace"],
+                        content: { fr: { label: "Lien" }, en: { label: "Link" } },
+                        value: [
+                            { content: { fr: { label: "Prototype Figma" }, en: { label: "Figma Prototype" } }, href: "https://www.figma.com/design/XujzwV1i7ogDs52f51IDTG/Kiro?node-id=30-192" }
+                        ],
+                    },
+                    {
+                        content: { fr: { label: "Catégorie" }, en: { label: "Category" } },
+                        value: ["SaaS B2B / Santé"],
                     },
                 ],
             },
             objectifs: {
                 content: {
                     fr: {
-                        description: "Faciliter le suivi de la rééducation pour les kinésithérapeutes en proposant des parcours clairs permettant de visualiser les exercices, la progression des patients et les informations essentielles au suivi."
+                        title: "Objectifs",
+                        description: "Faciliter le suivi de la rééducation en proposant des parcours clairs permettant de visualiser les exercices, la progression des patients et les informations essentielles."
                     },
                     en: {
-                        description: "Faciliter le suivi de la rééducation pour les kinésithérapeutes en proposant des parcours clairs permettant de visualiser les exercices, la progression des patients et les informations essentielles au suivi."
+                        title: "Objectives",
+                        description: "Facilitate rehabilitation tracking by providing clear user journeys to visualize exercises, patient progress, and essential medical data."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             role: {
                 content: {
                     fr: {
-                        description: "Dans le cadre de cet exercice, j’ai travaillé sur la compréhension du besoin métier des kinésithérapeutes, la conception des parcours utilisateurs en particulier un dashboard où l'on retrouve la patientel, je me suis donc occupé de la réalisation des wireframes et interfaces UI, en mettant l’accent sur la clarté, la fiabilité des informations et l’adaptation aux usages professionnels."
+                        title: "Mon Rôle",
+                        description: "Conception des parcours utilisateurs (dashboard patientèle), réalisation des wireframes et interfaces UI, avec un accent sur la fiabilité des informations métier."
                     },
                     en: {
-                        description: "Dans le cadre de cet exercice, j’ai travaillé sur la compréhension du besoin métier des kinésithérapeutes, la conception des parcours utilisateurs en particulier un dashboard où l'on retrouve la patientel, je me suis donc occupé de la réalisation des wireframes et interfaces UI, en mettant l’accent sur la clarté, la fiabilité des informations et l’adaptation aux usages professionnels."
+                        title: "My Role",
+                        description: "Design of user journeys (patient dashboard), creation of wireframes and UI interfaces, focusing on the reliability of professional medical data."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             demarche: {
                 content: {
                     fr: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        title: "Démarche",
+                        description: "Analyse des besoins métier des kinésithérapeutes pour transformer des données complexes en une interface lisible et actionnable en plein soin."
                     },
                     en: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        title: "Approach",
+                        description: "Analysis of physiotherapists' business needs to transform complex data into a readable and actionable interface during patient care."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             resultat: {
                 content: {
                     fr: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        title: "Résultat",
+                        description: "Une interface épurée qui réduit la charge cognitive du praticien, lui permettant de se concentrer sur l'humain tout en assurant une saisie de données rigoureuse."
                     },
                     en: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        title: "Result",
+                        description: "A streamlined interface that reduces the practitioner's cognitive load, allowing them to focus on the patient while ensuring rigorous data entry."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             }
         },
         carousel: {
             images: [
                 {
-                    src: "/images/projects/siko/screen-1.jpg",
-                    alt: "Dashboard Siko Mobility",
+                    src: "/images/projects/kiro/screen-1.jpg",
+                    alt: { fr: { text: "Vue Dashboard" }, en: { text: "Dashboard View" } },
                 },
                 {
-                    src: "/images/projects/siko/screen-2.jpg",
-                    alt: "Parcours utilisateur",
-                },
-                {
-                    src: "/images/projects/siko/screen-3.jpg",
-                    alt: "Écran mobile",
-                },
+                    src: "/images/projects/kiro/screen-2.jpg",
+                    alt: { fr: { text: "Détail Patient" }, en: { text: "Patient Details" } },
+                }
             ],
         },
     },
+    // Oneiro
     {
         slug: "oneiro",
         hero: {
             entreprise: "Oneiro",
             cover: "/images/oneiro/cover.webp",
             image: "/icons/projets/Oneiro_logo.svg",
-            tags: ["UI/UX Designer"],
+            tags: ["UI/UX Designer", "Full Stack"],
             content: {
                 fr: {
                     title: "Oneiro, application de génération d’histoires pour enfants assistée par l’IA"
                 },
                 en: {
-                    title: "Oneiro, application de génération d’histoires pour enfants assistée par l’IA"
+                    title: "Oneiro, AI-powered story generation app designed for children"
                 }
             },
             year: 2023,
@@ -553,161 +443,124 @@ export const projects: Project[] = [
         leftCorridor: {
             skills: {
                 fr: {
-                    value: ["Ux Narratif", "Interface éducative", "IA Générative"]
+                    values: ["UX Narratif", "Interface éducative", "IA Générative"]
                 },
-                en: { value: ["Narrative UX", "Educational Interface", "Generative AI"] },
+                en: {
+                    values: ["Narrative UX", "Educational Interface", "Generative AI"]
+                },
             }
         },
         sections: {
             context: {
                 content: {
                     fr: {
-                        description:
-                            "Oneiro est un projet de conception d’application visant à explorer les usages de l’IA générative dans un contexte éducatif et créatif destiné aux enfants. L’ambition du projet était de proposer une expérience ludique permettant à l’enfant de participer activement à la création d’une histoire, en choisissant le type de récit, le héros et les péripéties. L’application générait ensuite une histoire personnalisée, disponible en version écrite ou audio, accompagnée d’une illustration en noir et blanc. Le projet portait une attention particulière à la simplicité d’usage, à l’autonomie de l’enfant et à la transformation du numérique en support créatif tangible, notamment via l’export des histoires en PDF imprimable.",
+                        description: "Oneiro explore les usages de l’IA générative dans un contexte éducatif. L’ambition était de proposer une expérience ludique permettant à l’enfant de participer activement à la création d’une histoire personnalisée.",
                     },
                     en: {
-                        description:
-                            "Oneiro is an application design project exploring the use of generative AI in an educational and creative context for children. The goal was to create a playful experience where children actively participate in building a story by choosing the type of narrative, the hero, and key events. The application then generated a personalized story, available in written or audio format, accompanied by a black- and - white illustration.Particular attention was given to ease of use, children’s autonomy, and turning digital interaction into a tangible creative outcome, notably through the ability to export stories as printable PDFs.",
+                        description: "Oneiro explores the use of generative AI in an educational context. The goal was to offer a playful experience where children actively participate in creating their own personalized stories.",
                     }
                 },
                 details: [
                     {
-                        content: {
-                            fr: { label: "Temps de travail" },
-                            en: { label: "Working time" }
-                        },
-                        value: ["23.06.2023|12.08.2023"],
+                        content: { fr: { label: "Temps de travail" }, en: { label: "Timeline" } },
+                        value: ["23.06.2023 | 12.08.2023"],
                     },
                     {
-                        content: {
-                            fr: { label: "Collaborateurs" },
-                            en: { label: "Collaborators" }
-                        },
-                        value: ["Thibaut Colin"],
-                    },
-                    {
-                        content: {
-                            fr: { label: "Rôle" },
-                            en: { label: "Role" }
-                        },
+                        content: { fr: { label: "Collaborateurs" }, en: { label: "Collaborators" } },
                         value: [
-                            {
-                                content: {
-                                    fr: { label: "Concepteur d’application" },
-                                    en: { label: "Product designer" }
-                                }
-                            },
-                            {
-                                content: {
-                                    fr: { label: "Développeur full stack" },
-                                    en: { label: "Full-stack developer" }
-                                }
-                            }
+                            { content: { fr: { label: "Thibaut Colin" }, en: { label: "Thibaut Colin" } } }
+                        ],
+                    },
+                    {
+                        content: { fr: { label: "Rôle" }, en: { label: "Role" } },
+                        value: [
+                            { content: { fr: { label: "Concepteur d’application" }, en: { label: "Product Designer" } } },
+                            { content: { fr: { label: "Développeur Full Stack" }, en: { label: "Full Stack Developer" } } }
                         ],
                         marquee: true,
                     },
                     {
-                        content: {
-                            fr: { label: "Link" },
-                            en: { label: "Link" }
-                        },
-                        value: ["https://www.figma.com/design/vketK7TBIhF9WOnvcLrN7z/oneiro?node-id=2003-919&t=2w9s5Pk56QOR0shY-11"],
+                        content: { fr: { label: "Lien" }, en: { label: "Link" } },
+                        value: [
+                            { content: { fr: { label: "Maquette Figma" }, en: { label: "Figma Prototype" } }, href: "https://www.figma.com/design/vketK7TBIhF9WOnvcLrN7z/oneiro?node-id=2003-919" }
+                        ],
                     },
                     {
-                        content: {
-                            fr: { label: "Catégorie" },
-                            en: { label: "Category" }
-                        },
-                        value: ["Application éducative"],
+                        content: { fr: { label: "Catégorie" }, en: { label: "Category" } },
+                        value: ["EdTech / IA"],
                     },
                 ],
             },
             objectifs: {
                 content: {
                     fr: {
-                        description: "Concevoir une expérience créative accessible aux enfants, leur permettant de co-créer des histoires à l’aide de l’IA, tout en favorisant l’imaginaire, l’autonomie et le passage du numérique à une activité créative hors écran."
+                        title: "Objectifs",
+                        description: "Concevoir une expérience créative accessible, favorisant l’imaginaire et l’autonomie, tout en transformant le numérique en un support tangible via l'export PDF."
                     },
                     en: {
-                        description: "Design an accessible creative experience for children, enabling them to co-create stories with AI while fostering imagination, autonomy, and the transition from digital interaction to offline creative activity."
+                        title: "Objectives",
+                        description: "Design an accessible creative experience that fosters imagination and autonomy, turning digital interaction into tangible outcomes via PDF exports."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             role: {
                 content: {
                     fr: {
-                        description: "J’ai conçu le projet de bout en bout, définition du concept, réflexion sur les parcours enfants, conception UX/UI, structuration des choix narratifs et design des supports générés (texte, audio et illustration), avec une attention particulière portée à la simplicité, à l’accessibilité et à l’expérience utilisateur enfant."
+                        title: "Mon Rôle",
+                        description: "Conception de bout en bout : réflexion sur les parcours enfants, UX/UI, structuration des prompts IA pour les récits et design des supports audio/visuels."
                     },
                     en: {
-                        description: "I designed the project end to end: defining the concept, shaping the children’s user flows, leading UX/UI design, structuring the narrative choices, and designing the generated outputs (text, audio, and illustration), with a strong focus on simplicity, accessibility, and a child-friendly user experience."
+                        title: "My Role",
+                        description: "End-to-end design: children's user flows, UX/UI, structuring AI prompts for narratives, and designing audio/visual outputs."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             demarche: {
                 content: {
                     fr: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        title: "Démarche",
+                        description: "Une approche centrée sur l'enfant, simplifiant les interactions avec l'IA pour les rendre magiques plutôt que techniques, avec un focus sur l'accessibilité cognitive."
                     },
                     en: {
-                        description: "As the project lead, I handled the entire design process: defining the concept, conducting UX research, designing user flows, creating UI mockups, and implementing the product on WordPress, including C2C marketplace features."
+                        title: "Approach",
+                        description: "A child-centered approach, simplifying AI interactions to make them feel magical rather than technical, focusing on cognitive accessibility."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             },
             resultat: {
                 content: {
                     fr: {
-                        description: "En tant que porteur du projet, j’ai assuré l’ensemble de la conception : définition du concept, recherche UX, conception des parcours, création des maquettes UI et mise en place du produit sur WordPress, incluant les fonctionnalités de marketplace C2C."
+                        title: "Résultat",
+                        description: "Un prototype fonctionnel démontrant comment l'IA peut stimuler la créativité hors-écran, récompensé par un intérêt marqué pour son approche éthique et pédagogique."
                     },
                     en: {
-                        description: "As the project lead, I handled the entire design process: defining the concept, conducting UX research, designing user flows, creating UI mockups, and implementing the product on WordPress, including C2C marketplace features."
+                        title: "Result",
+                        description: "A functional prototype demonstrating how AI can stimulate off-screen creativity, recognized for its ethical and pedagogical approach."
                     }
                 },
-                image: [{
-                    src: "",
-                    alt: "",
-                }]
+                images: []
             }
         },
         carousel: {
             images: [
                 {
-                    src: "/images/projects/siko/screen-1.jpg",
-                    alt: "Dashboard Siko Mobility",
+                    src: "/images/projects/oneiro/screen-1.jpg",
+                    alt: { fr: { text: "Interface de création" }, en: { text: "Creation interface" } },
                 },
                 {
-                    src: "/images/projects/siko/screen-2.jpg",
-                    alt: "Parcours utilisateur",
-                },
-                {
-                    src: "/images/projects/siko/screen-3.jpg",
-                    alt: "Écran mobile",
-                },
+                    src: "/images/projects/oneiro/screen-2.jpg",
+                    alt: { fr: { text: "Lecture de l'histoire" }, en: { text: "Story reading view" } },
+                }
             ],
         },
     },
 ];
-
-export type HomeProject = {
-    slug: string;
-    entreprise: string;
-    year: number;
-    cover: string;
-    title: string;
-    skills: string[];
-};
-
-
+/**
+ * Retourne la liste simplifiée pour la page d'accueil
+ */
 export const getProjectsList = (lang: Lang): HomeProject[] =>
     projects.map((project) => ({
         slug: project.slug,
@@ -715,5 +568,5 @@ export const getProjectsList = (lang: Lang): HomeProject[] =>
         year: project.hero.year,
         cover: project.hero.cover,
         title: project.hero.content[lang].title,
-        skills: project.leftCorridor.skills[lang].value,
+        skills: project.leftCorridor.skills[lang].values,
     }));

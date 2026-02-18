@@ -4,6 +4,29 @@
     --nav-max-width: 1200px;
 }
 
+.nav-links {
+    margin: 4px 0px 4px 0px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2.5rem;
+    /* On s'assure que le menu ne recalcule pas tout le temps */
+    flex-wrap: nowrap;
+}
+
+.left-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links li {
+    list-style: none;
+    /* Le LI ne doit ni rétrécir ni grandir selon son contenu pendant l'anim */
+    flex: 0 0 auto;
+}
+
 .nav-links a,
 .mobile-links a,
 .logo-link {
@@ -13,9 +36,6 @@
     text-decoration: none;
     color: inherit;
 }
-
-
-/* --- 2. STRUCTURE DE LA NAVBAR --- */
 
 /* --- 2. STRUCTURE DE LA NAVBAR --- */
 
@@ -29,8 +49,6 @@
     display: flex;
     justify-content: space-between;
     border-bottom: none;
-
-
 }
 
 .navbar,
@@ -38,6 +56,11 @@
     will-change: transform;
     /* L'animation de base (1.2s c'est plus doux) */
     animation: slideDownNav 1.2s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
+}
+
+.home-only,
+.project-only {
+    display: none !important;
 }
 
 /* Pseudo-élément pour la barre de scroll (inchangé) */
@@ -78,30 +101,35 @@
 
 
 /* --- 3. LIENS & LOGIQUE HOME/PROJET --- */
-.nav-links {
-    display: flex;
+.home-only,
+.project-only,
+svg.rectangle.home-only,
+svg.rectangle.project-only {
+    display: none !important;
+}
+
+/* --- AFFICHAGE HOME --- */
+body.is-home .home-only,
+body.is-home .nav-links .home-only {
+    display: flex !important;
     align-items: center;
-    gap: 2.5rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
 }
 
-.nav-links .rectangle {
-    height: 4vh;
+/* Cas particulier des SVG */
+body.is-home .nav-links svg.home-only {
+    display: inline-block !important;
 }
 
-.project-only {
-    display: none;
+/* --- AFFICHAGE PROJET --- */
+body.is-project-page .project-only,
+body.is-project-page .nav-links .project-only {
+    display: flex !important;
 }
 
-:global(body.is-project-page) .home-only {
-    display: none;
+body.is-project-page .nav-links svg.project-only {
+    display: inline-block !important;
 }
 
-:global(body.is-project-page) .project-only {
-    display: block;
-}
 
 .hamburger {
     display: none;
@@ -160,22 +188,35 @@
     flex-direction: column;
 }
 
+.nav-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2.5rem;
+    width: auto;
+}
+
+.nav-links li {
+    list-style: none;
+    flex: 0 0 auto;
+    /* Empêche le rétrécissement ou l'agrandissement */
+    display: flex;
+    justify-content: center;
+}
+
 .nav-links li a {
-    display: inline-block;
-    text-decoration: none;
-    white-space: nowrap;
-    font-family: monospace;
-    /* Indispensable pour la largeur fixe */
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, monospace !important;
 }
 
 :global(.char) {
-    display: inline-block;
-    width: 1ch;
+    display: inline-block !important;
+    width: 14px !important;
     text-align: center;
-    transition:
-        opacity 0.4s ease,
-        transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    will-change: transform, opacity;
+    flex-shrink: 0;
+}
+
+nav-links li a:hover {
+    font-weight: inherit;
 }
 
 :global(.char.shuffling) {
@@ -234,7 +275,6 @@
         color: #000 !important;
         /* Force la couleur pour le test */
         font-size: 32px;
-        font-family: sans-serif;
         /* Pour être sûr que la police ne bug pas */
     }
 

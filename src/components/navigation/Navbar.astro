@@ -1,15 +1,24 @@
 ---
 import LogoNav from "../navigation/LogoNav.astro";
+import ToggleLanguage from "../ui/toggleLanguage.astro";
+import { NavConcent } from "../../data/navigation";
 ---
 
 <nav class="navbar">
     <div class="nav-container">
-        <a href="/" class="logo-link">
-            <LogoNav />
-        </a>
+        <div class="left-nav">
+            <a href="/" class="logo-link">
+                <LogoNav />
+            </a>
+            <ToggleLanguage />
+        </div>
 
         <ul class="nav-links desktop-only" id="main-nav-links">
-            <li class="home-only"><a href="#projects">Mes projets</a></li>
+            <li class="home-only">
+                <a href="#projects" data-i18n-key="projects"
+                    >{NavConcent.projects}</a
+                >
+            </li>
             <svg
                 class="rectangle home-only"
                 viewBox="0 0 220 100"
@@ -67,7 +76,9 @@ import LogoNav from "../navigation/LogoNav.astro";
             >
                 <rect x="0" y="0" width="100" height="100"></rect>
             </svg>
-            <li><a href="#contact" class="btn-contact">Me contacter</a></li>
+            <li style="list-style: none;">
+                <a href="#contact" class="btn-contact">Me contacter</a>
+            </li>
         </ul>
 
         <button class="hamburger" aria-label="Menu" id="hamburger-btn">
@@ -112,6 +123,7 @@ import LogoNav from "../navigation/LogoNav.astro";
 
     const glyphs = "0123456789";
 
+    // --- EFFET CIPHER ---
     const runSmoothCipher = (el, spans) => {
         if (el && el.dataset && el.dataset.intervalId) {
             clearInterval(parseInt(el.dataset.intervalId));
@@ -157,11 +169,21 @@ import LogoNav from "../navigation/LogoNav.astro";
     };
 
     const initNavAnimations = () => {
-        const navElement = document.querySelector(".navbar");
+        const path = window.location.pathname;
+        const isHomePage =
+            path === "/" || path.endsWith("/index.html") || path === "";
 
+        if (isHomePage) {
+            document.body.classList.add("is-home");
+            document.body.classList.remove("is-project-page");
+        } else {
+            document.body.classList.add("is-project-page");
+            document.body.classList.remove("is-home");
+        }
+
+        const navElement = document.querySelector(".navbar");
         if (navElement) {
             navElement.classList.remove("is-drawn");
-            // Utilisation des crochets pour éviter l'erreur sur Element
             const _reflow = navElement["offsetWidth"];
             setTimeout(() => navElement.classList.add("is-drawn"), 100);
         }
@@ -175,27 +197,28 @@ import LogoNav from "../navigation/LogoNav.astro";
             "mobile-links-container",
         );
 
-        if (btn && r1 && r2) {
+        if (btn && r1 && r2 && desktopLinks && mobileLinksContainer) {
+            mobileLinksContainer.innerHTML = "";
+
+            const activeSelector = isHomePage ? ".home-only" : ".project-only";
+            const commonSelector = "li:not(.home-only):not(.project-only)";
+
+            const linksToClone = desktopLinks.querySelectorAll(
+                `${activeSelector}, ${commonSelector}`,
+            );
+
+            linksToClone.forEach((link) => {
+                const clone = link.cloneNode(true);
+                mobileLinksContainer.appendChild(clone);
+            });
+
             let isOpen = false;
             let lastScrollY = window.scrollY;
 
-            if (
-                desktopLinks &&
-                mobileLinksContainer &&
-                mobileLinksContainer.children.length === 0
-            ) {
-                const isProject =
-                    document.body.classList.contains("is-project-page");
-                const selector = isProject
-                    ? ".project-only, li:not(.home-only)"
-                    : ".home-only, li:not(.project-only)";
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
 
-                desktopLinks.querySelectorAll(selector).forEach((link) => {
-                    mobileLinksContainer.appendChild(link.cloneNode(true));
-                });
-            }
-
-            btn.addEventListener("click", () => {
+            newBtn.addEventListener("click", () => {
                 isOpen = !isOpen;
                 const spring = "spring(1, 100, 15, 0)";
                 anime({
@@ -231,8 +254,12 @@ import LogoNav from "../navigation/LogoNav.astro";
             );
         }
 
+        // 3. EFFET CIPHER SUR LES LIENS VISIBLES
         const navItems = document.querySelectorAll("#main-nav-links li");
         navItems.forEach((li) => {
+            // On n'initialise que si l'élément est visible (CSS display != none)
+            if (getComputedStyle(li).display === "none") return;
+
             const anchor = li.querySelector("a");
             if (!anchor || anchor.dataset.initialized) return;
 
@@ -254,34 +281,22 @@ import LogoNav from "../navigation/LogoNav.astro";
         });
     };
 
-    document.addEventListener("astro:page-load", initNavAnimations);
-
-    if (document.readyState !== "loading") {
-        initNavAnimations();
-    } else {
-        document.addEventListener("DOMContentLoaded", initNavAnimations);
-    }
-
-    // border progression navbar \\
+    // --- PROGRESSION BAR ---
     const updateScrollProgress = () => {
         const nav = document.querySelector(".navbar");
         if (!nav) return;
-
         const winScroll = window.scrollY || document.documentElement.scrollTop;
         const height =
             document.documentElement.scrollHeight -
             document.documentElement.clientHeight;
-
-        // Sécurité pour éviter la division par zéro sur les pages courtes
         const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-
         nav.style.setProperty("--scroll-width", `${scrolled}%`);
     };
 
-    // On l'ajoute à l'initialisation générale
+    // --- GESTION DES CHARGEMENTS ---
     const setupAll = () => {
         initNavAnimations();
-        updateScrollProgress(); // Calcul immédiat au chargement
+        updateScrollProgress();
     };
 
     document.addEventListener("astro:page-load", setupAll);
@@ -293,17 +308,13 @@ import LogoNav from "../navigation/LogoNav.astro";
         document.addEventListener("DOMContentLoaded", setupAll);
     }
 
-    //animation navbar ouverture site
+    // Prévention de l'animation de logo répétitive
     document.addEventListener("DOMContentLoaded", () => {
-        const navbar = document.querySelector(".navbar, scroll-wrapper");
-
-        // On vérifie si l'utilisateur a déjà vu l'animation pendant sa session
-        if (!sessionStorage.getItem("navAnimated")) {
-            // C'est sa première visite : on enregistre qu'il a vu l'animation
-            sessionStorage.setItem("navAnimated", "true");
-        } else {
-            // Il a déjà vu l'animation : on la supprime pour que la navbar soit là immédiatement
+        const navbar = document.querySelector(".navbar");
+        if (navbar && sessionStorage.getItem("navAnimated")) {
             navbar.style.animation = "none";
+        } else {
+            sessionStorage.setItem("navAnimated", "true");
         }
     });
 </script>

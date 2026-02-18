@@ -1,14 +1,5 @@
 ---
-import { heroContent } from "../../content/hero.js";
-import type { HeroLang } from "../../content/hero.js";
-
-const isHeroLang = (v: any): v is HeroLang => v === "fr" || v === "en";
-
-const urlLang = Astro.url.searchParams.get("lang");
-const lang: HeroLang = isHeroLang(urlLang) ? urlLang : "fr";
-
-const content = heroContent[lang];
-
+import { heroContent } from "../../data/hero.js";
 import LogoHero from "../ui/Logohero.astro";
 ---
 
@@ -63,7 +54,6 @@ import LogoHero from "../ui/Logohero.astro";
     <LogoHero />
     <div class="bottom-hero">
         <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
-
         <div class="scroll-wrapper">
             <p id="scroll-text">↓↓↓ Scroll ↓↓↓</p>
         </div>
@@ -72,22 +62,26 @@ import LogoHero from "../ui/Logohero.astro";
     <!-- <p>{heroContent[lang].subtitle}</p> -->
 
     <div class="definiton">
-        <p id="hero-job" class="cipher-text">Concepteur d'application</p>
+        <p id="hero-job" data-i18n-key="job" class="cipher-text">
+            {heroContent.fr.job}
+        </p>
         <div class="linerDefinition">
-            <p>
-                <b>n.m </b>(Du latin designare (projeter) et inter-agere (agir
-                entre).
+            <p data-i18n-key="context">
+                <b id="hero-label">{heroContent.fr.context.label}</b>
+                <span id="hero-description"
+                    >{heroContent.fr.context.description}</span
+                >
             </p>
             <div class="definitionText">
                 <ol class="definitionList">
-                    <li>
-                        Concepteur d’interfaces pensées pour être comprises et
-                        utilisées.
+                    <li id="hero-def1" data-i18n-key="definition_1">
+                        {heroContent.fr.definition_1}
                     </li>
-                    <li>Médiateur entre usage, design et technique.</li>
-                    <li>
-                        Architecte de systèmes visuels et comportementaux
-                        cohérents.
+                    <li id="hero-def2" data-i18n-key="definition_2">
+                        {heroContent.fr.definition_2}
+                    </li>
+                    <li id="hero-def3" data-i18n-key="definition_3">
+                        {heroContent.fr.definition_3}
                     </li>
                 </ol>
             </div>
@@ -248,6 +242,7 @@ import LogoHero from "../ui/Logohero.astro";
     }
 
     .definitionList {
+        color: var(--text-secondary);
         padding-left: 18px;
         margin-bottom: 0;
     }
@@ -255,8 +250,8 @@ import LogoHero from "../ui/Logohero.astro";
 <script>
     const glyphs = "0123456789@#$%&*";
 
-    const animateCipher = (el, delay = 0) => {
-        if (el.dataset.animated === "true") return; // Évite de relancer
+    const animateCipher = (el: HTMLElement, delay = 0) => {
+        if (el.dataset.animated === "true") return;
         el.dataset.animated = "true";
 
         const originalText = el.textContent || "";
@@ -276,7 +271,7 @@ import LogoHero from "../ui/Logohero.astro";
 
         setTimeout(() => {
             let iterations = 0;
-            const step = 4;
+            const step = 8; // PLUS HAUT = PLUS LONG (Vitesse de révélation)
             const timer = setInterval(() => {
                 spans.forEach((obj, index) => {
                     const isFixed = iterations > index * step;
@@ -287,22 +282,20 @@ import LogoHero from "../ui/Logohero.astro";
                             obj.span.classList.replace("shuffling", "fixed");
                         }
                     } else if (obj.final !== " ") {
-                        if (iterations % 2 === 0) {
-                            obj.span.textContent =
-                                glyphs[
-                                    Math.floor(Math.random() * glyphs.length)
-                                ];
-                        }
+                        // On mélange un peu plus souvent
+                        obj.span.textContent =
+                            glyphs[Math.floor(Math.random() * glyphs.length)];
                     }
                 });
-                if (iterations > spans.length * step + 10) clearInterval(timer);
+
+                // On augmente la marge de fin (+50) pour être sûr que tout se termine
+                if (iterations > spans.length * step + 50) clearInterval(timer);
                 iterations++;
-            }, 30);
+            }, 40); // 40ms au lieu de 30ms pour ralentir l'effet global
         }, delay);
     };
 
     const initHeroAnimations = () => {
-        // Horloge
         const clockDigits = document.querySelectorAll(".digit");
         if (clockDigits.length) {
             let clockIter = 0;
@@ -311,32 +304,33 @@ import LogoHero from "../ui/Logohero.astro";
                 const timeStr =
                     String(now.getHours()).padStart(2, "0") +
                     String(now.getMinutes()).padStart(2, "0");
+
                 clockDigits.forEach((d, i) => {
-                    const fixed = clockIter > i * 8;
+                    const el = d as HTMLElement;
+                    const fixed = clockIter > i * 12; // Ralenti aussi l'horloge
                     if (fixed) {
-                        d.textContent = timeStr[i];
-                        d.classList.replace("shuffling", "fixed");
+                        el.textContent = timeStr[i];
+                        el.classList.replace("shuffling", "fixed");
                     } else {
-                        d.textContent = Math.floor(
+                        el.textContent = Math.floor(
                             Math.random() * 10,
                         ).toString();
-                        d.classList.add("shuffling");
+                        el.classList.add("shuffling");
                     }
                 });
-                if (clockIter > 40) clearInterval(clockTimer);
+                if (clockIter > 60) clearInterval(clockTimer);
                 clockIter++;
-            }, 40);
+            }, 50);
         }
 
-        // Textes
         const texts = document.querySelectorAll(".cipher-text");
         texts.forEach((text, i) => {
-            animateCipher(text, 300 + i * 250);
+            animateCipher(text as HTMLElement, 300 + i * 250);
         });
     };
 
-    // --- LES DÉCLENCHEURS ---
     document.addEventListener("astro:page-load", initHeroAnimations);
+
     if (document.readyState !== "loading") {
         initHeroAnimations();
     } else {
@@ -455,4 +449,13 @@ import LogoHero from "../ui/Logohero.astro";
     };
 
     document.addEventListener("astro:page-load", startImpactRGB);
+</script>
+<script>
+    import { initI18n } from "../../scripts/langEngine";
+
+    // On lance le moteur une seule fois
+    initI18n();
+
+    // Si tu utilises ViewTransitions d'Astro
+    document.addEventListener("astro:page-load", initI18n);
 </script>

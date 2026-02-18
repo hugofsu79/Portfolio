@@ -1,23 +1,56 @@
-import type { contexte } from "../types/textesAbout";
+import type { Contexte } from "../types/textesAbout";
 
-export const about: contexte[] = [
+export const about: Contexte[] = [
     {
-        titre: "Approche",
-        icon: "",
-        texte: "Je conçois des interfaces pour des produits exigeants, où le design n’est pas un simple habillage mais un levier de compréhension, d’usage et de cohérence. Mon approche repose sur une conception rigoureuse des systèmes d’interface, en portant une attention particulière à l’interaction, au mouvement et à la continuité de l’expérience.Mon profil hybride de designer UI/UX et de développeur front-end est un choix assumé. Il me permet de penser les interfaces jusque dans leur mise en œuvre technique, en dialogue constant avec les contraintes réelles de production. Je m’intéresse particulièrement au x projets où la qualité, l a  méthode et la vision prduit occupent une place centrale, et où la complexité du sujet permet une exploration durable plutôt qu’une exécution répétitive.",
+        icon: "", // Ajoute tes chemins d'icônes ici
+        content: {
+            fr: {
+                titre: "Approche",
+                texte: "Je conçois des interfaces pour des produits exigeants, où le design n’est pas un simple habillage mais un levier de compréhension, d’usage et de cohérence. Mon approche repose sur une conception rigoureuse des systèmes d’interface, en portant une attention particulière à l’interaction, au mouvement et à la continuité de l’expérience. Mon profil hybride de designer UI/UX et de développeur front-end est un choix assumé.",
+            },
+            en: {
+                titre: "Approach",
+                texte: "I design interfaces for demanding products, where design is not just a coat of paint but a lever for understanding, usability, and consistency. My approach is based on a rigorous design of interface systems, paying particular attention to interaction, movement, and experience continuity. My hybrid profile as a UI/UX designer and front-end developer is a deliberate choice.",
+            }
+        }
     },
     {
-        titre: "Ce qui nourrit ma pratique",
         icon: "",
-        texte: "En parallèle de mon travail de conception, j’explore des domaines variés comme la musique, le code ou d’autres formes de systèmes créatifs. Ces explorations nourrissent ma manière de penser l’interface, le rythme et la logique des décisions. Comprendre les motivations des utilisateurs, des clients ou des collaborateurs reste au cœur de ma démarche, tout comme la capacité à formuler des choix clairs et argumentés.",
+        content: {
+            fr: {
+                titre: "Ce qui nourrit ma pratique",
+                texte: "En parallèle de mon travail de conception, j’explore des domaines variés comme la musique, le code ou d’autres formes de systèmes créatifs. Ces explorations nourrissent ma manière de penser l’interface, le rythme et la logique des décisions.",
+            },
+            en: {
+                titre: "What feeds my practice",
+                texte: "Alongside my design work, I explore various fields such as music, code, or other forms of creative systems. These explorations feed into my way of thinking about interface, rhythm, and decision logic.",
+            }
+        }
     },
     {
-        titre: "Équilibre",
         icon: "",
-        texte: "En dehors des temps de conception, je consacre volontairement de l’espace à d’autres pratiques. La musique, le sport et la cuisine font partie de ces moments de respiration, qui me permettent de déplacer mon attention, de prendre du recul et de revenir avec un regard plus clair. Cet équilibre fait partie intégrante de ma manière de travailler sur le long terme.",
+        content: {
+            fr: {
+                titre: "Équilibre",
+                texte: "En dehors des temps de conception, je consacre volontairement de l’espace à d’autres pratiques. La musique, le sport et la cuisine font partie de ces moments de respiration, qui me permettent de déplacer mon attention.",
+            },
+            en: {
+                titre: "Balance",
+                texte: "Outside of design time, I deliberately dedicate space to other practices. Music, sports, and cooking are part of these moments of respite, allowing me to shift my focus.",
+            }
+        }
     },
     {
-        titre: "Mes alliés",
         icon: "",
-        texte: "En dehors des temps de conception, je consacre volontairement de l’espace à d’autres pratiques. La musique, le sport et la cuisine font partie de ces moments de respiration, qui me permettent de déplacer mon attention, de prendre du recul et de revenir avec un regard plus clair. Cet équilibre fait partie intégrante de ma manière de travailler sur le long terme.",
-    }]
+        content: {
+            fr: {
+                titre: "Mes alliés",
+                texte: "Les outils et méthodologies qui m'accompagnent au quotidien pour garantir une fluidité entre la pensée créative et l'exécution technique.",
+            },
+            en: {
+                titre: "My allies",
+                texte: "The tools and methodologies that support me daily to ensure fluidity between creative thinking and technical execution.",
+            }
+        }
+    }
+];

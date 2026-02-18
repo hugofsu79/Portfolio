@@ -1,0 +1,21 @@
+/* L'effet de transition que tu aimes */
+.lang-changing {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(2px);
+}
+
+[data-i18n-key] {
+    transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+}
+
+/* L'astuce Ghost non-intrusive */
+[data-i18n-key]::after {
+    content: attr(data-ghost);
+    display: block;
+    height: 0;
+    visibility: hidden;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}

@@ -1,38 +1,81 @@
-import { navContent } from '../data/navigation';
 import { langStore } from '../stores/langStore';
 import { heroContent } from '../data/hero';
+import { navLabels } from "../data/navigation";
+import { projects } from "../data/projects";
+import { aboutData } from '../data/textesAbout';
 
+/**
+ * Initialise l'écouteur de changement de langue et met à jour le DOM
+ */
 export function initI18n() {
     langStore.subscribe((lang: 'fr' | 'en') => {
-        const data = { ...heroContent[lang], ...navContent[lang] };
-        const other = { ...heroContent[lang === 'fr' ? 'en' : 'fr'], ...navContent[lang === 'fr' ? 'en' : 'fr'] };
-
-        const elements = document.querySelectorAll('[data-i18n-key]');
-
-        elements.forEach((el) => {
-            const key = el.getAttribute('data-i18n-key');
-            if (!key) return;
-
-            // Update du texte avec ton effet de transition (opacité/blur)
-            el.classList.add('lang-changing');
-
-            setTimeout(() => {
-                if (key === 'context') {
-                    const label = el.querySelector('#hero-label');
-                    const desc = el.querySelector('#hero-description');
-                    if (label && desc) {
-                        label.textContent = data.context.label;
-                        desc.textContent = data.context.description;
-                        el.setAttribute('data-ghost', `${other.context.label} ${other.context.description}`);
-                    }
-                } else {
-                    // @ts-ignore
-                    el.textContent = data[key];
-                    // @ts-ignore
-                    el.setAttribute('data-ghost', other[key]);
-                }
-                el.classList.remove('lang-changing');
-            }, 300);
+        // --- 1. GESTION DES CLÉS STATIQUES ---
+        const aboutFlat: Record<string, string> = {};
+        aboutData.forEach(item => {
+            aboutFlat[`${item.id}_titre`] = item[lang].titre;
+            aboutFlat[`${item.id}_texte`] = item[lang].texte;
         });
+
+        // On extrait 'context' pour ne pas l'envoyer tel quel dans le Record
+        const { context, ...restOfHero } = heroContent[lang];
+
+        const staticContent: Record<string, string> = {
+            ...restOfHero,
+            ...context,
+            ...aboutFlat,
+            ...navLabels[lang]
+        };
+
+        const staticElements = document.querySelectorAll('[data-i18n-key]');
+        staticElements.forEach((el) => {
+            const key = el.getAttribute('data-i18n-key');
+            // Utilisation de "as keyof typeof staticContent" pour rassurer TS
+            if (key && staticContent[key]) {
+                el.classList.add('lang-changing');
+                setTimeout(() => {
+                    (el as HTMLElement).textContent = staticContent[key];
+                    el.classList.remove('lang-changing');
+                }, 300);
+            }
+        });
+
+        // --- 2. GESTION DES PROJETS ([slug].astro) ---
+        const projectTitleEl = document.querySelector('[data-project-slug]');
+        if (projectTitleEl) {
+            const slug = projectTitleEl.getAttribute('data-project-slug');
+            const project = projects.find(p => p.slug === slug);
+
+            if (project) {
+                const projectElements = document.querySelectorAll('[data-i18n-project]');
+                projectElements.forEach((el) => {
+                    const part = el.getAttribute('data-i18n-project');
+                    if (!part) return;
+
+                    let newValue = "";
+                    const content = project.content[lang];
+
+                    switch (part) {
+                        case 'title': newValue = content.title; break;
+                        case 'context_description': newValue = content.context.description; break;
+                        case 'objectifs_title': newValue = content.objectifs?.title || "Objectifs"; break;
+                        case 'objectifs_description': newValue = content.objectifs?.description || ""; break;
+                        case 'role_title': newValue = content.role?.title || "Mon rôle"; break;
+                        case 'role_description': newValue = content.role?.description || ""; break;
+                        case 'demarche_title': newValue = content.demarche?.title || ""; break;
+                        case 'demarche_description': newValue = content.demarche?.description || ""; break;
+                        case 'resultat_title': newValue = content.resultat?.title || ""; break;
+                        case 'resultat_description': newValue = content.resultat?.description || ""; break;
+                    }
+
+                    if (newValue) {
+                        el.classList.add('lang-changing');
+                        setTimeout(() => {
+                            (el as HTMLElement).textContent = newValue;
+                            el.classList.remove('lang-changing');
+                        }, 300);
+                    }
+                });
+            }
+        }
     });
 }

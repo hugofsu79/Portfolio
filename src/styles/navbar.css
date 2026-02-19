@@ -31,7 +31,6 @@
 .mobile-links a,
 .logo-link {
     font-size: var(--p-nav-font-size);
-    display: inline-flex !important;
     white-space: nowrap;
     text-decoration: none;
     color: inherit;

@@ -1,6 +1,6 @@
-import type { I18n } from "../types/projects";
+import type { I18nContent } from "../types/projects";
 
-export const navLabels: I18n<{
+export const navLabels: I18nContent<{
     home: string;
     projects: string;
     labo: string;
@@ -11,14 +11,14 @@ export const navLabels: I18n<{
         home: "Accueil",
         projects: "Projets",
         labo:"Labo",
-        about: "À propos",
+        about: "Ma pomme",
         contact: "Contact",
     },
     en: {
         home: "Home",
         projects: "Projects",
         labo: "Labo",
-        about: "About",
+        about: "About me",
         contact: "Contact",
     }
 };

@@ -66,11 +66,13 @@ import LogoHero from "../ui/Logohero.astro";
             {heroContent.fr.job}
         </p>
         <div class="linerDefinition">
-            <p data-i18n-key="context">
-                <b id="hero-label">{heroContent.fr.context.label}</b>
-                <span id="hero-description"
-                    >{heroContent.fr.context.description}</span
-                >
+            <p>
+                <span id="hero-label" data-i18n-key="label">
+                    {heroContent.fr.context.label}
+                </span>
+                <span id="hero-description" data-i18n-key="description">
+                    {heroContent.fr.context.description}
+                </span>
             </p>
             <div class="definitionText">
                 <ol class="definitionList">
@@ -90,6 +92,18 @@ import LogoHero from "../ui/Logohero.astro";
 </section>
 
 <style>
+    #hero-job {
+        margin: 0;
+        
+        font-family: var(--font-family-base);
+        font-weight: var(--font-weight-bold);
+        font-size: clamp(16px, 1.2vw, 18px);
+    }
+    .definitionList li,
+    #hero-description {
+        color: var(--text-initial);
+    }
+
     h1,
     h2 {
         margin: 0;
@@ -114,7 +128,9 @@ import LogoHero from "../ui/Logohero.astro";
     .is-clear {
         filter: none !important;
     }
-
+    #hero-label {
+        width: fit-content;
+    }
     .top-hero,
     .bottom-hero,
     LogoHero {
@@ -215,10 +231,6 @@ import LogoHero from "../ui/Logohero.astro";
     :global(.char-item) {
         display: inline-block;
     }
-    #hero-job {
-        margin: 0;
-        font-size: clamp(14px, 0.8vw, 12px);
-    }
     .definiton {
         position: fixed;
         right: var(--space-24);
@@ -238,6 +250,8 @@ import LogoHero from "../ui/Logohero.astro";
         will-change: opacity, transform; /* Optimisation performance */
     }
     .linerDefinition p {
+        display: flex;
+        flex-direction: row;
         margin: 2px 0px 2px 0px;
     }
 
@@ -248,158 +262,98 @@ import LogoHero from "../ui/Logohero.astro";
     }
 </style>
 <script>
+    // @ts-ignore
+    import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
+
     const glyphs = "0123456789@#$%&*";
+    let isHeroAnimating = false; // Le verrou global
 
     const animateCipher = (el: HTMLElement, delay = 0) => {
-        if (el.dataset.animated === "true") return;
-        el.dataset.animated = "true";
+        const targetText =
+            el.getAttribute("data-target-text") || el.textContent?.trim() || "";
+        if (!targetText) return;
 
-        const originalText = el.textContent || "";
-        const finalChars = originalText.split("");
-        el.textContent = "";
+        el.setAttribute("data-target-text", targetText);
+        if ((el as any)._cipherInterval)
+            clearInterval((el as any)._cipherInterval);
 
-        const spans = finalChars.map((char) => {
+        const chars = targetText.split("").map((char) => {
             const span = document.createElement("span");
             span.className = "char shuffling";
             span.textContent =
                 char === " "
                     ? "\u00A0"
                     : glyphs[Math.floor(Math.random() * glyphs.length)];
-            el.appendChild(span);
             return { span, final: char };
         });
 
+        el.textContent = "";
+        chars.forEach((c) => el.appendChild(c.span));
+
         setTimeout(() => {
-            let iterations = 0;
-            const step = 8; // PLUS HAUT = PLUS LONG (Vitesse de révélation)
-            const timer = setInterval(() => {
-                spans.forEach((obj, index) => {
-                    const isFixed = iterations > index * step;
-                    if (isFixed) {
-                        if (!obj.span.classList.contains("fixed")) {
+            let iteration = 0;
+            const step = 8;
+            const intervalSpeed = 40;
+
+            (el as any)._cipherInterval = setInterval(() => {
+                let countFixed = 0;
+                chars.forEach((obj, index) => {
+                    if (iteration > index * step) {
+                        if (obj.span.classList.contains("shuffling")) {
                             obj.span.textContent =
                                 obj.final === " " ? "\u00A0" : obj.final;
                             obj.span.classList.replace("shuffling", "fixed");
+                            obj.span.style.filter = "none";
                         }
+                        countFixed++;
                     } else if (obj.final !== " ") {
-                        // On mélange un peu plus souvent
                         obj.span.textContent =
                             glyphs[Math.floor(Math.random() * glyphs.length)];
                     }
                 });
 
-                // On augmente la marge de fin (+50) pour être sûr que tout se termine
-                if (iterations > spans.length * step + 50) clearInterval(timer);
-                iterations++;
-            }, 40); // 40ms au lieu de 30ms pour ralentir l'effet global
+                if (countFixed >= chars.length) {
+                    clearInterval((el as any)._cipherInterval);
+                    (el as any)._cipherInterval = null;
+                    requestAnimationFrame(() => {
+                        el.textContent = "";
+                        el.innerText = targetText;
+                    });
+                }
+                iteration++;
+            }, intervalSpeed);
         }, delay);
     };
 
-    const initHeroAnimations = () => {
+    const updateClock = () => {
         const clockDigits = document.querySelectorAll(".digit");
-        if (clockDigits.length) {
-            let clockIter = 0;
-            const clockTimer = setInterval(() => {
-                const now = new Date();
-                const timeStr =
-                    String(now.getHours()).padStart(2, "0") +
-                    String(now.getMinutes()).padStart(2, "0");
-
-                clockDigits.forEach((d, i) => {
-                    const el = d as HTMLElement;
-                    const fixed = clockIter > i * 12; // Ralenti aussi l'horloge
-                    if (fixed) {
-                        el.textContent = timeStr[i];
-                        el.classList.replace("shuffling", "fixed");
-                    } else {
-                        el.textContent = Math.floor(
-                            Math.random() * 10,
-                        ).toString();
-                        el.classList.add("shuffling");
-                    }
-                });
-                if (clockIter > 60) clearInterval(clockTimer);
-                clockIter++;
-            }, 50);
-        }
-
-        const texts = document.querySelectorAll(".cipher-text");
-        texts.forEach((text, i) => {
-            animateCipher(text as HTMLElement, 300 + i * 250);
+        if (!clockDigits.length) return;
+        const now = new Date();
+        const timeStr =
+            String(now.getHours()).padStart(2, "0") +
+            String(now.getMinutes()).padStart(2, "0");
+        clockDigits.forEach((d, i) => {
+            d.textContent = timeStr[i];
+            d.classList.add("fixed");
         });
     };
 
-    document.addEventListener("astro:page-load", initHeroAnimations);
-
-    if (document.readyState !== "loading") {
-        initHeroAnimations();
-    } else {
-        document.addEventListener("DOMContentLoaded", initHeroAnimations);
-    }
-</script>
-
-<script>
-    // @ts-ignore
-    import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
-
-    function initScrollEffect() {
-        const p = document.getElementById("scroll-text");
-        if (!p || p.dataset.initialized === "true") return;
-
-        const text = p.textContent.trim();
-        p.textContent = "";
-        p.dataset.initialized = "true";
-        p.classList.add("ready");
-
-        const charElements = text.split("").map((char) => {
-            const container = document.createElement("span");
-            container.className = "char-container";
-            const span = document.createElement("span");
-            span.className = "char-item";
-            span.textContent = char === " " ? "\u00A0" : char;
-            container.appendChild(span);
-            p.appendChild(container);
-            return span;
-        });
-
-        // @ts-ignore
-        anime({
-            targets: charElements,
-            translateY: [
-                { value: "90%", duration: 0 },
-                { value: "0%", duration: 500, easing: "easeOutQuart" },
-                {
-                    value: "90%",
-                    duration: 800,
-                    delay: 0,
-                    easing: "easeInQuart",
-                },
-            ],
-            delay: anime.stagger(120, {
-                from: "center",
-                start: 0,
-            }),
-            loop: true,
-        });
-    }
-
-    document.addEventListener("astro:page-load", initScrollEffect);
-
-    initScrollEffect();
-</script>
-<script>
-    // @ts-ignore
-    import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
-
-    const startImpactRGB = () => {
+    const startGlobalHeroAnimation = () => {
         const hero = document.getElementById("/");
-        if (!hero) return;
+        // SI déjà en cours OU pas de hero, on s'arrête
+        if (isHeroAnimating || !hero) return;
+
+        isHeroAnimating = true; // On verrouille
+        updateClock();
 
         hero.style.filter = "url(#hero-rgb-filter)";
 
         const tl = anime.timeline({
             complete: () => {
-                hero.style.filter = "none";
+                if (!hero.classList.contains("lang-changing")) {
+                    hero.style.filter = "none";
+                }
+                isHeroAnimating = false; // On déverrouille à la fin
             },
         });
 
@@ -432,30 +386,27 @@ import LogoHero from "../ui/Logohero.astro";
                     easing: "easeOutCubic",
                 },
                 "-=2200",
-            )
-            // -----------------------------
-            .add(
-                {
-                    targets: hero,
-                    filter: [
-                        "url(#hero-rgb-filter) blur(10px)",
-                        "url(#hero-rgb-filter) blur(0px)",
-                    ],
-                    duration: 1000,
-                    easing: "easeOutQuart",
-                },
-                0,
             );
+
+        const texts = document.querySelectorAll(".cipher-text");
+        texts.forEach((text, i) => {
+            animateCipher(text as HTMLElement, 800 + i * 300);
+        });
     };
 
-    document.addEventListener("astro:page-load", startImpactRGB);
-</script>
-<script>
-    import { initI18n } from "../../scripts/langEngine";
+    // On exporte uniquement le Cipher pour le changement de langue
+    (window as any).runCipher = animateCipher;
 
-    // On lance le moteur une seule fois
-    initI18n();
+    // --- GESTION PROPRE DES ÉVÉNEMENTS ---
+    // On retire le check DOMContentLoaded pour ne garder qu'astro:page-load
+    // car Astro déclenche cet événement même au premier chargement.
+    document.addEventListener("astro:page-load", () => {
+        isHeroAnimating = false; // Reset de sécurité sur changement de page
+        startGlobalHeroAnimation();
+    });
 
-    // Si tu utilises ViewTransitions d'Astro
-    document.addEventListener("astro:page-load", initI18n);
+    // Fallback si Astro n'est pas encore prêt (premier hit)
+    if (document.readyState === "complete") {
+        startGlobalHeroAnimation();
+    }
 </script>

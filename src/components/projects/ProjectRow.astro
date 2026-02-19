@@ -1,33 +1,42 @@
 ---
-import type { HomeProject, Lang } from "../../data/projects";
-
-interface Props {
-    project: HomeProject;
-    lang: Lang;
-}
-
-const { project, lang } = Astro.props as Props;
+import { projects } from "../../data/projects";
 ---
 
-<li class="project-row">
-    <a
-        class="project-row-link"
-        href={`/projects/${project.slug}`}
-        aria-label={`Voir le projet ${project.entreprise}`}
-    >
-        <div class="project-title">
-            <span class="project-year">{project.year}</span>
-            <h3>{project.entreprise}</h3>
-            <span class="project-subtitle">
-                {project.title}
-            </span>
-        </div>
+<section id="projects">
+    <h2>Mes projets</h2>
 
-        <div class="project-preview">
-            <img src={project.cover} alt={project.entreprise} />
-        </div>
-    </a>
-</li>
+    <ul class="projects-list">
+        {
+            projects.map((project) => (
+                <li class="project-row">
+                    <a
+                        class="project-row-link"
+                        href={`/projects/${project.slug}`}
+                        aria-label={`Voir le projet ${project.entreprise}`}
+                    >
+                        <div class="project-title">
+                            <span class="project-year">{project.year}</span>
+                            <h3>{project.entreprise}</h3>
+
+                            {}
+                            {}
+                            <span
+                                class="project-subtitle"
+                                data-project-slug={project.slug}
+                            >
+                                {project.content.fr.title}
+                            </span>
+                        </div>
+
+                        <div class="project-preview">
+                            <img src={project.cover} alt={project.entreprise} />
+                        </div>
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+</section>
 
 <style>
     /* =====================================================
@@ -232,3 +241,60 @@ const { project, lang } = Astro.props as Props;
         outline-offset: -2px;
     }
 </style>
+
+<script>
+    const setupProjectSounds = () => {
+        const soundPaths = [
+            "/sounds/projetColumnList.mp3",
+            "/sounds/projetColumnList_2.mp3",
+            "/sounds/projetColumnList_3.mp3"
+        ];
+
+        // 1. Initialisation du contexte Audio (nécessaire pour le traitement mono)
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        const ctx = new AudioContext();
+
+        // 2. Pré-chargement et routage vers un mixeur Mono
+        const audioPlayers = soundPaths.map(path => {
+            const audio = new Audio(path);
+            audio.volume = 0.8;
+            
+            // Création du noeud source et du mélangeur mono
+            const source = ctx.createMediaElementSource(audio);
+            const merger = ctx.createChannelMerger(1); // Force la sortie sur 1 canal
+            
+            source.connect(merger);
+            merger.connect(ctx.destination);
+            
+            return audio;
+        });
+
+        const projectRows = document.querySelectorAll(".project-row");
+
+        projectRows.forEach((row) => {
+            row.addEventListener("mouseenter", async () => {
+                // Relance le contexte s'il a été suspendu par le navigateur
+                if (ctx.state === 'suspended') {
+                    await ctx.resume();
+                }
+
+                // Sélection aléatoire
+                const randomIndex = Math.floor(Math.random() * audioPlayers.length);
+                const selectedAudio = audioPlayers[randomIndex];
+
+                // Stop propre des autres sons
+                audioPlayers.forEach(audio => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
+
+                // Lecture
+                selectedAudio.play().catch(() => {
+                    console.warn("Audio bloqué : interaction requise.");
+                });
+            });
+        });
+    };
+
+    document.addEventListener("astro:page-load", setupProjectSounds);
+</script>

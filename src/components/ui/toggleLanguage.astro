@@ -1,8 +1,18 @@
-<button class="toggle-langue is-fr" aria-label="Switch language">
+---
+import { atom } from "nanostores";
+
+export const langStore = atom<"fr" | "en">("fr");
+
+export const toggleLang = () => {
+    const current = langStore.get();
+    langStore.set(current === "fr" ? "en" : "fr");
+};
+---
+
+<button class="toggle-langue is-fr" aria-label="changer la langue">
     <span class="viewport">
         <span class="track">
             <span class="option">Français</span>
-
             <span class="world">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +56,6 @@
 </button>
 <style>
     .toggle-langue {
-        text-transform: var(--text-transform);
         background-color: var(--layer-background-hero);
         --opt-width: 80px;
         --world-width: 20px;
@@ -65,9 +74,16 @@
 
         width: calc(var(--opt-width) + var(--world-width));
         padding: var(--pad);
+
+        transition: opacity 0.3s ease-in-out;
+        opacity: 1;
+    }
+    .toggle-langue .viewport:hover {
+        opacity: 0.8;
     }
 
     .toggle-langue .track {
+
         display: flex;
         align-items: center;
 
@@ -129,42 +145,50 @@
         }
     }
 </style>
+
 <script>
     import { langStore, toggleLang } from "../../stores/langStore";
 
-    // On crée une fonction d'initialisation pour s'assurer que le DOM est prêt
+    let isInitialized = false;
+
     const setupToggle = () => {
-        const btn = document.querySelector(".toggle-langue");
+        const btn = document.querySelector(".toggle-langue") as HTMLElement;
 
-        if (!btn) {
-            console.warn("Bouton .toggle-langue non trouvé dans le DOM");
-            return;
-        }
+        if (!btn) return;
 
-        // 1. Gérer le CLIC
-        btn.addEventListener("click", () => {
+        const sEn = new Audio("/sounds/en_to_fr.mp3");
+        const sFr = new Audio("/sounds/fr_to_en.mp3");
+
+        // GÉRER LE CLIC
+        btn.onclick = () => {
             toggleLang();
-        });
+            const nextLang = langStore.get();
+            const sound = nextLang === "en" ? sFr : sEn;
 
-        // 2. Gérer l'APPARENCE (réaction au store)
-        // On place le subscribe à l'intérieur pour qu'il ait accès à la variable 'btn'
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
+        };
+
         langStore.subscribe((lang) => {
-            console.log("Langue actuelle via store :", lang);
-
-            // On change la classe pour l'animation CSS
-            btn.classList.toggle("is-fr", lang === "fr");
-
-            // Mise à jour de l'accessibilité
-            btn.setAttribute(
-                "aria-label",
-                lang === "fr" ? "Changer en Anglais" : "Switch to French",
-            );
+            if (lang === "fr") {
+                btn.classList.add("is-fr");
+            } else {
+                btn.classList.remove("is-fr");
+            }
         });
     };
 
-    // Exécution au chargement initial
-    setupToggle();
+    // ÉCOUTER LES TRANSITIONS ASTRO
+    // C'est ça qui répare la Home Page !
+    document.addEventListener("astro:page-load", () => {
+        setupToggle();
+    });
 
-    // Si tu utilises Astro View Transitions, décommente la ligne suivante :
-    // document.addEventListener("astro:page-load", setupToggle);
+    // Fallback pour le tout premier chargement
+    if (!isInitialized) {
+        setupToggle();
+        isInitialized = true;
+    }
 </script>

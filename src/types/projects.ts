@@ -1,82 +1,57 @@
 export type Lang = "fr" | "en";
-export type I18n<T> = Record<Lang, T>;
 
-export type ContextLink = {
-    content: I18n<{
-        label: string;
-    }>;
-    href: string;
-};
+// Type utilitaire pour les objets traduisibles
+export type I18nContent<T> = Record<Lang, T>;
 
-export type ContextDetail = {
-    content: I18n<{
-        label: string;
-    }>;
-    // La valeur peut être une string simple, ou un objet avec label traduit + lien
-    value: Array<
-        | string
-        | {
-            content: I18n<{ label: string }>;
-            href?: string;
-        }
-    >;
+export interface ProjectDetail {
+    label: string;
+    value: string | string[];
+    href?: string;
     marquee?: boolean;
-};
+}
 
-// Type réutilisable pour les sections répétitives (Objectifs, Role, etc.)
-export type ProjectSection = {
-    content: I18n<{
-        title?: string;
-        description: string;
-    }>;
-    images: {
-        src: string;
-        alt: I18n<{ text: string }>;
-    }[];
-};
+export interface ProjectSectionContent {
+    title?: string;
+    description: string;
+}
 
-export type Project = {
+export interface Project {
     slug: string;
+    // Données techniques/statiques
+    entreprise: string;
+    year: number;
+    cover: string;
+    logo: string;
+    tags: string[];
 
-    hero: {
-        entreprise: string;
-        content: I18n<{
-            title: string;
-        }>;
-        cover: string;
-        image: string;
-        tags: string[];
-        year: number;
-        date?: string;
-    };
-
-    leftCorridor: {
-        skills: I18n<{
-            values: string[];
-        }>;
-    };
-
-    sections: {
+    // TOUT le contenu traduisible est ici
+    content: I18nContent<{
+        title: string;
+        skills: string[];
         context: {
-            content: I18n<{
-                title?: string;
-                description: string;
-            }>;
-            details: ContextDetail[];
+            description: string;
+            details: ProjectDetail[];
         };
-        objectifs: ProjectSection;
-        role: ProjectSection;
-        demarche: ProjectSection;
-        resultat: ProjectSection;
-    };
+        // On rend les sections optionnelles avec "?" pour éviter les erreurs
+        objectifs?: ProjectSectionContent;
+        role?: ProjectSectionContent;
+        demarche?: ProjectSectionContent;
+        resultat?: ProjectSectionContent;
+    }>;
 
-    carousel: {
-        images: {
+    // TOUS les médias sont ici
+    media: {
+        objectifs?: string | null;
+        role?: string | null;
+        demarche?: string | null;
+        resultat?: string | null;
+        carousel: {
             src: string;
-            alt: I18n<{ text: string }>;
+            alt: Record<Lang, string>;
         }[];
     };
-};
+}
+
 export type HomeProject = {
     slug: string;
     entreprise: string;

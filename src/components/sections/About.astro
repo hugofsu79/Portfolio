@@ -1,6 +1,7 @@
 ---
-import { about } from "../../data/textesAbout";
+import { aboutData } from "../../data/textesAbout";
 import Software from "../ui/Software.astro";
+const about = aboutData;
 ---
 
 <h2>Ma pomme</h2>
@@ -8,7 +9,7 @@ import Software from "../ui/Software.astro";
 <section id="about" class="about">
     <article class="about-block a">
         <div class="title-about">
-            <h4>{about[0].titre}</h4>
+            <h4 data-i18n-key={`${about[0].id}_titre`}>{about[0].fr.titre}</h4>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="33"
@@ -29,13 +30,14 @@ import Software from "../ui/Software.astro";
                     stroke="currentColor"></circle>
             </svg>
         </div>
-        <p class="split-texte">{about[0].texte}</p>
+        <p class="split-texte" data-i18n-key={`${about[0].id}_texte`}>
+            {about[0].fr.texte}
+        </p>
     </article>
 
     <article class="about-block b">
         <div class="title-about">
-            <h4>{about[1].titre}</h4>
-
+            <h4 data-i18n-key={`${about[1].id}_titre`}>{about[1].fr.titre}</h4>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
@@ -62,21 +64,24 @@ import Software from "../ui/Software.astro";
                         r="1.954"
                         transform="rotate(90 2.392 19.362)"></circle>
                 </g>
-                <defs>
-                    <clipPath id="a">
-                        <path fill="currentColor" d="M0 0h22v22H0z"></path>
-                    </clipPath>
-                </defs>
+                <defs
+                    ><clipPath id="a"
+                        ><path fill="currentColor" d="M0 0h22v22H0z"
+                        ></path></clipPath
+                    ></defs
+                >
             </svg>
         </div>
-        <p class="split-texte">{about[1].texte}</p>
+        <p class="split-texte" data-i18n-key={`${about[1].id}_texte`}>
+            {about[1].fr.texte}
+        </p>
     </article>
 </section>
 
 <section class="about">
     <article class="about-block c">
         <div class="title-about">
-            <h4>{about[2].titre}</h4>
+            <h4 data-i18n-key={`${about[2].id}_titre`}>{about[2].fr.titre}</h4>
             <svg
                 class="swapIcon"
                 xmlns="http://www.w3.org/2000/svg"
@@ -103,29 +108,32 @@ import Software from "../ui/Software.astro";
                         stroke="currentColor"
                         transform="rotate(90 16.969 16.094)"></circle>
                 </g>
-                <defs>
-                    <clipPath id="a">
-                        <path fill="" d="M0 0h22v22H0z"></path>
-                    </clipPath>
-                </defs>
+                <defs
+                    ><clipPath id="a"
+                        ><path fill="" d="M0 0h22v22H0z"></path></clipPath
+                    ></defs
+                >
             </svg>
         </div>
-
-        <p class="split-texte">{about[2].texte}</p>
+        <p class="split-texte" data-i18n-key={`${about[2].id}_texte`}>
+            {about[2].fr.texte}
+        </p>
     </article>
+
     <article class="about-block c">
         <div class="software">
-            <h4>{about[3].titre}</h4>
+            <h4 data-about-title={about[3].id}>{about[3].fr.titre}</h4>
             <Software />
         </div>
     </article>
 </section>
+
 <style>
     .about {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--space-32);
-        margin: 80px 0px 80px 0px;
+        margin: 80px 0px;
         justify-items: center;
         align-items: center;
     }
@@ -134,145 +142,150 @@ import Software from "../ui/Software.astro";
         flex-direction: row;
         width: 100%;
         justify-content: space-between;
+        margin-bottom: var(--space-16);
     }
     .about-block:nth-child(1) {
         grid-column: 1;
         grid-row: 1;
     }
-
     .about-block:nth-child(2) {
         grid-column: 2;
         grid-row: 2;
     }
-
     .about-block:nth-child(3) {
         grid-column: 1;
         grid-row: 3;
     }
+
     h4 {
         margin: 0;
         font-size: clamp(20px, 2.2vw, 28px);
     }
- 
-
     .software {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-
         max-width: 40vw;
     }
 
-    /* Tablet & mobile */
+    /* --- GESTION DE LA VISIBILITÉ --- */
+    .split-texte {
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+            opacity 0.5s ease,
+            transform 0.5s ease;
+    }
+
+    /* Force l'affichage si la classe is-visible est là ou si on est sur la page */
+    .split-texte.is-visible,
+    :global(.is-home) .split-texte {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+    }
+
     @media (max-width: 768px) {
         .about {
             display: flex;
             flex-direction: column;
-            grid-template-columns: 1fr; /* 👈 casse la grille */
             gap: var(--space-16);
             margin: 24px 0;
         }
-
         .about-block {
-            grid-column: auto;
             width: 100%;
-            grid-row: auto;
         }
-
         .software {
             max-width: none;
         }
-        .iconSoftware {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
     }
 </style>
+
 <script>
-    import { animate, svg, stagger, splitText } from "animejs";
+    import { animate, stagger } from "animejs";
 
-    // Animation EQUILIBRE
-    const deltaX = 16.969 - 5.906;
-    const common = {
-        duration: 2100,
-        easing: "inOutExpo",
-        loop: true,
-        endDelay: 1000, // ⏸ pause entre chaque cycle
-    };
+    const runAboutAnimations = () => {
+        // 1. Animation du texte (Correction du sélecteur .split-texte)
+        const textElements = document.querySelectorAll(".split-texte");
+        if (textElements.length > 0) {
+            animate(textElements, {
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 1000,
+                easing: "outExpo",
+                delay: stagger(150),
+                complete: () => {
+                    textElements.forEach((el) =>
+                        el.classList.add("is-visible"),
+                    );
+                },
+            });
+        }
 
-    animate(".circle-left", {
-        ...common,
-        translateX: [0, deltaX, 0],
-    });
+        // 2. Animation EQUILIBRE
+        const deltaX = 11.063;
+        animate(".circle-left", {
+            translateX: [0, deltaX, 0],
+            duration: 2100,
+            easing: "inOutExpo",
+            loop: true,
+        });
+        animate(".circle-right", {
+            translateX: [0, -deltaX, 0],
+            duration: 2100,
+            easing: "inOutExpo",
+            loop: true,
+        });
 
-    animate(".circle-right", {
-        ...common,
-        translateX: [0, -deltaX, 0],
-    });
+        // 3. Animation FEED
+        const orbitCommon = { duration: 8100, easing: "inOutSine", loop: true };
+        animate(".bottom-circule-feed", {
+            ...orbitCommon,
+            translateY: [0, -4, 0],
+        });
+        animate(".medium-circule-feed", {
+            ...orbitCommon,
+            translateY: [1, -4.5, 1],
+        });
+        animate(".top-circule-feed", {
+            ...orbitCommon,
+            translateY: [0, 12, 0],
+        });
 
-    // Animation Ce qui Nourrit...
-
-    const orbitCommon = {
-        duration: 8100,
-        easing: "inOutSine",
-        loop: true,
-        endDelay: 2000,
-    };
-
-    animate(".bottom-circule-feed", {
-        ...orbitCommon,
-        translateY: [0, -4, -4, 0],
-        translateX: [0, 2, 1, 0],
-    });
-
-    animate(".medium-circule-feed", {
-        ...orbitCommon,
-        translateY: [1, -4.5, -4.5, -3, 1],
-        translateX: [0, 1.5, 2, 0],
-    });
-    animate(".top-circule-feed", {
-        ...orbitCommon,
-        translateY: [0, 12, 0],
-        translateX: [0, 2, 0],
-    });
-
-    // Animation APPROCHE .troke-circle-approche
-
-    // Initialisation (Indispensable)
-    const initApprocheAnimation = () => {
-        // 1. On déclare et on récupère les éléments ICI
+        // 4. Animation APPROCHE (Strokes)
         const strokes = document.querySelectorAll<SVGGeometryElement>(
             ".stroke-circle-approche",
         );
-
-        // Sécurité : on vérifie qu'on a trouvé quelque chose
-        if (strokes.length === 0) {
-            console.warn("Aucun élément .stroke-circle-approche trouvé");
-            return;
-        }
-
-        // 2. Initialisation individuelle des longueurs
         strokes.forEach((el) => {
             const length = el.getTotalLength();
             el.style.strokeDasharray = `${length}`;
             el.style.strokeDashoffset = `${length}`;
-        });
-
-        // 3. Animation (strokes est bien accessible ici car on est dans la même fonction)
-        animate(strokes, {
-            strokeDashoffset: 0, // Anime de la valeur actuelle (length) vers 0
-            duration: 4000,
-            easing: "inOutExpo",
-            delay: stagger(400),
-            direction: "alternate",
-            loop: true,
+            animate(el, {
+                strokeDashoffset: 0,
+                duration: 4000,
+                easing: "inOutExpo",
+                direction: "alternate",
+                loop: true,
+            });
         });
     };
 
-    // Lancement au chargement du DOM
-    initApprocheAnimation();
+    // Initialisation Astro
+    document.addEventListener("astro:page-load", runAboutAnimations);
 
-    // Pour Astro : relancer si tu utilises les View Transitions
-    document.addEventListener("astro:after-swap", initApprocheAnimation);
+    // Sécurité Changement de Langue
+    window.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (
+            target.closest(".language-toggle") ||
+            target.closest("[data-lang]")
+        ) {
+            setTimeout(() => {
+                document.querySelectorAll(".split-texte").forEach((el) => {
+                    el.classList.add("is-visible");
+                    (el as HTMLElement).style.opacity = "1";
+                });
+            }, 100);
+        }
+    });
 </script>

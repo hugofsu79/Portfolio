@@ -1,20 +1,19 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ProjectRow from "../components/projects/ProjectRow.astro";
+
+// Composants de structure
 import Container from "../components/layout/Container.astro";
 import Section from "../components/layout/Section.astro";
 import Footer from "../components/layout/Footer.astro";
+
+// Composants de contenu
 import Hero from "../components/hero/Hero.astro";
+import ProjectRow from "../components/projects/ProjectRow.astro";
 import LaboSection from "../components/sections/Labo.astro";
 import About from "../components/sections/About.astro";
-
-import { getProjectsList, type Lang } from "../data/projects";
-
-const lang: Lang = Astro.url.searchParams.get("lang") === "en" ? "en" : "fr";
-const homeProjects = getProjectsList(lang);
 ---
 
-<BaseLayout title="Hugo Folio">
+<BaseLayout title="Folio - Hugo Foisseau">
 	<Hero />
 
 	<div class="page-with-rail">
@@ -22,75 +21,77 @@ const homeProjects = getProjectsList(lang);
 			<Section>
 				<Container>
 					<section id="projects">
-						<h2>Mes projets</h2>
-						<ul class="projects-list">
-							{
-								homeProjects.map((project) => (
-									<ProjectRow project={project} lang={lang} />
-								))
-							}
-						</ul>
+						<ProjectRow />
 					</section>
 				</Container>
+
+				<Section>
+					<Container>
+						<LaboSection />
+					</Container>
+				</Section>
+
+				<Section>
+					<Container>
+						<About />
+					</Container>
+				</Section>
 			</Section>
 		</main>
 
-		<Section>
-			<Container>
-				<LaboSection />
-			</Container>
-		</Section>
+		<Footer />
 
-		<Section>
-			<Container>
-				<About />
-			</Container>
-		</Section>
-	</div>
-</BaseLayout>
+		<style>
+			.page-with-rail {
+				display: grid;
+				align-items: start;
+			}
+			.page-content {
+				display: block;
+				width: 100%;
+				max-width: 100%;
+				margin-left: auto;
+				margin-right: auto;
+				overflow-x: hidden;
+				word-wrap: break-word;
+			}
+			@media (max-width: 720px) {
+				.page-with-rail {
+					gap: 40px;
+					margin: 0px 12px 0px 12px;
+				}
+				.desktop-nav {
+					position: sticky;
+					top: 25%;
+					height: fit-content;
+				}
 
-<Footer />
+				.page-content {
+					min-width: 0;
+				}
+				ul.projects-list {
+					padding-inline-start: 0;
+					padding-left: 0;
+					margin: 0;
+					list-style: none;
+				}
+			}
+		</style>
 
-<style>
-	.page-with-rail {
-		display: grid;
-		align-items: start;
-	}
-	@media (max-width: 720px) {
-		.page-with-rail {
-			gap: 40px;
-			margin: 0px 12px 0px 12px;
-		}
-		.desktop-nav {
-			position: sticky;
-			top: 25%;
-			height: fit-content;
-		}
+		<script type="module" src="/src/scripts/useProjectHover.ts"></script>
+		<script is:inline>
+			window.addEventListener("load", () => {
+				// @ts-ignore
+				window.useProjectHover(".project-row");
+			});
+		</script>
 
-		.page-content {
-			min-width: 0;
-		}
-		ul.projects-list {
-			padding-inline-start: 0;
-			padding-left: 0;
-			margin: 0;
-			list-style: none;
-		}
-	}
-</style>
+		<script type="module">
+			import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
 
-<script type="module" src="/src/scripts/useProjectHover.ts"></script>
-<script is:inline>
-	window.addEventListener("load", () => {
-		// @ts-ignore
-		window.useProjectHover(".project-row");
-	});
-</script>
-
-<script type="module">
-	import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
-
-	window.addEventListener("load", () => {
-		useProjectScrollActive(".project-row");
-	});
-</script>
+			window.addEventListener("load", () => {
+				useProjectScrollActive(".project-row");
+			});
+		</script>
+	</div></BaseLayout
+>

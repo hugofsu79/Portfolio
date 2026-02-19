@@ -41,3 +41,14 @@ const { title = "Portfolio" } = Astro.props;
 		</script>
 	</body>
 </html>
+<script>
+	import { initI18n } from "../scripts/langEngine";
+
+	// Initialise au premier chargement
+	initI18n();
+
+	// Ré-initialise à chaque changement de page (Astro ViewTransitions)
+	document.addEventListener("astro:page-load", () => {
+		initI18n();
+	});
+</script>

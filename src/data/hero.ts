@@ -1,6 +1,6 @@
-import type { I18n } from "../types/projects";
+import type { I18nContent } from "../types/projects";
 
-export const heroContent: I18n<{
+export const heroContent: I18nContent<{
     job: string;
     context: {
         label: string;
@@ -26,7 +26,7 @@ export const heroContent: I18n<{
     en: {
         job: "Interactive Designer",
         context: {
-            label: "n.m",
+            label: "n.(noun)",
             description: "I design clear and sustainable interfaces"
         },
         definition_1:

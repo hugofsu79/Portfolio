@@ -1,10 +1,11 @@
 ---
 import { aboutData } from "../../data/textesAbout";
 import Software from "../ui/Software.astro";
+import { navLabels } from "../../data/navigation";
 const about = aboutData;
 ---
 
-<h2>Ma pomme</h2>
+<h2 data-i18n-key="about">{navLabels.fr.about}</h2>
 
 <section id="about" class="about">
     <article class="about-block a">
@@ -122,7 +123,7 @@ const about = aboutData;
 
     <article class="about-block c">
         <div class="software">
-            <h4 data-about-title={about[3].id}>{about[3].fr.titre}</h4>
+            <h4 data-i18n-key={`${about[3].id}_titre`}>{about[3].fr.titre}</h4>
             <Software />
         </div>
     </article>
@@ -133,7 +134,7 @@ const about = aboutData;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--space-32);
-        margin: 80px 0px;
+        margin: 40px 0px;
         justify-items: center;
         align-items: center;
     }

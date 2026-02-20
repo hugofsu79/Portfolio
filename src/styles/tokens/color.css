@@ -117,6 +117,7 @@
     --static-opacit-50: hsla(0, 20%, 99%, 0.05);
     --static-opacit-1: hsla(0, 20%, 99%, 0.1);
     --static-opacit-2: hsla(0, 20%, 99%, 0.2);
+    --static-opacit-5: hsla(0, 20%, 99%, 0.5);
 
     --static-black: black;
     --static-transparent: transparent;

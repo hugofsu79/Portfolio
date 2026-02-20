@@ -3,33 +3,40 @@ import { heroContent } from '../data/hero';
 import { navLabels } from "../data/navigation";
 import { projects } from "../data/projects";
 import { aboutData } from '../data/textesAbout';
+import { laboData } from '../data/sectionLabo';
 
 /**
  * Initialise l'écouteur de changement de langue et met à jour le DOM
  */
 export function initI18n() {
     langStore.subscribe((lang: 'fr' | 'en') => {
-        // --- 1. GESTION DES CLÉS STATIQUES ---
-        const aboutFlat: Record<string, string> = {};
+
+        const flattenedContent: Record<string, string> = {};
+
         aboutData.forEach(item => {
-            aboutFlat[`${item.id}_titre`] = item[lang].titre;
-            aboutFlat[`${item.id}_texte`] = item[lang].texte;
+            flattenedContent[`${item.id}_titre`] = item[lang].titre;
+            flattenedContent[`${item.id}_texte`] = item[lang].texte;
         });
 
-        // On extrait 'context' pour ne pas l'envoyer tel quel dans le Record
+        laboData.forEach(item => {
+            const content = item[lang];
+            if (content.underTitle) flattenedContent[`${item.id}_underTitle`] = content.underTitle;
+            if (content.sectionTitle) flattenedContent[`${item.id}_sectionTitle`] = content.sectionTitle;
+            if (content.underSection) flattenedContent[`${item.id}_underSection`] = content.underSection;
+        });
+
         const { context, ...restOfHero } = heroContent[lang];
 
         const staticContent: Record<string, string> = {
             ...restOfHero,
             ...context,
-            ...aboutFlat,
+            ...flattenedContent,
             ...navLabels[lang]
         };
 
         const staticElements = document.querySelectorAll('[data-i18n-key]');
         staticElements.forEach((el) => {
             const key = el.getAttribute('data-i18n-key');
-            // Utilisation de "as keyof typeof staticContent" pour rassurer TS
             if (key && staticContent[key]) {
                 el.classList.add('lang-changing');
                 setTimeout(() => {
@@ -39,7 +46,6 @@ export function initI18n() {
             }
         });
 
-        // --- 2. GESTION DES PROJETS ([slug].astro) ---
         const projectTitleEl = document.querySelector('[data-project-slug]');
         if (projectTitleEl) {
             const slug = projectTitleEl.getAttribute('data-project-slug');

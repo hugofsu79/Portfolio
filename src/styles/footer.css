@@ -28,6 +28,15 @@ footer p {
     height: 100%;
 }
 
+.arrow_size {
+    scale: 0.7;
+    transition: scale 360ms ease;
+}
+
+.arrow_size:hover {
+    scale: 0.8;
+}
+
 .baseline-footer {
     font-weight: var(--font-weight-light);
     position: absolute;

@@ -83,7 +83,6 @@ export const toggleLang = () => {
     }
 
     .toggle-langue .track {
-
         display: flex;
         align-items: center;
 
@@ -159,6 +158,10 @@ export const toggleLang = () => {
         const sEn = new Audio("/sounds/en_to_fr.mp3");
         const sFr = new Audio("/sounds/fr_to_en.mp3");
 
+        sEn.volume = 0.2; //volume
+        sFr.volume = 0.2; //volume
+        // ----------------------------
+
         // GÉRER LE CLIC
         btn.onclick = () => {
             toggleLang();
@@ -180,13 +183,10 @@ export const toggleLang = () => {
         });
     };
 
-    // ÉCOUTER LES TRANSITIONS ASTRO
-    // C'est ça qui répare la Home Page !
     document.addEventListener("astro:page-load", () => {
         setupToggle();
     });
 
-    // Fallback pour le tout premier chargement
     if (!isInitialized) {
         setupToggle();
         isInitialized = true;

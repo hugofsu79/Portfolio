@@ -9,7 +9,7 @@ export const navLabels: I18nContent<{
 }> = {
     fr: {
         home: "Accueil",
-        projects: "Projets",
+        projects: "Mes projets",
         labo:"Labo",
         about: "Ma pomme",
         contact: "Contact",

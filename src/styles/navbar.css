@@ -129,6 +129,119 @@ body.is-project-page .nav-links svg.project-only {
     display: inline-block !important;
 }
 
+/* Dropdown mes projets */
+.projects-dropdown-container {
+    position: relative;
+    display: inline-block;
+    /* On ajoute un petit padding invisible pour faciliter le passage de la souris */
+    padding-bottom: 20px;
+    margin-bottom: -20px;
+    cursor: pointer;
+}
+
+/* --- LE MENU LIQUID GLASS --- */
+.dropdown-liquid-glass {
+    position: absolute;
+    /* On le place sous le lien */
+    top: 80%;
+    left: 50%;
+    transform: translateX(-50%) translateY(5px) scale(0.9);
+
+    /* --- Look Liquid Glass (Tes propriétés) --- */
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+
+    padding: 6px;
+    border-radius: 16px;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    /* Bordure et Ombre */
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.3)var,
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+
+    /* Reflet liquide */
+    background-image: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.15) 0%,
+            transparent 50%);
+
+    /* État Initial (Caché) */
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    transition:
+        opacity 0.25s ease,
+        transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* --- LE PONT INVISIBLE (Essentiel pour garder le menu ouvert) --- */
+.dropdown-liquid-glass::before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    /* Comble l'espace entre le menu et le lien "Projets" */
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: transparent;
+    pointer-events: auto;
+}
+
+/* --- ÉTAT HOVER --- */
+.projects-dropdown-container:hover .dropdown-liquid-glass {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(15px) scale(1);
+}
+
+.dropdown-item {
+    position: relative;
+    text-decoration: none;
+    font-size: var(--p-nav-font-size);
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 10px;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+    text-align: left;
+    display: block;
+    overflow: hidden;
+    color: var(--static-opacit-5);
+}
+
+.dropdown-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dropdown-item:hover {
+    border: solid 0.25px var(--static-opacit-2);
+    background: rgba(255, 255, 255, 0.05);
+    /* Optionnel : léger fond au hover */
+}
+
+.dropdown-item:hover::after {
+    transform: translateX(0);
+}
+/* --- AJUSTEMENT POUR LES SPANS CIPHER --- */
+/* Pour s'assurer que l'animation Cipher ne casse pas le layout du menu */
+.dropdown-item .char {
+    display: inline-block;
+}
+
+
 
 .hamburger {
     display: none;

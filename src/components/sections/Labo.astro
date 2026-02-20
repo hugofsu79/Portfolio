@@ -1,97 +1,90 @@
 ---
 import Button from "../ui/Button.astro";
+import { navLabels } from "../../data/navigation";
+import { laboData, type laboBlock } from "../../data/sectionLabo";
+
+const intro: laboBlock | undefined = laboData.find(
+    (item: laboBlock) => item.id === "underTitle",
+);
+
+const articles: laboBlock[] = laboData.filter(
+    (item: laboBlock) => item.id !== "underTitle",
+);
 ---
 
-<section id="labo">
-    <div class="titleSoustitle">
-        <h2>Labo</h2>
-        <p class="labo-baseline">
-            Explorations autour de l’interaction, du système et de la matière.
-        </p>
+<section id="labo" class="labo-section">
+    <h2 data-i18n-key="labo">{navLabels.fr.labo}</h2>
+    {}
+    {
+        intro && (
+            <p class="labo-intro" data-i18n-key="underTitle_underTitle">
+                {intro.fr.underTitle}
+            </p>
+        )
+    }
+    <div class="all-articles">
+        {
+            articles.map((item: laboBlock) => (
+                /* On retire l'attribut key ici */
+                <article class="labo-card">
+                    <header class="labo-card-header">
+                        <h4 data-i18n-key={`${item.id}_sectionTitle`}>
+                            {item.fr.sectionTitle}
+                        </h4>
+                        <p data-i18n-key={`${item.id}_underSection`}>
+                            {item.fr.underSection}
+                        </p>
+                    </header>
+
+                    <div class="labo-card-preview">
+                        <div class="labo-content-wrapper">
+                            <div class="labo-card-frame">
+                                <canvas data-preview={item.id} />
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            ))
+        }
     </div>
-    <div class="linkLabo">
-        <div class="all-articles">
-            <article class="labo-card">
-                <header class="labo-card-header">
-                    <h4>Interaction</h4>
-                    <p>Geste, feedback, continuité.</p>
-                </header>
 
-                <div class="labo-card-preview">
-                    <div class="labo-content-wrapper">
-                        <div class="labo-card-frame">
-                            <canvas data-preview="interaction"> </canvas>
-                        </div>
-                    </div>
-                </div>
-            </article>
-            <article class="labo-card">
-                <header class="labo-card-header">
-                    <h4>Rythme</h4>
-                    <p>Le temps fait partie du design</p>
-                </header>
-
-                <div class="labo-card-preview">
-                    <div class="labo-content-wrapper">
-                        <div class="labo-card-frame">
-                            <canvas data-preview="rythme"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </article>
-            <article class="labo-card">
-                <header class="labo-card-header">
-                    <h4>Matière</h4>
-                    <p>L'interface peut être ressentie</p>
-                </header>
-
-                <div class="labo-card-preview">
-                    <div class="labo-content-wrapper">
-                        <div class="labo-card-frame">
-                            <canvas data-preview="matiere"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </article>
-            <article class="labo-card">
-                <header class="labo-card-header">
-                    <h4>Système</h4>
-                    <p>Chaque détail existe dans un ensemble</p>
-                </header>
-
-                <div class="labo-card-preview">
-                    <div class="labo-content-wrapper">
-                        <div class="labo-card-frame">
-                            <canvas data-preview="systeme"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        </div>
-
-        <div class="labo-cta">
+    <div class="labo-cta">
+        <div class="labo-cta-wrapper">
             <Button
                 href="/labo"
                 variant="secondary"
                 size="lg"
+                id="btn-labo-alert"
+                class="btn-labo-warning"
                 aria-label="Voir plus de projet de la sorte"
-                >Explorer le laboratoire →</Button
             >
+                <span class="btn-content-text">Explorer le laboratoire →</span>
+            </Button>
         </div>
     </div>
 </section>
 
 <style>
+    .labo-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-12);
+    }
+    .labo-intro {
+        margin: 0;
+    }
+
     .linkLabo {
         display: flex;
         flex-direction: column;
         gap: 20px;
     }
     .all-articles {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        gap: 20px;
         width: 100%;
+        display: grid;
+        gap: 20px;
+
+        grid-template-columns: repeat(4, 1fr);
     }
     .all-articles article {
         border-radius: var(--radius-basic);
@@ -116,21 +109,9 @@ import Button from "../ui/Button.astro";
         transition: margin-bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .labo-card-preview {
-        height: 100%;
-        display: grid;
-        /* État fermé : la ligne de grille est à 0 */
-        grid-template-rows: 0fr;
-        opacity: 0;
-        transition:
-            grid-template-rows 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-            opacity 0.4s ease,
-            margin-top 0.6s ease;
+    .labo-card .labo-card-preview {
         overflow: hidden;
-    }
-
-    .labo-card:hover .labo-card-preview {
-        /* État ouvert : la ligne de grille prend la taille naturelle du contenu */
+        height: 100%;
         grid-template-rows: 1fr;
         opacity: 1;
         margin-top: 20px;
@@ -179,11 +160,37 @@ import Button from "../ui/Button.astro";
         justify-content: end;
         align-items: end;
     }
+    @media (max-width: 1045px) {
+        .all-articles {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
     @media (max-width: 720px) {
         .all-articles {
-            display: flex;
-            flex-direction: row;
+            grid-template-columns: 1fr;
         }
+    }
+    /* Le bouton */
+    #btn-labo-alert {
+        min-width: 260px; /* Force une largeur minimum pour éviter les sauts */
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    /* Le conteneur du texte */
+    .btn-content-text {
+        display: inline-block;
+        text-align: center;
+    }
+
+    /* Chaque caractère individuel */
+    .char-fixed {
+        display: inline-block;
+        width: 1ch; /* Utilise la largeur du caractère '0' pour être constant */
+        text-align: center;
+        font-variant-numeric: tabular-nums; /* Force les chiffres à avoir la même largeur */
     }
 </style>
 
@@ -333,7 +340,7 @@ import Button from "../ui/Button.astro";
         const cols = 24;
         const damping = 0.65; // Ajusté pour une propagation plus fluide
         const tension = 0.02;
-        const dotBaseSize = 0.8; // Plus petit pour la densité 24x24
+        const dotBaseSize = 0.4; // Plus petit pour la densité 24x24
 
         function init(): void {
             dpr = window.devicePixelRatio || 1;
@@ -363,44 +370,55 @@ import Button from "../ui/Button.astro";
                 }
             }
         }
-
         function playAmbientNote(row: number): void {
             if (!audioCtx) {
                 audioCtx = new (
                     window.AudioContext || (window as any).webkitAudioContext
                 )();
                 mainGain = audioCtx.createGain();
-                mainGain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                mainGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 mainGain.connect(audioCtx.destination);
             }
 
-            // Ta gamme spécifique
-            const scale = [623.25, 559.25];
-            // Indexation sécurisée pour éviter les erreurs sur 24 lignes
+            const scale = [
+                87.31, // 1. Le Grave (Fa 1)
+
+                174.61, // 2. Fondamentale (Fa 2)
+
+                207.65, // 3. Tierce Mineure (Lab 2)
+
+                261.63, // 4. Quinte (Do 3)
+
+                698.46, // 5. L'Aigu (Fa 4)
+                1396.92, // 5. L'Aigu (Fa 5)
+            ];
             const freq = scale[row % scale.length];
             const now = audioCtx.currentTime;
 
             const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            const delay = audioCtx.createDelay();
-            const feedback = audioCtx.createGain();
+            const gainNode = audioCtx.createGain(); // On le nomme gainNode pour plus de clarté
 
             osc.type = "sine";
             osc.frequency.setValueAtTime(freq, now);
 
-            gain.gain.setValueAtTime(0, now);
-            gain.gain.linearRampToValueAtTime(0.015, now + 0.15);
+            // --- GESTION DU GAIN SELON LA FRÉQUENCE ---
+            let volume = 0.004; // Volume de base
+            if (freq < 100) volume = 0.04; // On baisse le grave (87Hz) car il sature vite
+            if (freq > 500) volume = 0.02; // On monte l'aigu (698Hz) pour qu'il perce mieux
 
-            delay.delayTime.setValueAtTime(0.2, now);
-            feedback.gain.setValueAtTime(0.25, now);
+            // --- ENVELOPPE (ADSR) ---
+            // Start à 0 pour éviter le "Pop"
+            gainNode.gain.setValueAtTime(0, now);
+            // Attack : Monte au volume cible en 0.1s
+            gainNode.gain.linearRampToValueAtTime(volume, now + 0.1);
+            // Release : Redescend doucement à 0 sur 1.5s
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
 
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            delay.connect(feedback);
-            delay.connect(audioCtx.destination);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
 
             osc.start(now);
-            osc.stop(now + 2);
+            osc.stop(now + 1.6);
         }
 
         canvas.addEventListener("mousemove", (e: MouseEvent) => {
@@ -759,4 +777,74 @@ import Button from "../ui/Button.astro";
         init();
         animate();
     });
+</script>
+<script>
+    const GLYPHS = "0123456789@#$%&*";
+
+    const runCipher = (container: HTMLElement, newText: string) => {
+        if ((container as any)._interval)
+            clearInterval((container as any)._interval);
+
+        // Préparation des spans (si pas déjà fait ou si texte différent)
+        container.innerHTML = "";
+        const targetChars = newText.split("");
+        const spans = targetChars.map((char) => {
+            const s = document.createElement("span");
+            s.className = "char-fixed";
+            s.textContent = char === " " ? "\u00A0" : char;
+            container.appendChild(s);
+            return { el: s, final: char };
+        });
+
+        let iterations = 0;
+        (container as any)._interval = setInterval(() => {
+            let completed = true;
+
+            spans.forEach((obj, index) => {
+                // Si on n'a pas encore atteint l'index de révélation
+                if (iterations < index * 2) {
+                    completed = false;
+                    // On affiche un glyphe aléatoire
+                    if (obj.final !== " ") {
+                        obj.el.textContent =
+                            GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+                    }
+                } else {
+                    // On affiche le caractère final
+                    obj.el.textContent =
+                        obj.final === " " ? "\u00A0" : obj.final;
+                }
+            });
+
+            if (completed && iterations > spans.length * 2) {
+                clearInterval((container as any)._interval);
+            }
+            iterations++;
+        }, 30);
+    };
+
+    const initLabo = () => {
+        const btn = document.getElementById("btn-labo-alert");
+        const textWrapper = btn?.querySelector(
+            ".btn-content-text",
+        ) as HTMLElement;
+
+        if (!btn || !textWrapper) return;
+
+        const originalText = "Explorer le laboratoire →";
+        const warningText = "WORK IN PROGRESS";
+
+        btn.addEventListener("mouseenter", () => {
+            runCipher(textWrapper, warningText);
+        });
+
+        btn.addEventListener("mouseleave", () => {
+            runCipher(textWrapper, originalText);
+        });
+    };
+
+    // Support Astro (Page Transitions)
+    document.addEventListener("astro:page-load", initLabo);
+    // Initialisation immédiate
+    initLabo();
 </script>

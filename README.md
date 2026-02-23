@@ -13,16 +13,42 @@ Inside of your Astro project, you'll see the following folders and files:
 ```text
 /
 ├── public/
+│   ├── images
+│   │   └── backgroud
+│   │   └── kiro
+│   │   └── oneiro
+│   │   └── rhizome
+│   │   └── siko-mobility
+│   ├── sounds
+│   ├── svg
+│   │   └── About
+│   │   └── footer
+│   │   └── hero
+│   │   └── navbar
+│   └── favicon.ico
 │   └── favicon.svg
 ├── src
 │   ├── assets
 │   │   └── astro.svg
 │   ├── components
 │   │   └── Welcome.astro
+│   ├── content
+│   ├── data
+│   ├── design-system
+│   │   └── tokens
 │   ├── layouts
-│   │   └── Layout.astro
+│   │   └── data
+│   │   └── BaseLayout.astro
 │   └── pages
-│       └── index.astro
+│   │   └── api
+│   │   └── projects
+│   │   └── index.astro
+│   │   └── labo.astro
+│   └── scripts
+│   └── stores
+│   └── styles
+│   │   └── tokens
+│   └── types
 └── package.json
 ```
 

@@ -1,0 +1,503 @@
+---
+import Layout from "../layouts/BaseLayout.astro";
+import Footer from "../components/layout/Footer.astro";
+import Navbar from "../components/navigation/Navbar.astro";
+import Section from "../components/layout/Section.astro";
+
+// Récupération des props passées par getStaticPaths
+const { project } = Astro.props;
+---
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+></script>
+
+<Layout title="Laboratoire">
+    <Navbar />
+    <Section>
+        <svg
+            style="position: absolute; width: 0; height: 0;"
+            aria-hidden="true"
+        >
+            <defs>
+                <filter
+                    id="distort-0"
+                    x="-20%"
+                    y="-50%"
+                    width="200%"
+                    height="200%"
+                >
+                    <feTurbulence
+                        type="fractalNoise"
+                        baseFrequency="0.8"
+                        numOctaves="3"
+                        result="grain"></feTurbulence>
+                    <feComposite
+                        in="SourceGraphic"
+                        in2="grain"
+                        operator="in"
+                        result="grained"></feComposite>
+                    <feTurbulence
+                        id="turb-0"
+                        type="fractalNoise"
+                        baseFrequency="0.01 0.01"
+                        numOctaves="3"
+                        result="warp"></feTurbulence>
+                    <feDisplacementMap
+                        id="map-0"
+                        in="grained"
+                        in2="warp"
+                        scale="0"
+                        xChannelSelector="R"
+                        yChannelSelector="G"
+                        result="deformed"></feDisplacementMap>
+                    <feGaussianBlur
+                        id="blur-0"
+                        in="deformed"
+                        stdDeviation="0 0"
+                        result="blurred"></feGaussianBlur>
+                    <feColorMatrix
+                        id="matrix-0"
+                        type="matrix"
+                        values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"
+                    ></feColorMatrix>
+                </filter>
+
+                <filter
+                    id="distort-1"
+                    x="-50%"
+                    y="-50%"
+                    width="200%"
+                    height="200%"
+                >
+                    <feTurbulence
+                        type="fractalNoise"
+                        baseFrequency="0.8"
+                        numOctaves="3"
+                        result="grain"></feTurbulence>
+                    <feComposite
+                        in="SourceGraphic"
+                        in2="grain"
+                        operator="in"
+                        result="grained"></feComposite>
+                    <feTurbulence
+                        id="turb-1"
+                        type="fractalNoise"
+                        baseFrequency="0.01 0.01"
+                        numOctaves="3"
+                        result="warp"></feTurbulence>
+                    <feDisplacementMap
+                        id="map-1"
+                        in="grained"
+                        in2="warp"
+                        scale="0"
+                        xChannelSelector="R"
+                        yChannelSelector="G"
+                        result="deformed"></feDisplacementMap>
+                    <feGaussianBlur
+                        id="blur-1"
+                        in="deformed"
+                        stdDeviation="0 0"
+                        result="blurred"></feGaussianBlur>
+                    <feColorMatrix
+                        id="matrix-1"
+                        type="matrix"
+                        values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"
+                    ></feColorMatrix>
+                </filter>
+
+                <filter
+                    id="distort-2"
+                    x="-50%"
+                    y="-50%"
+                    width="200%"
+                    height="200%"
+                >
+                    <feTurbulence
+                        type="fractalNoise"
+                        baseFrequency="0.8"
+                        numOctaves="3"
+                        result="grain"></feTurbulence>
+                    <feComposite
+                        in="SourceGraphic"
+                        in2="grain"
+                        operator="in"
+                        result="grained"></feComposite>
+                    <feTurbulence
+                        id="turb-2"
+                        type="fractalNoise"
+                        baseFrequency="0.01 0.01"
+                        numOctaves="3"
+                        result="warp"></feTurbulence>
+                    <feDisplacementMap
+                        id="map-2"
+                        in="grained"
+                        in2="warp"
+                        scale="0"
+                        xChannelSelector="R"
+                        yChannelSelector="G"
+                        result="deformed"></feDisplacementMap>
+                    <feGaussianBlur
+                        id="blur-2"
+                        in="deformed"
+                        stdDeviation="0 0"
+                        result="blurred"></feGaussianBlur>
+                    <feColorMatrix
+                        id="matrix-2"
+                        type="matrix"
+                        values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"
+                    ></feColorMatrix>
+                </filter>
+            </defs>
+        </svg>
+
+        <div class="quatrecent">
+            <div class="svg-wrapper">
+                <svg
+                    viewBox="0 0 386 545"
+                    preserveAspectRatio="xMidYMidmeet"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="386"
+                    height="545"
+                    fill="none"
+                    ><path
+                        stroke="currentColor"
+                        stroke-width="2"
+                        d="M317.875 1a5 5 0 0 1 5 5v331.75a3 3 0 0 0 3 3h53.5a5 5 0 0 1 5 5v75.625a5 5 0 0 1-5 5h-53.5a3 3 0 0 0-3 3v109a5 5 0 0 1-5 5H221.25a5 5 0 0 1-5-5v-109a3 3 0 0 0-3-3H6a5 5 0 0 1-5-5v-88.258c0-.913.25-1.809.724-2.591L199.853 3.409A4.999 4.999 0 0 1 204.129 1h113.746ZM216.25 121.872c0-3.066-4.058-4.157-5.596-1.505L85.473 336.245c-1.16 2 .284 4.505 2.595 4.505H213.25a3 3 0 0 0 3-3V121.872Z"
+                    ></path><mask id="a" fill="#fff"
+                        ><path
+                            d="M361.735 377.242a1.02 1.02 0 0 1-1.28.54l-9.139-4.08c-.5-.24-.72-.8-.5-1.3.22-.52.82-.74 1.32-.52l9.079 4.04c.52.22.74.82.52 1.32Z"
+                        ></path><path
+                            d="M361.055 369.543a.995.995 0 0 0-1.22.719c-.14.54.18 1.08.72 1.22 5.12 1.28 8.419 3.4 8.419 5.38 0 .64-.34 1.3-1.04 1.959-.94.9-2.439 1.76-4.379 2.46-4.06 1.52-9.579 2.36-15.558 2.36-5.98 0-11.519-.84-15.579-2.36-1.919-.7-3.439-1.56-4.359-2.46-.7-.679-1.04-1.339-1.04-1.959 0-1.98 3.3-4.08 8.419-5.36.54-.14.86-.68.72-1.22a.995.995 0 0 0-1.22-.719c-6.279 1.559-9.899 4.219-9.899 7.279v20.957c0 .64.16 1.26.48 1.86.54 1.02 1.56 1.64 2.68 1.64.26 0 .52-.04.78-.1.18-.04.32-.14.46-.2v.04c0 1.32.8 2.48 2.039 2.96 1.5.579 3.16 1.059 4.9 1.439.22.06.46.08.68.08.64 0 1.26-.22 1.8-.6.5.68 1.239 1.18 2.119 1.28 2.26.26 4.62.4 7.04.4 2.419 0 4.779-.14 7.039-.4.9-.1 1.62-.6 2.119-1.28.54.38 1.16.6 1.8.6.22 0 .46-.02.68-.08 1.76-.38 3.4-.86 4.9-1.439a3.187 3.187 0 0 0 2.039-2.96v-.04c.16.06.3.16.46.2.26.06.52.1.78.1 1.12 0 2.14-.6 2.68-1.64.32-.62.48-1.22.48-1.86v-20.957c0-3.06-3.62-5.72-9.939-7.299Zm-32.556 29.716c-.2.04-.86.16-1.2-.52-.16-.32-.24-.62-.24-.94v-11.878c.14.12.32.26.5.38.08.06.16.14.26.2.3.22.64.44 1.02.659l.2.12c.26.2.42.52.42.9v9.919c0 .68-.5 1.06-.94 1.16h-.02Zm8.319 4.22c-1.66-.36-3.2-.82-4.62-1.36-.46-.18-.76-.6-.76-1.08V388.4h.02c.04 0 .08.02.12.04.52.2 1.08.4 1.72.6.28.08.54.16.76.22.74.22 1.54.42 2.26.54l.24.08c.4.08.82.16 1.2.22l.48.08v12.139c0 .36-.16.7-.44.92-.28.22-.62.3-.96.22l-.02.02Zm18.998-.42c0 .58-.44 1.08-1 1.14-4.36.519-9.239.519-13.619 0-.56-.06-1-.56-1-1.14V390.48s.12 0 .18.02c.06 0 .14 0 .2.02.16.02.36.04.58.06.72.08 1.46.16 2.18.2.68.06 1.36.1 2.02.12 1.72.08 3.559.08 5.239 0 .68-.02 1.36-.06 2-.12.76-.04 1.5-.12 2.12-.2h.28c.24-.06.48-.08.7-.12h.1v12.579l.02.02Zm8.779-2.02c0 .48-.3.92-.76 1.08-1.42.54-2.96 1-4.62 1.36-.34.08-.68 0-.96-.22-.28-.22-.44-.56-.44-.92V390.2c.74-.12 1.42-.3 2.12-.46.38-.08.8-.16 1.16-.24 1.08-.28 2.1-.58 3.06-.94.14-.06.3-.12.42-.16v12.659l.02-.02Zm4.399-3.24c0 .32-.08.62-.24.94-.34.68-1.02.56-1.2.52-.44-.1-.94-.48-.94-1.16v-9.919c0-.36.16-.7.42-.9l.2-.12c.38-.219.72-.439 1.02-.659.1-.06.16-.14.26-.2.18-.12.36-.26.5-.38v11.878h-.02Zm-2.6-12.458-.38.22c-.26.16-.539.3-.859.44-.26.12-.52.24-.82.36-.26.12-.56.22-.84.34-1.84.659-3.92 1.199-6.2 1.579l-1.599.22h-.06c-.26.04-.56.08-1 .14-.68.08-1.38.16-2.14.2-.64.06-1.28.1-1.94.12-1.64.08-3.399.08-5.079 0-.64 0-1.28-.06-1.96-.12-.72-.04-1.42-.12-2.28-.22-.28-.04-.56-.06-.88-.12l-1.239-.18-1.02-.18c-.36-.06-.74-.12-1.08-.2l-.18-.04c-.74-.16-1.48-.32-2.22-.56-.24-.06-.46-.14-.88-.26-1.08-.339-2.04-.699-2.879-1.099l-.76-.36c-.04-.02-.48-.3-.48-.3-1.22-.74-2.56-1.84-2.56-3.1v-1.64c.12.1.24.18.36.28.14.1.26.2.4.3.22.16.46.3.7.46.14.08.28.18.42.26.28.16.6.32.92.46.14.06.26.14.4.2.48.22.959.42 1.499.62 4.28 1.6 10.039 2.48 16.279 2.48 6.239 0 11.998-.88 16.258-2.48.52-.2 1.02-.4 1.479-.6.16-.08.3-.14.44-.22.3-.14.6-.3.86-.44.16-.08.3-.18.46-.28.24-.14.46-.28.68-.44.14-.1.28-.2.42-.32.12-.1.26-.18.36-.28v1.64c0 1.28-1.36 2.38-2.6 3.12Z"
+                        ></path><path
+                            d="M368.354 362.103c-.22-.5-.82-.72-1.32-.5l-18.717 8.339a.73.73 0 0 1-.58 0l-11.939-5.339-6.799-3.02c-.5-.22-1.1 0-1.32.5-.22.52 0 1.1.5 1.32l15.918 7.099c.56.24.56 1.04 0 1.3l-9.299 4.14c-.5.22-.74.82-.5 1.32a1 1 0 0 0 .92.6c.14 0 .28-.02.4-.08l32.236-14.359c.5-.22.74-.82.5-1.32Z"
+                        ></path></mask
+                    ><path
+                        stroke="currentColor"
+                        stroke-width="4"
+                        d="M361.735 377.242a1.02 1.02 0 0 1-1.28.54l-9.139-4.08c-.5-.24-.72-.8-.5-1.3.22-.52.82-.74 1.32-.52l9.079 4.04c.52.22.74.82.52 1.32Z"
+                        mask="url(#a)"></path><path
+                        stroke="currentColor"
+                        stroke-width="4"
+                        d="M361.055 369.543a.995.995 0 0 0-1.22.719c-.14.54.18 1.08.72 1.22 5.12 1.28 8.419 3.4 8.419 5.38 0 .64-.34 1.3-1.04 1.959-.94.9-2.439 1.76-4.379 2.46-4.06 1.52-9.579 2.36-15.558 2.36-5.98 0-11.519-.84-15.579-2.36-1.919-.7-3.439-1.56-4.359-2.46-.7-.679-1.04-1.339-1.04-1.959 0-1.98 3.3-4.08 8.419-5.36.54-.14.86-.68.72-1.22a.995.995 0 0 0-1.22-.719c-6.279 1.559-9.899 4.219-9.899 7.279v20.957c0 .64.16 1.26.48 1.86.54 1.02 1.56 1.64 2.68 1.64.26 0 .52-.04.78-.1.18-.04.32-.14.46-.2v.04c0 1.32.8 2.48 2.039 2.96 1.5.579 3.16 1.059 4.9 1.439.22.06.46.08.68.08.64 0 1.26-.22 1.8-.6.5.68 1.239 1.18 2.119 1.28 2.26.26 4.62.4 7.04.4 2.419 0 4.779-.14 7.039-.4.9-.1 1.62-.6 2.119-1.28.54.38 1.16.6 1.8.6.22 0 .46-.02.68-.08 1.76-.38 3.4-.86 4.9-1.439a3.187 3.187 0 0 0 2.039-2.96v-.04c.16.06.3.16.46.2.26.06.52.1.78.1 1.12 0 2.14-.6 2.68-1.64.32-.62.48-1.22.48-1.86v-20.957c0-3.06-3.62-5.72-9.939-7.299Zm-32.556 29.716c-.2.04-.86.16-1.2-.52-.16-.32-.24-.62-.24-.94v-11.878c.14.12.32.26.5.38.08.06.16.14.26.2.3.22.64.44 1.02.659l.2.12c.26.2.42.52.42.9v9.919c0 .68-.5 1.06-.94 1.16h-.02Zm8.319 4.22c-1.66-.36-3.2-.82-4.62-1.36-.46-.18-.76-.6-.76-1.08V388.4h.02c.04 0 .08.02.12.04.52.2 1.08.4 1.72.6.28.08.54.16.76.22.74.22 1.54.42 2.26.54l.24.08c.4.08.82.16 1.2.22l.48.08v12.139c0 .36-.16.7-.44.92-.28.22-.62.3-.96.22l-.02.02Zm18.998-.42c0 .58-.44 1.08-1 1.14-4.36.519-9.239.519-13.619 0-.56-.06-1-.56-1-1.14V390.48s.12 0 .18.02c.06 0 .14 0 .2.02.16.02.36.04.58.06.72.08 1.46.16 2.18.2.68.06 1.36.1 2.02.12 1.72.08 3.559.08 5.239 0 .68-.02 1.36-.06 2-.12.76-.04 1.5-.12 2.12-.2h.28c.24-.06.48-.08.7-.12h.1v12.579l.02.02Zm8.779-2.02c0 .48-.3.92-.76 1.08-1.42.54-2.96 1-4.62 1.36-.34.08-.68 0-.96-.22-.28-.22-.44-.56-.44-.92V390.2c.74-.12 1.42-.3 2.12-.46.38-.08.8-.16 1.16-.24 1.08-.28 2.1-.58 3.06-.94.14-.06.3-.12.42-.16v12.659l.02-.02Zm4.399-3.24c0 .32-.08.62-.24.94-.34.68-1.02.56-1.2.52-.44-.1-.94-.48-.94-1.16v-9.919c0-.36.16-.7.42-.9l.2-.12c.38-.219.72-.439 1.02-.659.1-.06.16-.14.26-.2.18-.12.36-.26.5-.38v11.878h-.02Zm-2.6-12.458-.38.22c-.26.16-.539.3-.859.44-.26.12-.52.24-.82.36-.26.12-.56.22-.84.34-1.84.659-3.92 1.199-6.2 1.579l-1.599.22h-.06c-.26.04-.56.08-1 .14-.68.08-1.38.16-2.14.2-.64.06-1.28.1-1.94.12-1.64.08-3.399.08-5.079 0-.64 0-1.28-.06-1.96-.12-.72-.04-1.42-.12-2.28-.22-.28-.04-.56-.06-.88-.12l-1.239-.18-1.02-.18c-.36-.06-.74-.12-1.08-.2l-.18-.04c-.74-.16-1.48-.32-2.22-.56-.24-.06-.46-.14-.88-.26-1.08-.339-2.04-.699-2.879-1.099l-.76-.36c-.04-.02-.48-.3-.48-.3-1.22-.74-2.56-1.84-2.56-3.1v-1.64c.12.1.24.18.36.28.14.1.26.2.4.3.22.16.46.3.7.46.14.08.28.18.42.26.28.16.6.32.92.46.14.06.26.14.4.2.48.22.959.42 1.499.62 4.28 1.6 10.039 2.48 16.279 2.48 6.239 0 11.998-.88 16.258-2.48.52-.2 1.02-.4 1.479-.6.16-.08.3-.14.44-.22.3-.14.6-.3.86-.44.16-.08.3-.18.46-.28.24-.14.46-.28.68-.44.14-.1.28-.2.42-.32.12-.1.26-.18.36-.28v1.64c0 1.28-1.36 2.38-2.6 3.12Z"
+                        mask="url(#a)"></path><path
+                        stroke="currentColor"
+                        stroke-width="4"
+                        d="M368.354 362.103c-.22-.5-.82-.72-1.32-.5l-18.717 8.339a.73.73 0 0 1-.58 0l-11.939-5.339-6.799-3.02c-.5-.22-1.1 0-1.32.5-.22.52 0 1.1.5 1.32l15.918 7.099c.56.24.56 1.04 0 1.3l-9.299 4.14c-.5.22-.74.82-.5 1.32a1 1 0 0 0 .92.6c.14 0 .28-.02.4-.08l32.236-14.359c.5-.22.74-.82.5-1.32Z"
+                        mask="url(#a)"></path></svg
+                >
+            </div>
+            <div class="svg-wrapper">
+                <svg
+                    viewBox="0 0 392 545"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="379"
+                    height="565"
+                    fill="none"
+                    ><path
+                        stroke="currentColor"
+                        stroke-width="2"
+                        d="M189.5 1c68.968 0 117.753 24.109 146.077 72.48l.665 1.147.002.003C364.117 123.595 378 193.045 378 282.875c0 89.828-14.009 159.154-42.133 207.871C307.894 539.636 259.008 564 189.5 564S70.982 539.636 42.759 490.75l-.002-.003C14.883 442.031 1 372.704 1 282.875c0-89.83 13.883-159.28 41.756-208.245l.002-.003C70.98 25.49 119.989 1 189.5 1Zm0 90.125c-15.705 0-28.67 3.892-38.963 11.612-10.297 7.723-18.008 19.342-23.086 34.948-10.199 31.344-15.326 79.713-15.326 145.19 0 62.465 5.125 110.221 15.33 143.328l.484 1.523c5.084 15.598 12.639 27.273 22.617 35.113C160.848 470.925 173.805 475 189.5 475c15.693 0 28.617-4.105 38.846-12.251 10.236-8.152 17.862-20.424 22.821-36.912 9.708-32.862 14.583-80.496 14.583-142.962 0-65.477-5.002-113.85-14.953-145.197l-.002-.007c-4.83-15.604-12.355-27.218-22.524-34.937-10.166-7.716-23.065-11.609-38.771-11.609Z"
+                    ></path><g clip-path="url(#a)"
+                        ><path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.27"
+                            d="M217.417 50.999h-55.834v14.86h55.834V51Z"
+                        ></path><path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.27"
+                            d="M217.417 38.882V51h-55.834V38.882a2.732 2.732 0 0 1 2.743-2.743h50.348a2.732 2.732 0 0 1 2.743 2.743Z"
+                        ></path><path
+                            fill="currentColor"
+                            d="M212.464 40.762a1.41 1.41 0 0 1-1.398 1.397h-7.798a1.41 1.41 0 0 1-1.397-1.397 1.41 1.41 0 0 1 1.397-1.397h7.798a1.41 1.41 0 0 1 1.398 1.397ZM212.464 46.376a1.41 1.41 0 0 1-1.398 1.397h-7.798a1.41 1.41 0 0 1-1.397-1.397 1.41 1.41 0 0 1 1.397-1.397h7.798a1.41 1.41 0 0 1 1.398 1.397Z"
+                        ></path><path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.27"
+                            d="M169.026 46.045a2.489 2.489 0 1 0 0-4.977 2.489 2.489 0 0 0 0 4.977Z"
+                        ></path><path
+                            fill="currentColor"
+                            d="M164.174 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798ZM168.188 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798ZM176.189 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798ZM180.177 58.797a1.41 1.41 0 0 0 1.398 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.795v7.798ZM184.166 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798ZM192.167 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798ZM196.181 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798ZM204.182 58.797a1.41 1.41 0 0 0 1.398 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.795v7.798ZM208.196 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798ZM212.21 58.797a1.41 1.41 0 0 0 1.397 1.398 1.41 1.41 0 0 0 1.397-1.398V51h-2.794v7.798Z"
+                        ></path></g
+                    ><defs
+                        ><clipPath id="a"
+                            ><path
+                                fill="#fff"
+                                d="M160.948 35.504h57.104v30.99h-57.104z"
+                            ></path></clipPath
+                        ></defs
+                    ></svg
+                >
+            </div>
+            <div class="svg-wrapper">
+                <svg
+                    viewBox="0 0 386 545"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="386"
+                    height="545"
+                    fill="none"
+                >
+                    <path
+                        stroke="currentColor"
+                        stroke-width="2"
+                        d="M317.875 1a5 5 0 0 1 5 5v331.75a3 3 0 0 0 3 3h53.5a5 5 0 0 1 5 5v75.625a5 5 0 0 1-5 5h-53.5a3 3 0 0 0-3 3v109a5 5 0 0 1-5 5H221.25a5 5 0 0 1-5-5v-109a3 3 0 0 0-3-3H6a5 5 0 0 1-5-5v-88.258c0-.913.25-1.809.724-2.591L199.853 3.409A4.999 4.999 0 0 1 204.129 1h113.746ZM216.25 121.872c0-3.066-4.058-4.157-5.596-1.505L85.473 336.245c-1.16 2 .284 4.505 2.595 4.505H213.25a3 3 0 0 0 3-3V121.872Z"
+                    ></path>
+                    <path
+                        fill="currentColor"
+                        d="m276.039 83.8-1.51-5.407a3.865 3.865 0 0 1-.113-1.429l.844-6.835a1.823 1.823 0 0 0-.99-1.868 1.8 1.8 0 0 0-2.095.309l-.99.925c-.374.358-.861.52-1.38.487a1.791 1.791 0 0 1-1.283-.698l-.552-.714c-.099-.136-.217-.253-.332-.373a.386.386 0 0 1-.107-.27V45.976c0-.154.094-.29.196-.406.041-.047.079-.099.113-.154l1.786-3.085a.819.819 0 0 0 .081-.617l-1.688-6.283a2.666 2.666 0 0 0 1.412-1.705c.374-1.413-.471-2.874-1.9-3.264a2.595 2.595 0 0 0-1.786.163c-.568.243-1.023.698-1.331 1.331-.032.049-.049.114-.065.163l-3.231 12.112a.806.806 0 0 0 .114.666.76.76 0 0 0 .584.34c.149.02.26.145.26.295v17.433c0 .084-.121.103-.13.02l-.406-2.566c-.26-1.559-1.542-2.63-3.117-2.55-1.592.066-2.793 1.235-2.923 2.826-.243 3.117.065 6.3.909 9.466.65 2.452.52 5-.406 7.371l-2.192 5.618a9.19 9.19 0 0 0 .553 7.875c1.266 2.273 3.442 3.848 5.958 4.303a9.707 9.707 0 0 0 1.673.146h5.407a9.383 9.383 0 0 0 3.994-.893c3.88-1.835 5.877-6.495 4.66-10.814l-.017.033Zm-10.456-37.96a.146.146 0 0 1 .292 0v20.71c0 .114-.13.188-.227.129a.137.137 0 0 1-.065-.118V45.84Zm.292-13.202a1.05 1.05 0 0 1 .536-.52.99.99 0 0 1 .682-.064c.552.146.893.73.747 1.282-.114.422-.471.731-.909.764a.82.82 0 0 0-.601.34.778.778 0 0 0-.114.682l1.759 6.56a.405.405 0 0 1-.041.308l-1.206 2.09a.141.141 0 0 1-.122.07l-3.23-.34a.405.405 0 0 1-.349-.509l2.848-10.663ZM263.829 45.5c.074.009.13.071.13.146v19.978c0 .116-.12.194-.219.135a.151.151 0 0 1-.073-.129V45.645c0-.088.076-.155.162-.146Zm6.836 47.67a7.651 7.651 0 0 1-3.296.746h-5.407a8.12 8.12 0 0 1-1.396-.13c-2.062-.373-3.767-1.623-4.822-3.507a7.6 7.6 0 0 1-.455-6.494l2.192-5.618a13.395 13.395 0 0 0 .471-8.395c-.796-2.97-1.088-5.975-.861-8.914.065-.941.78-1.298 1.364-1.331h.065c.568 0 1.234.308 1.38 1.185l.406 2.566a5.551 5.551 0 0 0 1.61 3.108c.08.08.127.187.127.3V87.16c0 .454.358.812.812.812a.804.804 0 0 0 .812-.812V67.817c0-.12.137-.22.241-.162.038.022.051.063.051.106v19.4c0 .454.358.812.812.812a.804.804 0 0 0 .812-.812V68.85c0-.118.139-.18.234-.11a.141.141 0 0 1 .058.115v18.306c0 .454.357.812.812.812a.804.804 0 0 0 .812-.812V71.563c0-.362.461-.564.775-.385.421.24.888.39 1.384.428.975.098 1.916-.26 2.615-.925l.99-.926s.162-.081.243-.032c.098.048.13.13.114.227l-.844 6.836a5.187 5.187 0 0 0 .162 2.062l1.51 5.406c1.007 3.572-.633 7.404-3.799 8.914h.016Z"
+                    ></path>
+                </svg>
+            </div>
+        </div>
+    </Section>
+    <Footer />
+</Layout>
+<style>
+    :global(body),
+    :global(html) {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .quatrecent {
+        display: flex;
+        flex-direction: row;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .svg-wrapper {
+        padding: var(--space-64-bt);
+        cursor: pointer;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition:
+            opacity 0.5s ease,
+            transform 0.3s ease;
+        will-change: filter, transform;
+        overflow: visible;
+    }
+
+    .svg-wrapper:hover {
+        transform: scale(1.02);
+        z-index: 10;
+        filter: url(#chromatic-aberration);
+    }
+
+    .svg-wrapper svg {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
+        color: var(--stroke-primary);
+    }
+    /* Optionnel : Mobile */
+    @media (max-width: 768px) {
+        .svg-wrapper {
+            padding: var(--space-64-bt);
+            font-size: 15vw; /* Taille adaptative selon la largeur de l'écran */
+            margin: 0 10px;
+        }
+    }
+</style>
+<script>
+    class AudioEngine {
+        public ctx: AudioContext | null = null;
+        public tracks: any[] = [];
+        public startTime: number = 0;
+        public loopLength: number = 4.0;
+
+        init() {
+            if (this.ctx) return;
+            this.ctx = new (
+                window.AudioContext || (window as any).webkitAudioContext
+            )();
+        }
+
+        async loadTrack(url: string, index: number) {
+            this.init();
+            try {
+                const res = await fetch(url);
+                const buffer = await this.ctx!.decodeAudioData(
+                    await res.arrayBuffer(),
+                );
+                const analyzer = this.ctx!.createAnalyser();
+                const gain = this.ctx!.createGain();
+                analyzer.fftSize = 256;
+                gain.gain.value = 0;
+                this.tracks[index] = {
+                    buffer,
+                    analyzer,
+                    gain,
+                    isActive: false,
+                    isPending: false,
+                    data: new Uint8Array(analyzer.frequencyBinCount),
+                };
+            } catch (e) {
+                console.error("Erreur audio:", e);
+            }
+        }
+
+        startAll() {
+            if (this.startTime !== 0) return;
+            this.startTime = this.ctx!.currentTime;
+            this.tracks.forEach((t) => {
+                const source = this.ctx!.createBufferSource();
+                source.buffer = t.buffer;
+                source.loop = true;
+                source
+                    .connect(t.gain)
+                    .connect(t.analyzer)
+                    .connect(this.ctx!.destination);
+                source.start(0);
+            });
+        }
+
+        toggle(i: number) {
+            const t = this.tracks[i];
+            if (!t) return;
+
+            // Glitch percutant au clic (Interférence)
+            smoothVols[i] = 220;
+
+            if (t.isActive || t.isPending) {
+                t.isActive = t.isPending = false;
+                t.gain.gain.setTargetAtTime(0, this.ctx!.currentTime, 0.05);
+            } else {
+                t.isPending = true;
+                const elapsed = this.ctx!.currentTime - this.startTime;
+                const delay =
+                    (Math.ceil(elapsed / this.loopLength) * this.loopLength -
+                        elapsed) *
+                    1000;
+
+                setTimeout(() => {
+                    if (t.isPending) {
+                        t.isPending = false;
+                        t.isActive = true;
+                        t.gain.gain.setTargetAtTime(
+                            1,
+                            this.ctx!.currentTime,
+                            0.05,
+                        );
+                    }
+                }, delay);
+            }
+        }
+
+        // Arrêt propre pour changement de page
+        stopInstantly() {
+            if (!this.ctx) return;
+            this.tracks.forEach((t) => {
+                if (t.isActive) {
+                    t.isActive = false;
+                    t.gain.gain.setTargetAtTime(0, this.ctx!.currentTime, 0.01);
+                }
+            });
+        }
+    }
+
+    const engine = new AudioEngine();
+    const wrappers = document.querySelectorAll<HTMLElement>(".svg-wrapper");
+    const sounds = [
+        "/sounds/404/Parientzo_drums.wav",
+        "/sounds/404/Parientzo_lead.wav",
+        "/sounds/404/Parientzo_bass.wav",
+    ];
+
+    const filters = Array.from({ length: 3 }, (_, i) => ({
+        map: document.getElementById(`map-${i}`),
+        turb: document.getElementById(`turb-${i}`),
+        blur: document.getElementById(`blur-${i}`),
+        matrix: document.getElementById(`matrix-${i}`),
+    }));
+
+    sounds.forEach((s, i) => engine.loadTrack(s, i));
+    let smoothVols = new Float32Array(3);
+    let time = 0;
+
+    wrappers.forEach((w, i) => {
+        w.addEventListener("click", async () => {
+            if (!engine.ctx) engine.init();
+            if (engine.ctx!.state === "suspended") await engine.ctx!.resume();
+            engine.startAll();
+            engine.toggle(i);
+        });
+    });
+
+    // SÉCURITÉ : Arrêt du son si on quitte la page ou change d'onglet
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) engine.stopInstantly();
+    });
+    window.addEventListener("pagehide", () => engine.stopInstantly());
+
+    function animate() {
+        time += 0.002;
+        const tracks = engine.tracks;
+
+        for (let i = 0; i < wrappers.length; i++) {
+            const track = tracks[i];
+            if (!track) continue;
+
+            track.analyzer.getByteFrequencyData(track.data);
+            const rawVol = (track.data[1] + track.data[2] + track.data[3]) / 3;
+
+            // Afterglow constant (2) + Logic Active/Pending
+            let target = 2;
+            if (track.isActive) target = rawVol;
+            else if (track.isPending) target = 30 + Math.sin(time * 25) * 20;
+
+            smoothVols[i] += (target - smoothVols[i]) * 0.1;
+            const v = smoothVols[i] / 255;
+            const f = filters[i];
+
+            // 1. MOUVEMENT MULTI-HARMONIQUE (Onde naturelle)
+            const driftX =
+                Math.sin(time) * 0.002 + Math.sin(time * 0.25) * 0.001;
+            const driftY =
+                Math.cos(time * 0.7) * 0.002 + Math.sin(time * 0.3) * 0.001;
+            f.turb?.setAttribute(
+                "baseFrequency",
+                `${0.01 + driftX} ${0.01 + driftY}`,
+            );
+
+            // 2. DÉFORMATION & FLOU
+            f.map?.setAttribute("scale", (v * 100).toString());
+            const blurVal = v * 1.5 * (1 + Math.abs(driftX * 15));
+            f.blur?.setAttribute("stdDeviation", `${blurVal} 0`);
+
+            // 3. PARADOXE CHROMATIQUE (Pixels éclatés RVB)
+            // On laisse passer les couleurs originales sur les pics de volume
+            const paradox = v * 0.9;
+            const cVal = 1 - v * 0.45;
+            f.matrix?.setAttribute(
+                "values",
+                `
+                ${cVal} ${(1 - cVal) * paradox} 0 0 0
+                0 ${cVal} ${(1 - cVal) * paradox} 0 0
+                ${(1 - cVal) * paradox} 0 ${cVal} 0 0
+                0 0 0 1 0
+            `,
+            );
+
+            const wrapper = wrappers[i];
+            wrapper.style.filter = `url(#distort-${i})`;
+            // Opacité adaptative (Feedback au clic)
+            wrapper.style.opacity =
+                track.isActive || track.isPending ? "1" : "0.35";
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+</script>

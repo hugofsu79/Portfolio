@@ -138,7 +138,7 @@
         --text-secondary: var(--core-neutral-200);
         --text-tertiary: var(--core-neutral-300);
         --text-on-accent: var(--core-blue-300);
-        --text-initial: var(--core-brown-600);
+        --text-initial: var(--core-neutral-400);
         --text-footer: var(--core-neutral-200);
 
         --fill-brand: var(--core-beige-50);

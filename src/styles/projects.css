@@ -3,6 +3,18 @@
     align-items: flex-start;
 }
 
+.topTitle {
+    display: flex;
+    flex-direction: column;
+    margin-block: var(--space-24-bt);
+    gap: var(--space-8);
+}
+
+.topTitle h4 {
+    font-weight: var(--font-weight-regular);
+    margin: 0;
+}
+
 .project-hero {
     height: 60vh;
     overflow: hidden;
@@ -35,7 +47,7 @@
 /* Effet follow et sticky du titre */
 .project-title {
 
-    margin: 0;
+    /* margin: 0; */
     transition:
         opacity 0.3s ease,
         transform 0.3s ease;
@@ -120,6 +132,7 @@ tr:last-child {
     padding: 0.35rem 0;
     vertical-align: middle;
 }
+
 td span {
     font-size: var(--p-font-size);
     color: var(--text-secondary);
@@ -462,6 +475,10 @@ td span {
 
 /* Tablet */
 @media (max-width: 1028px) {
+    .topTitle {
+        flex-direction: column;
+    }
+
     .leftCorridor {
         padding-left: 0;
     }

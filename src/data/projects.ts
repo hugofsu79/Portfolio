@@ -242,7 +242,7 @@ export const projects: Project[] = [
             objectifs: null, // Pas d'image spécifique ici
             carousel: [
                 {
-                    src: "/images/projects/kiro/screen-1.jpg",
+                    src: "/public/images/kiro/gallery/objectifIllustration.webp",
                     alt: { fr: "Vue Dashboard", en: "Dashboard View" }
                 },
                 {
@@ -327,7 +327,7 @@ export const projects: Project[] = [
         },
         // --- MÉDIAS ---
         media: {
-            objectifs: "/public/images/oneiro/gallery/imge_mockup.webp",
+            objectifs: "",
             carousel: [
                 {
                     src: "/images/oneiro/screen-1.jpg",

@@ -1,7 +1,7 @@
 ---
 import "../styles/globals.css";
+
 import Navbar from "../components/navigation/Navbar.astro";
-// 1. On utilise le nouveau nom
 import { ClientRouter } from "astro:transitions";
 
 interface Props {
@@ -11,12 +11,16 @@ interface Props {
 const { title = "Portfolio" } = Astro.props;
 ---
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+></script>
 
 <html lang="fr">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
 		<title>{title}</title>
 		<ClientRouter />
 	</head>
@@ -51,5 +55,39 @@ const { title = "Portfolio" } = Astro.props;
 	// Ré-initialise à chaque changement de page (Astro ViewTransitions)
 	document.addEventListener("astro:page-load", () => {
 		initI18n();
+	});
+</script>
+<script>
+	import { initI18n } from "../scripts/langEngine";
+
+	const setupDynamicTitle = () => {
+		// On ne fait l'alternance que sur la Home Page
+		const isHome =
+			window.location.pathname === "/" ||
+			window.location.pathname === "/index.html";
+		if (!isHome) return;
+
+		let titles = ["Portfolio", "Hugo Foisseau"];
+		let index = 0;
+
+		// Change le titre toutes les 3 secondes
+		setInterval(() => {
+			index = (index + 1) % titles.length;
+			document.title = titles[index];
+		}, 3000);
+	};
+
+	// Initialisation globale
+	const init = () => {
+		initI18n();
+		setupDynamicTitle();
+	};
+
+	// Premier chargement
+	init();
+
+	// Ré-initialise à chaque navigation Astro (ViewTransitions)
+	document.addEventListener("astro:page-load", () => {
+		init();
 	});
 </script>

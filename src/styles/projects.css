@@ -1,7 +1,23 @@
+/* On force le déblocage des ancêtres identifiés par la console */
+html.lenis,
+body.app-root {
+    overflow: visible !important;
+    height: auto !important;
+}
+
+.projetAll img {
+    border-radius: var(--radius-basic);
+}
+
+.projetAll {
+    overflow: visible !important;
+}
+
 .main-container {
     display: flex;
     align-items: flex-start;
 }
+
 
 .topTitle {
     display: flex;
@@ -59,29 +75,50 @@
 
 .grid-project {
     display: grid;
-    grid-template-columns: 20vw 1fr 4fr;
+    grid-template-columns: 24vw 1px 1fr;
     gap: var(--space-8);
     width: 100%;
-    align-items: start;
+
+    align-items: stretch;
+
+    position: relative;
+    overflow: visible;
 }
 
 .leftCorridor {
     height: 100%;
+    overflow: visible !important;
 }
 
 .context {
+    position: -webkit-sticky;
     position: sticky;
-    top: 60px;
-    width: 100%;
+    top: 80px;
+    /* Ajuste selon ton header */
+    align-self: start;
+    z-index: 10;
 
-    /* Pour eviter que le contenu ne déborde */
-    overflow-wrap: break-word;
-    word-break: break-word;
+    /* Important : avec Lenis, le sticky peut parfois sauter si on a des transforms */
+    will-change: transform;
+
+}
+
+.context h4 {
+    margin-bottom: 0;
+}
+
+.context h2 {
+    color: var(--text-initial);
+}
+
+.projetAll,
+.main-container {
+    overflow: visible !important;
 }
 
 .rightCorridor {
-    width: 80vw;
     padding-right: var(--space-8);
+    width: 100%;
 }
 
 .description {
@@ -126,6 +163,24 @@ tr:last-child {
     border-bottom: none;
 }
 
+.tableContexte {
+    position: relative;
+    z-index: 5;
+    pointer-events: auto !important;
+}
+
+.tableContexte a.project-link {
+    display: inline-block;
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer !important;
+    /* Force le curseur main */
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+}
+
 .tableContexte th,
 .tableContexte td {
     overflow: hidden;
@@ -139,38 +194,44 @@ td span {
 }
 
 .project-title-sticky {
-    position: sticky;
-    top: 60px;
-    z-index: 10;
-    background: inherit;
 
-    /* 1. État "Size 0" */
+    display: block;
     opacity: 0;
     max-height: 0;
     margin: 0;
-    overflow: hidden;
-    /* Empêche le texte de dépasser quand c'est fermé */
-    transform: translateY(10px);
-
-    /* 2. Transition fluide pour la taille et l'opacité */
+    transform: translateY(-10px);
+    /* Transition plus fluide */
     transition:
         opacity 0.4s ease,
+        max-height 0.4s ease,
         transform 0.4s ease,
-        max-height 0.3s ease,
-        margin 0.3s ease;
-
+        margin 0.4s ease;
+    pointer-events: none;
     font-size: 1.5rem;
 }
 
 /* Classe qui sera ajoutée via JS */
 .project-title-sticky.is-visible {
     opacity: 1;
-    max-height: 100px;
-    margin-bottom: 2rem;
+    max-height: 200px;
 
+    margin-bottom: 2rem;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
+.project-title-sticky h4 {
+    padding-top: 20px;
+    font-size: var(--p-font-size);
+    font-weight: var(--font-weight-regular);
+    margin-top: 0;
+    color: var(--text-initial);
+}
+
+.project-title-sticky .logo {
+    opacity: 0.8;
+    max-width: 100%;
+}
 
 
 
@@ -255,6 +316,30 @@ td span {
     white-space: nowrap;
 }
 
+.tableContexte td a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: opacity 0.2s ease;
+}
+
+.tableContexte td a:hover {
+    opacity: 0.7;
+}
+
+.tableContexte td span {
+    display: inline-block;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+/* Si tu utilises le <br /> pour les collaborateurs, 
+   ajoute un petit espacement si nécessaire */
+.tableContexte td br {
+    margin-bottom: 4px;
+}
+
+
 .marquee-cell:hover .table-marquee__track {
     animation-play-state: paused;
 }
@@ -312,6 +397,7 @@ td span {
 /* Slug page */
 .projetAll {
     padding: var(--space-8);
+    overflow: visible;
 }
 
 .strokes {

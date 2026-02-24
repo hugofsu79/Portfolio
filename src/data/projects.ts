@@ -8,7 +8,7 @@ export const projects: Project[] = [
         entreprise: "Siko Mobility",
         year: 2025,
         cover: "/images/siko-mobility/cover.webp",
-        logo: "/icons/projets/sikoMobility_logo.svg",
+        logo: "/public/svg/projets/siko-mobility/logo.svg",
         tags: ["Développeur web", "Tailwind CSS"],
 
         // Données Traduisibles
@@ -18,23 +18,28 @@ export const projects: Project[] = [
                 skills: ["Fintech", "B2C-B2B", "Méthodologie"],
                 context: {
                     description: "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance...",
+                    // Ton fichier de données (ex: projects.ts)
                     details: [
                         { label: "Temps de travail", value: "02.10.2024 | 27.10.2025" },
+                        {
+                            label: "Collaborateurs",
+                            value: ["Thibaut Andriamasinoro", "Louis Leveneur", "Jugurta Mahious", "Kader Bakayoko", "Simon Priet"]
+                        },
                         { label: "Rôle", value: "Designer UI / Concepteur" },
                         { label: "Lien", value: "www.sikomobility.com", href: "https://www.sikomobility.com/" }
                     ]
                 },
                 objectifs: {
                     title: "Objectifs",
-                    description: "Les objectifs se sont construits progressivement au fil de l’alternance..."
+                    description: "Les objectifs se sont construits progressivement au fil de l’alternance. À mon arrivée, la place du design au sein de l’équipe technique n’était pas clairement définie : les fondateurs n’étaient pas encore convaincus de la valeur d’un designer UI/UX, en partie par méconnaissance du rôle. Les interfaces existantes reposaient principalement sur des composants Tailwind, avec des éléments graphiques peu structurés et difficilement exploitables par les développeurs.\n\nMon objectif principal a donc été de poser des bases solides pour le design produit, en collaboration étroite avec le CTO. Cela a impliqué un important travail de clarification et de structuration : reprendre l’ensemble des écrans, trier et organiser les fichiers Figma, et transformer un environnement de travail proche d’un véritable « syndrome de Diogène » graphique en un espace cohérent, lisible et réutilisable.\n\nJ’ai également cherché à donner un rôle fonctionnel au design, en construisant des composants et des règles UI capables de servir de véritable béquille pour l’équipe de développement, plutôt que de simples maquettes esthétiques. Enfin, un enjeu clé a été de dépasser les limites d’un design purement utilitaire lié à Tailwind, afin d’apporter plus de personnalité, de cohérence visuelle et de lisibilité aux interfaces, tout en restant compatible avec les contraintes techniques de la startup.",
                 },
                 role: {
                     title: "Mon Rôle",
-                    description: "Chez Siko Mobility, mon rôle consistait à structurer et faire évoluer les parcours clés..."
+                    description: "Chez Siko Mobility, mon rôle consistait à structurer et faire évoluer les parcours clés du produit dans un contexte fintech en forte croissance. J’ai travaillé sur la conception d’un nouveau parcours assurance, ainsi que sur la création et l’amélioration des dashboards marchands, en tenant compte des enjeux B2B et des besoins opérationnels des partenaires.\n\nJ’ai également mené une refonte des parcours de financement, en les adaptant aux différents types d’offres proposées (paiement fractionné, crédit, LLD, LOA). Chaque parcours impliquait des contraintes spécifiques, notamment en matière d’informations utilisateurs, de documents requis et de règles contractuelles, nécessitant une conception précise et rigoureuse.\n\nEn parallèle, j’ai initié et construit un Design System, avec pour objectif d’apporter une interface plus cohérente, lisible et moderne, tout en servant de véritable support pour l’équipe de développement. Ce travail visait à dépasser un design purement utilitaire pour renforcer la clarté des interfaces, la cohérence visuelle et la maintenabilité du produit."
                 },
                 resultat: {
                     title: "Résultat",
-                    description: "Mon année chez Siko Mobility a marqué un vrai tournant..."
+                    description: "Mon année chez Siko Mobility a marqué un vrai tournant.Les débuts ont été déroutants: nouvelle ville, nouvelle startup, et un cadre où l’initiative est indispensable.Sans supervision directe, j’ai dû apprendre à prendre ma place, proposer et structurer. Progressivement, la confiance accordée par les fondateurs m’a permis d’évoluer d’un rôle exécutant à un rôle moteur: animation de points réguliers, ateliers pédagogiques avec les équipes, conception d’un dashboard marchand, refonte du parcours assurance et création d’un nouveau parcours crédit.Cette expérience m’a donné une vraie assurance dans le travail en équipe et dans une approche produit agile.",
                 }
             },
             en: {
@@ -78,7 +83,7 @@ export const projects: Project[] = [
         entreprise: "Rhizome",
         year: 2025,
         cover: "/images/rhizome/cover.webp",
-        logo: "/icons/projets/rhizome_logo.svg",
+        logo: "/public/svg/projets/rhizome/logo.svg",
         tags: ["UI/UX Designer"],
 
         // --- DONNÉES TRADUISIBLES ---
@@ -166,7 +171,7 @@ export const projects: Project[] = [
         entreprise: "Kiro",
         year: 2025,
         cover: "/images/kiro/cover.webp",
-        logo: "/icons/projets/kiro_logo.svg",
+        logo: "/public/svg/projets/kiro/logo.svg",
         tags: ["UI/UX Designer"],
 
         // --- DONNÉES TRADUISIBLES ---
@@ -254,7 +259,7 @@ export const projects: Project[] = [
         entreprise: "Oneiro",
         year: 2023,
         cover: "/images/oneiro/cover.webp",
-        logo: "/icons/projets/Oneiro_logo.svg",
+        logo: "/public/svg/projets/oneiro/logo.svg",
         tags: ["UI/UX Designer", "Full Stack"],
 
         // --- DONNÉES TRADUISIBLES ---
@@ -274,7 +279,7 @@ export const projects: Project[] = [
                 },
                 objectifs: {
                     title: "Objectifs",
-                    description: "Concevoir une expérience créative accessible, favorisant l’imaginaire et l’autonomie, tout en transformant le numérique en un support tangible via l'export PDF."
+                    description: "Le projet est né d’un constat partagé avec Thibaut : il n’existait pas d’application permettant à un enfant d’imaginer entièrement son propre univers narratif. Les outils existants proposaient des histoires générées, mais rarement un monde réellement façonné par l’enfant. Nous avons donc conçu une expérience où l’IA accompagne la créativité sans la diriger, laissant l’enfant inventer son héros, son environnement et ses péripéties. L’export en PDF illustré prolonge ensuite l’expérience en transformant la création numérique en objet tangible."
                 },
                 role: {
                     title: "Mon Rôle",
@@ -304,7 +309,7 @@ export const projects: Project[] = [
                 },
                 objectifs: {
                     title: "Objectives",
-                    description: "Design an accessible creative experience that fosters imagination and autonomy, turning digital interaction into tangible outcomes via PDF exports."
+                    description: "The project originated from a shared observation with Thibaut: there was no application that truly allowed children to imagine and build their own narrative universe. Existing tools could generate stories, but rarely offered a world genuinely shaped by the child. We therefore designed an experience where AI supports creativity without directing it, allowing children to invent their hero, environment, and plot twists. The illustrated PDF export extends the experience beyond the screen, transforming a digital creation into a tangible object."
                 },
                 role: {
                     title: "My Role",
@@ -322,7 +327,7 @@ export const projects: Project[] = [
         },
         // --- MÉDIAS ---
         media: {
-            objectifs: null,
+            objectifs: "/public/images/oneiro/gallery/imge_mockup.webp",
             carousel: [
                 {
                     src: "/images/oneiro/screen-1.jpg",

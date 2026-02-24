@@ -38,61 +38,60 @@ import About from "../components/sections/About.astro";
 				</Section>
 			</Section>
 		</main>
+	</div>
+	<Footer />
+</BaseLayout>
 
-		<Footer />
+<style>
+	.page-with-rail {
+		display: grid;
+		align-items: start;
+	}
+	.page-content {
+		gap: var(--space-32);
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		margin-left: auto;
+		margin-right: auto;
+		overflow-x: hidden;
+		word-wrap: break-word;
+	}
+	.projects-list {
+		padding-left: 0;
+		margin: 0;
+		list-style: none;
+		padding-inline-start: 0;
+	}
+	@media (max-width: 720px) {
+		.page-with-rail {
+			gap: 40px;
+			margin: var(--space-12-rl);
+		}
+		.desktop-nav {
+			position: sticky;
+			top: 25%;
+			height: fit-content;
+		}
 
-		<style>
-			.page-with-rail {
-				display: grid;
-				align-items: start;
-			}
-			.page-content {
-				gap: var(--space-32);
-				display: block;
-				width: 100%;
-				max-width: 100%;
-				margin-left: auto;
-				margin-right: auto;
-				overflow-x: hidden;
-				word-wrap: break-word;
-			}
-			@media (max-width: 720px) {
-				.page-with-rail {
-					gap: 40px;
-					margin: 0px 12px 0px 12px;
-				}
-				.desktop-nav {
-					position: sticky;
-					top: 25%;
-					height: fit-content;
-				}
+		.page-content {
+			min-width: 0;
+		}
+	}
+</style>
 
-				.page-content {
-					min-width: 0;
-				}
-				ul.projects-list {
-					padding-inline-start: 0;
-					padding-left: 0;
-					margin: 0;
-					list-style: none;
-				}
-			}
-		</style>
+<script type="module" src="/src/scripts/useProjectHover.ts"></script>
+<script is:inline>
+	window.addEventListener("load", () => {
+		// @ts-ignore
+		window.useProjectHover(".project-row");
+	});
+</script>
 
-		<script type="module" src="/src/scripts/useProjectHover.ts"></script>
-		<script is:inline>
-			window.addEventListener("load", () => {
-				// @ts-ignore
-				window.useProjectHover(".project-row");
-			});
-		</script>
+<script type="module">
+	import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
 
-		<script type="module">
-			import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
-
-			window.addEventListener("load", () => {
-				useProjectScrollActive(".project-row");
-			});
-		</script>
-	</div></BaseLayout
->
+	window.addEventListener("load", () => {
+		useProjectScrollActive(".project-row");
+	});
+</script>

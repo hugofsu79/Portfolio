@@ -8,59 +8,38 @@ interface Props {
 const { details } = Astro.props;
 ---
 
-<table class="project-table">
+<table class="tableContexte">
     <tbody>
         {
-            details.map((item) => {
-                // On s'assure que values est traité comme un texte propre
-                // Si c'est un tableau (ex: collaborateurs), on joint avec des points
-                const displayValue = Array.isArray(item.value) 
-                    ? item.value.join(" · ") 
-                    : item.value;
-
-                const duration = 10; // Durée de base pour le marquee
-
-                return (
-                    <tr class="table-row">
-                        <th scope="row" class="table-label">
-                            {item.label}
-                        </th>
-
-                        <td class={`table-value ${item.marquee ? "marquee-cell" : ""}`}>
-                            {item.marquee ? (
-                                <div
-                                    class="table-marquee"
-                                    style={`--marquee-duration: ${duration}s`}
-                                >
-                                    <div class="table-marquee__track">
-                                        <span class="table-marquee__item">
-                                            {displayValue} · 
-                                        </span>
-                                        <span class="table-marquee__item">
-                                            {displayValue} · 
-                                        </span>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div class="value-content">
-                                    {item.href ? (
-                                        <a
-                                            href={item.href}
-                                            target="_blank"
-                                            rel="noopener"
-                                            class="table-link"
-                                        >
-                                            {displayValue}
-                                        </a>
-                                    ) : (
-                                        <span>{displayValue}</span>
-                                    )}
-                                </div>
-                            )}
-                        </td>
-                    </tr>
-                );
-            })
+            details.map((detail) => (
+                <tr>
+                    <th>{detail.label}</th>
+                    <td>
+                        {detail.href ? (
+                            /* Le lien principal avec target="_blank" */
+                            <a
+                                href={detail.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="project-link"
+                            >
+                                {detail.value}
+                            </a>
+                        ) : Array.isArray(detail.value) ? (
+                            detail.value.map((item, index) => (
+                                <span class="detail-item">
+                                    {item}
+                                    {index < detail.value.length - 1
+                                        ? ","
+                                        : ""}
+                                </span>
+                            ))
+                        ) : (
+                            <span class="detail-item">{detail.value}</span>
+                        )}
+                    </td>
+                </tr>
+            ))
         }
     </tbody>
 </table>
@@ -69,13 +48,11 @@ const { details } = Astro.props;
     .project-table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 2rem;
     }
     .table-row {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     .table-label {
-        padding: 1rem 0;
         font-weight: 500;
         opacity: 0.5;
         width: 33%;
@@ -106,9 +83,17 @@ const { details } = Astro.props;
     .table-marquee__item {
         padding-right: 1rem;
     }
-
+    .value-content a {
+        /* text-decoration: none; */
+        font-style: italic;
+        color: var(--text-initial);
+    }
     @keyframes marquee {
-        from { transform: translateX(0); }
-        to { transform: translateX(-50%); }
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
     }
 </style>

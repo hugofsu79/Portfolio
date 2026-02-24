@@ -2,42 +2,11 @@
 :root {
     --nav-height: 80px;
     --nav-max-width: 1200px;
-}
-
-.nav-links {
-    margin: 4px 0px 4px 0px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2.5rem;
-    /* On s'assure que le menu ne recalcule pas tout le temps */
-    flex-wrap: nowrap;
-}
-
-.left-nav {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-}
-
-.nav-links li {
-    list-style: none;
-    /* Le LI ne doit ni rétrécir ni grandir selon son contenu pendant l'anim */
-    flex: 0 0 auto;
-}
-
-.nav-links a,
-.mobile-links a,
-.logo-link {
-    font-size: var(--p-nav-font-size);
-    white-space: nowrap;
-    text-decoration: none;
-    color: inherit;
+    --bezier-curtain: cubic-bezier(0.77, 0, 0.175, 1);
+    --bezier-reveal: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* --- 2. STRUCTURE DE LA NAVBAR --- */
-
 .navbar {
     position: fixed;
     top: 0;
@@ -46,23 +15,30 @@
     background-color: var(--layer-background);
     z-index: 3000;
     display: flex;
-    justify-content: space-between;
+    align-items: center;
     border-bottom: none;
-}
-
-.navbar,
-.top-hero {
     will-change: transform;
-    /* L'animation de base (1.2s c'est plus doux) */
     animation: slideDownNav 1.2s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
 }
 
-.home-only,
-.project-only {
-    display: none !important;
+.hamburger svg {
+    color: var(--fill-brand);
 }
 
-/* Pseudo-élément pour la barre de scroll (inchangé) */
+.nav-container {
+    width: 100%;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 .navbar::after {
     content: "";
     position: absolute;
@@ -76,123 +52,100 @@
     transition: width 0.1s ease-out;
 }
 
-/* --- DÉFINITION DE L'ANIMATION --- */
-@keyframes slideDownNav {
-    0% {
-        /* Hors champ vers le HAUT avec translate3d pour la fluidité GPU */
-        transform: translate3d(0, -150%, 0);
-    }
-
-    100% {
-        /* Position finale */
-        transform: translate3d(0, 0, 0);
-    }
-}
-
-.nav-container {
-    width: 100%;
-    height: 100%;
-    padding: 0 2rem;
+/* --- 3. LIENS DESKTOP & LOGIQUE D'AFFICHAGE --- */
+.nav-links {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
+    gap: 2.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
+.nav-links li {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
 
-/* --- 3. LIENS & LOGIQUE HOME/PROJET --- */
+.nav-links a,
+.mobile-links a {
+    font-size: var(--p-nav-font-size);
+    font-family: ui-monospace, 'Cascadia Code', monospace;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+}
+
+/* Filtrage dynamique Desktop */
 .home-only,
 .project-only,
-svg.rectangle.home-only,
-svg.rectangle.project-only {
+svg.rectangle {
     display: none !important;
 }
 
-/* --- AFFICHAGE HOME --- */
-body.is-home .home-only,
-body.is-home .nav-links .home-only {
-    display: flex !important;
-    align-items: center;
-}
-
-/* Cas particulier des SVG */
-body.is-home .nav-links svg.home-only {
-    display: inline-block !important;
-}
-
-/* --- AFFICHAGE PROJET --- */
-body.is-project-page .project-only,
-body.is-project-page .nav-links .project-only {
+body.is-home .home-only {
     display: flex !important;
 }
 
-body.is-project-page .nav-links svg.project-only {
+body.is-home svg.rectangle.home-only {
     display: inline-block !important;
 }
 
-/* Dropdown mes projets */
+body.is-project-page .project-only {
+    display: flex !important;
+}
+
+body.is-project-page svg.rectangle.project-only {
+    display: inline-block !important;
+}
+
+/* --- 4. LE DROPDOWN LIQUID GLASS --- */
 .projects-dropdown-container {
     position: relative;
-    display: inline-block;
-    /* On ajoute un petit padding invisible pour faciliter le passage de la souris */
     padding-bottom: 20px;
     margin-bottom: -20px;
     cursor: pointer;
 }
 
-/* --- LE MENU LIQUID GLASS --- */
 .dropdown-liquid-glass {
     position: absolute;
-    /* On le place sous le lien */
     top: 80%;
     left: 50%;
     transform: translateX(-50%) translateY(5px) scale(0.9);
-
-    /* --- Look Liquid Glass (Tes propriétés) --- */
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px) saturate(160%);
     -webkit-backdrop-filter: blur(12px) saturate(160%);
-
     padding: 6px;
     border-radius: 16px;
     min-width: 160px;
     display: flex;
     flex-direction: column;
     gap: 2px;
-
-    /* Bordure et Ombre */
     border: 0.5px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.3)var,
-        inset 0 0 10px rgba(255, 255, 255, 0.05);
-
-    /* Reflet liquide */
-    background-image: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.15) 0%,
-            transparent 50%);
-
-    /* État Initial (Caché) */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     opacity: 0;
     pointer-events: none;
     z-index: 1000;
-    transition:
-        opacity 0.25s ease,
-        transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: opacity 0.25s ease, transform 0.3s var(--bezier-reveal);
 }
 
-/* --- LE PONT INVISIBLE (Essentiel pour garder le menu ouvert) --- */
-.dropdown-liquid-glass::before {
+.projects-dropdown-container::before {
     content: "";
     position: absolute;
-    top: -25px;
-    /* Comble l'espace entre le menu et le lien "Projets" */
+    top: 50%;
     left: 0;
-    right: 0;
-    height: 30px;
-    background: transparent;
-    pointer-events: auto;
+    width: 100%;
+    height: 50px;
+
+    display: none;
 }
 
-/* --- ÉTAT HOVER --- */
+.projects-dropdown-container:hover::before {
+    display: block;
+}
+
 .projects-dropdown-container:hover .dropdown-liquid-glass {
     opacity: 1;
     pointer-events: auto;
@@ -200,206 +153,194 @@ body.is-project-page .nav-links svg.project-only {
 }
 
 .dropdown-item {
-    position: relative;
-    text-decoration: none;
-    font-size: var(--p-nav-font-size);
-    font-weight: 500;
     padding: 10px 14px;
     border-radius: 10px;
-    transition: all 0.4s ease;
-    white-space: nowrap;
-    text-align: left;
-    display: block;
-    overflow: hidden;
     color: var(--static-opacit-5);
-}
-
-.dropdown-item::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-
-    transform: translateX(-100%);
-    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.4s ease;
 }
 
 .dropdown-item:hover {
     border: solid 0.25px var(--static-opacit-2);
     background: rgba(255, 255, 255, 0.05);
-    /* Optionnel : léger fond au hover */
 }
 
-.dropdown-item:hover::after {
-    transform: translateX(0);
-}
-/* --- AJUSTEMENT POUR LES SPANS CIPHER --- */
-/* Pour s'assurer que l'animation Cipher ne casse pas le layout du menu */
-.dropdown-item .char {
-    display: inline-block;
-}
-
-
-
+/* --- 5. EFFET RIDEAU & MENU MOBILE --- */
+/* --- 5. MENU MOBILE (TA BASE MODIFIÉE) --- */
 .hamburger {
     display: none;
     background: none;
     border: none;
-    padding: 0;
+    z-index: 3100;
     cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    z-index: 3001;
-    color: var(--fill-brand);
 }
 
-#rect-1,
-#rect-2 {
-    transform-origin: 24px 24px;
-    transition: fill 0.3s ease;
-}
-
-.hamburger svg {
-    width: 48px;
-    height: 48px;
-    display: block;
-    overflow: visible;
-}
-
-/* --- 5. MOBILE MENU --- */
 .mobile-menu {
-    position: fixed !important;
+    position: fixed;
     inset: 0;
-
     width: 100%;
     height: 100vh;
-
     background-color: var(--layer-background);
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    transform: translateY(var(--curtain-start, -100%));
+
     visibility: hidden;
-    transform: translateY(-100%);
-    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+    transition: transform 0.8s var(--bezier-curtain), visibility 0.8s;
 }
 
 .mobile-menu.active {
-    transform: translateY(0) !important;
+    transform: translateY(0%) !important;
     visibility: visible;
-    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), visibility 0s 0s;
 }
 
 .mobile-links {
     list-style: none;
     padding: 0;
-    text-align: center;
+    margin: 0;
     display: flex;
     flex-direction: column;
+    gap: 30px;
+    text-align: center;
+    width: 100%;
 }
 
-.nav-links {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2.5rem;
-    width: auto;
-}
-
-.nav-links li {
-    list-style: none;
-    flex: 0 0 auto;
-    /* Empêche le rétrécissement ou l'agrandissement */
-    display: flex;
+/* CORRECTIF : On utilise l'ID pour être sûr de passer par-dessus les .home-only desktop */
+#mobile-menu .mobile-links li {
+    display: flex !important;
+    visibility: visible !important;
     justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s var(--bezier-reveal);
+    transition-delay: calc(var(--index, 0) * 0.1s + 0.3s);
 }
 
-.nav-links li a {
-    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, monospace !important;
+/* Animation d'apparition quand le rideau est actif */
+#mobile-menu.active .mobile-links li {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
 }
 
+#mobile-menu .mobile-links li a {
+    display: block !important;
+    font-size: 32px;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #FFFFFF !important;
+    /* Force le blanc */
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Nettoyage des éléments parasites clonés */
+#mobile-menu .dropdown-liquid-glass,
+#mobile-menu .rectangle {
+    display: none !important;
+}
+
+#mobile-menu .mobile-links li a,
+#mobile-menu .mobile-links li a :global(.char),
+#mobile-menu .mobile-links li a span {
+    display: block;
+    font-size: 32px;
+    font-weight: 500;
+    filter: blur(0) !important;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #FFFFFF !important;
+    /* Force le blanc sur le lien et les lettres */
+    -webkit-text-fill-color: #FFFFFF !important;
+    opacity: 1 !important;
+    /* Force l'opacité si le cipher est resté bloqué */
+}
+
+#mobile-menu .dropdown-liquid-glass,
+#mobile-menu .rectangle {
+    display: none !important;
+}
+
+/* On cache les rectangles SVG qui n'ont rien à faire dans le menu mobile */
+#mobile-menu .rectangle {
+    display: none !important;
+}
+
+
+/* --- 6. EFFET CIPHER (Restauration Complète) --- */
 :global(.char) {
     display: inline-block !important;
-    width: 14px !important;
+    min-width: 1ch;
     text-align: center;
-    flex-shrink: 0;
-}
-
-nav-links li a:hover {
-    font-weight: inherit;
+    will-change: transform, opacity, filter;
+    transition: opacity 0.5s var(--bezier-reveal), transform 0.5s var(--bezier-reveal), filter 0.4s ease;
 }
 
 :global(.char.shuffling) {
-    opacity: 0.4;
-    transform: translateY(-2px);
+    opacity: 0.3 !important;
+    transform: scale(0.85) translateY(-2px) !important;
+    filter: blur(1.5px) !important;
 }
 
 :global(.char.fixed) {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1 !important;
+    transform: scale(1) translateY(0) !important;
+    filter: blur(0) !important;
 }
 
+#mobile-menu .mobile-links :global(.char.shuffling) {
+    filter: blur(0) !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
 
-
-/* --- 6. RESPONSIVE --- */
-@media (max-width: 783px) {
+/* --- 7. RESPONSIVE --- */
+@media (max-width: 973px) {
     .desktop-only {
         display: none !important;
     }
 
     .hamburger {
         display: flex;
+        filter: none !important;
     }
 
-    .mobile-links {
-        gap: 40px;
+    /* Animation des LI quand le menu s'ouvre */
+    #mobile-menu .mobile-links li {
+        transform: translateY(40px) skewY(4deg) !important;
+        opacity: 0 !important;
+        transition: transform 0.8s var(--bezier-reveal), opacity 0.8s ease;
+        transition-delay: calc(var(--index, 0) * 0.1s + 0.3s);
     }
 
-    .mobile-links :global(li) a,
-    .mobile-links li a {
-        font-size: 32px;
-        font-weight: 500;
-    }
-
-    .mobile-links li {
-        font-weight: var(--font-weight-bold);
-        font-size: 45px;
-    }
-
-    /* Force l'affichage du container et des lettres */
-    #mobile-links-container {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center;
-        width: 100%;
-    }
-
-    #mobile-links-container li {
-        display: block !important;
-        /* Overide le display none des classes clonées */
+    #mobile-menu.active .mobile-links li {
+        transform: translateY(0) skewY(0deg) !important;
         opacity: 1 !important;
-        margin: 15px 0;
     }
 
-    #mobile-links-container .letter {
-        color: #000 !important;
-        /* Force la couleur pour le test */
-        font-size: 32px;
-        /* Pour être sûr que la police ne bug pas */
+    /* Tes correctifs de netteté (importants !) */
+    #mobile-menu .mobile-links li a {
+        filter: none !important;
+        -webkit-filter: blur(0px) !important;
     }
 
-    /* L'effet de masque */
-    .word-wrap {
-        display: inline-block !important;
-        overflow: hidden !important;
+    #mobile-menu .mobile-links li a :global(.char),
+    #mobile-menu .mobile-links li a span {
+        filter: none !important;
+        opacity: 1 !important;
+    }
+}
+
+
+@keyframes slideDownNav {
+    0% {
+        transform: translate3d(0, -150%, 0);
     }
 
-    #mobile-links-container a {
-        display: inline-flex !important;
-        /* Colle les lettres entre elles */
-        text-decoration: none;
-        color: inherit;
+    100% {
+        transform: translate3d(0, 0, 0);
     }
 }

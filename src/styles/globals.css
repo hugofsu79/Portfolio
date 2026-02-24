@@ -42,11 +42,6 @@ body {
 }
 
 
-
-.page-with-rail {
-    margin: var(--space-8);
-}
-
 html.lenis,
 html.lenis body {
     height: auto;

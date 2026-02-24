@@ -269,6 +269,8 @@ const { project } = Astro.props;
         display: flex;
         flex-direction: row;
         width: 100vw;
+
+        height: 100vh;
         margin: 0;
         padding: 0;
         align-items: center;
@@ -304,6 +306,10 @@ const { project } = Astro.props;
     }
     /* Optionnel : Mobile */
     @media (max-width: 768px) {
+        .quatrecent{
+            display: flex;flex-direction: column;
+            height: fit-content;
+        }
         .svg-wrapper {
             padding: var(--space-64-bt);
             font-size: 15vw; /* Taille adaptative selon la largeur de l'écran */
@@ -312,6 +318,15 @@ const { project } = Astro.props;
     }
 </style>
 <script>
+    let requestID: number;
+    let smoothVols = new Float32Array(3);
+    let time = 0;
+    const sounds = [
+        "/sounds/404/Parientzo_drums.wav",
+        "/sounds/404/Parientzo_lead.wav",
+        "/sounds/404/Parientzo_bass.wav",
+    ];
+
     class AudioEngine {
         public ctx: AudioContext | null = null;
         public tracks: any[] = [];
@@ -334,8 +349,11 @@ const { project } = Astro.props;
                 );
                 const analyzer = this.ctx!.createAnalyser();
                 const gain = this.ctx!.createGain();
-                analyzer.fftSize = 256;
+
+                // On augmente la précision de l'analyseur
+                analyzer.fftSize = 512;
                 gain.gain.value = 0;
+
                 this.tracks[index] = {
                     buffer,
                     analyzer,
@@ -350,8 +368,8 @@ const { project } = Astro.props;
         }
 
         startAll() {
-            if (this.startTime !== 0) return;
-            this.startTime = this.ctx!.currentTime;
+            if (this.startTime !== 0 || !this.ctx) return;
+            this.startTime = this.ctx.currentTime;
             this.tracks.forEach((t) => {
                 const source = this.ctx!.createBufferSource();
                 source.buffer = t.buffer;
@@ -366,138 +384,144 @@ const { project } = Astro.props;
 
         toggle(i: number) {
             const t = this.tracks[i];
-            if (!t) return;
-
-            // Glitch percutant au clic (Interférence)
-            smoothVols[i] = 220;
+            if (!t || !this.ctx) return;
+            smoothVols[i] = 180; // Petit "choc" visuel au déclenchement
 
             if (t.isActive || t.isPending) {
                 t.isActive = t.isPending = false;
-                t.gain.gain.setTargetAtTime(0, this.ctx!.currentTime, 0.05);
+                t.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
             } else {
                 t.isPending = true;
-                const elapsed = this.ctx!.currentTime - this.startTime;
+                const elapsed = this.ctx.currentTime - this.startTime;
                 const delay =
                     (Math.ceil(elapsed / this.loopLength) * this.loopLength -
                         elapsed) *
                     1000;
-
                 setTimeout(() => {
-                    if (t.isPending) {
+                    if (t.isPending && this.ctx) {
                         t.isPending = false;
                         t.isActive = true;
                         t.gain.gain.setTargetAtTime(
                             1,
-                            this.ctx!.currentTime,
-                            0.05,
+                            this.ctx.currentTime,
+                            0.1,
                         );
                     }
                 }, delay);
             }
         }
 
-        // Arrêt propre pour changement de page
-        stopInstantly() {
+        async destroy() {
             if (!this.ctx) return;
-            this.tracks.forEach((t) => {
-                if (t.isActive) {
-                    t.isActive = false;
-                    t.gain.gain.setTargetAtTime(0, this.ctx!.currentTime, 0.01);
-                }
-            });
+            if (this.ctx.state !== "closed") await this.ctx.close();
+            this.ctx = null;
+            this.startTime = 0;
         }
     }
 
     const engine = new AudioEngine();
-    const wrappers = document.querySelectorAll<HTMLElement>(".svg-wrapper");
-    const sounds = [
-        "/sounds/404/Parientzo_drums.wav",
-        "/sounds/404/Parientzo_lead.wav",
-        "/sounds/404/Parientzo_bass.wav",
-    ];
 
-    const filters = Array.from({ length: 3 }, (_, i) => ({
-        map: document.getElementById(`map-${i}`),
-        turb: document.getElementById(`turb-${i}`),
-        blur: document.getElementById(`blur-${i}`),
-        matrix: document.getElementById(`matrix-${i}`),
-    }));
+    const setupLabo = () => {
+        const wrappers = document.querySelectorAll<HTMLElement>(".svg-wrapper");
+        if (wrappers.length === 0) return;
 
-    sounds.forEach((s, i) => engine.loadTrack(s, i));
-    let smoothVols = new Float32Array(3);
-    let time = 0;
+        const filters = Array.from({ length: 3 }, (_, i) => ({
+            map: document.getElementById(`map-${i}`),
+            turb: document.getElementById(`turb-${i}`),
+            blur: document.getElementById(`blur-${i}`),
+            matrix: document.getElementById(`matrix-${i}`),
+        }));
 
-    wrappers.forEach((w, i) => {
-        w.addEventListener("click", async () => {
-            if (!engine.ctx) engine.init();
-            if (engine.ctx!.state === "suspended") await engine.ctx!.resume();
-            engine.startAll();
-            engine.toggle(i);
+        sounds.forEach((s, i) => engine.loadTrack(s, i));
+
+        wrappers.forEach((w, i) => {
+            w.onclick = async () => {
+                engine.init();
+                if (engine.ctx?.state === "suspended")
+                    await engine.ctx.resume();
+                engine.startAll();
+                engine.toggle(i);
+            };
         });
-    });
 
-    // SÉCURITÉ : Arrêt du son si on quitte la page ou change d'onglet
-    document.addEventListener("visibilitychange", () => {
-        if (document.hidden) engine.stopInstantly();
-    });
-    window.addEventListener("pagehide", () => engine.stopInstantly());
+        function animate() {
+            if (!window.location.pathname.includes("laboratoire")) {
+                cancelAnimationFrame(requestID);
+                return;
+            }
 
-    function animate() {
-        time += 0.002;
-        const tracks = engine.tracks;
+            time += 0.003;
+            const tracks = engine.tracks;
 
-        for (let i = 0; i < wrappers.length; i++) {
-            const track = tracks[i];
-            if (!track) continue;
+            for (let i = 0; i < wrappers.length; i++) {
+                const track = tracks[i];
+                if (!track) continue;
 
-            track.analyzer.getByteFrequencyData(track.data);
-            const rawVol = (track.data[1] + track.data[2] + track.data[3]) / 3;
+                // --- CAPTURE DU SON ---
+                track.analyzer.getByteFrequencyData(track.data);
 
-            // Afterglow constant (2) + Logic Active/Pending
-            let target = 2;
-            if (track.isActive) target = rawVol;
-            else if (track.isPending) target = 30 + Math.sin(time * 25) * 20;
+                // On prend une moyenne plus large (Bass + Mid) pour plus de mouvement
+                let sum = 0;
+                for (let j = 0; j < 10; j++) sum += track.data[j];
+                const rawVol = sum / 10;
 
-            smoothVols[i] += (target - smoothVols[i]) * 0.1;
-            const v = smoothVols[i] / 255;
-            const f = filters[i];
+                // --- LOGIQUE VISUELLE ---
+                let target = 3; // Un minimum de vibration constant
+                if (track.isActive) {
+                    target = rawVol;
+                } else if (track.isPending) {
+                    target = 40 + Math.sin(time * 20) * 20; // Pulsation d'attente
+                }
 
-            // 1. MOUVEMENT MULTI-HARMONIQUE (Onde naturelle)
-            const driftX =
-                Math.sin(time) * 0.002 + Math.sin(time * 0.25) * 0.001;
-            const driftY =
-                Math.cos(time * 0.7) * 0.002 + Math.sin(time * 0.3) * 0.001;
-            f.turb?.setAttribute(
-                "baseFrequency",
-                `${0.01 + driftX} ${0.01 + driftY}`,
-            );
+                // Lissage de l'onde : Valeur = $V_{old} + (V_{target} - V_{old}) \times 0.15$
+                smoothVols[i] += (target - smoothVols[i]) * 0.15;
+                const v = smoothVols[i] / 255;
+                const f = filters[i];
 
-            // 2. DÉFORMATION & FLOU
-            f.map?.setAttribute("scale", (v * 100).toString());
-            const blurVal = v * 1.5 * (1 + Math.abs(driftX * 15));
-            f.blur?.setAttribute("stdDeviation", `${blurVal} 0`);
+                // --- MISE À JOUR DES FILTRES SVG ---
+                if (f.map) {
+                    const drift = Math.sin(time + i);
+                    // L'ondulation (scale) dépend directement du volume v
+                    f.map.setAttribute("scale", (v * 120).toString());
 
-            // 3. PARADOXE CHROMATIQUE (Pixels éclatés RVB)
-            // On laisse passer les couleurs originales sur les pics de volume
-            const paradox = v * 0.9;
-            const cVal = 1 - v * 0.45;
-            f.matrix?.setAttribute(
-                "values",
-                `
-                ${cVal} ${(1 - cVal) * paradox} 0 0 0
-                0 ${cVal} ${(1 - cVal) * paradox} 0 0
-                ${(1 - cVal) * paradox} 0 ${cVal} 0 0
-                0 0 0 1 0
-            `,
-            );
+                    if (f.turb) {
+                        const freq = 0.01 + v * 0.02;
+                        f.turb.setAttribute(
+                            "baseFrequency",
+                            `${freq} ${freq + Math.cos(time) * 0.005}`,
+                        );
+                    }
 
-            const wrapper = wrappers[i];
-            wrapper.style.filter = `url(#distort-${i})`;
-            // Opacité adaptative (Feedback au clic)
-            wrapper.style.opacity =
-                track.isActive || track.isPending ? "1" : "0.35";
+                    if (f.blur) {
+                        f.blur.setAttribute("stdDeviation", `${v * 2} 0`);
+                    }
+
+                    if (f.matrix) {
+                        const p = v * 0.8;
+                        const c = 1 - v * 0.4;
+                        f.matrix.setAttribute(
+                            "values",
+                            `${c} ${p} 0 0 0 0 ${c} ${p} 0 0 ${p} 0 ${c} 0 0 0 0 0 1 0`,
+                        );
+                    }
+                }
+
+                // On force le rafraîchissement du filtre sur le wrapper
+                wrappers[i].style.filter = `url(#distort-${i})`;
+                wrappers[i].style.opacity =
+                    track.isActive || track.isPending ? "1" : "0.3";
+            }
+            requestID = requestAnimationFrame(animate);
         }
-        requestAnimationFrame(animate);
-    }
-    animate();
+        requestID = requestAnimationFrame(animate);
+    };
+
+    const cleanup = () => {
+        engine.destroy();
+        cancelAnimationFrame(requestID);
+    };
+
+    document.addEventListener("astro:page-load", setupLabo);
+    document.addEventListener("astro:before-preparation", cleanup);
+    window.addEventListener("pagehide", cleanup);
 </script>

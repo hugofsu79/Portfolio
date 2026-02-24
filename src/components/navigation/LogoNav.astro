@@ -1,5 +1,5 @@
 ---
-// Tableau des paths extraits de ton nouveau SVG
+// Tableau des paths - Assure-toi qu'aucune virgule ne remplace un point ici
 const logoPaths = [
     "M84.08-.13 64.3-.06c-.15 0-.31.02-.46.06h23.1c-.94-.09-1.9-.14-2.87-.13ZM.37 3.21h49.74v-.83c0-1.37-1.03-2.38-2.39-2.38L4.76.16C2.84.16 1.11 1.43.38 3.22ZM61.93 2.34v.88h35.83A28.773 28.773 0 0 0 86.95 0h-23.1c-1.02.25-1.92 1.3-1.92 2.34ZM0 5.12v1.3-1.3z",
     "M50.13 6.42V3.21H.37C.13 3.8 0 4.44 0 5.12v1.31h50.13ZM61.94 6.42h40.68c-1.51-1.23-3.14-2.3-4.87-3.21H61.93v3.21Z",
@@ -26,7 +26,7 @@ const logoPaths = [
                 <div class="path-group" style={`--p-idx: ${pIdx}`}>
                     {[...Array(2)].map((_, i) => (
                         <svg
-                            class={`logo-layer ${i === 11 ? "front" : "depth"}`}
+                            class={`logo-layer ${i === 1 ? "front" : "depth"}`}
                             style={`--l-idx: ${i}`}
                             viewBox="0 0 133 154"
                         >
@@ -42,17 +42,12 @@ const logoPaths = [
 <style>
     .logo-3d-container {
         perspective: 1200px;
-        /* On décentre un tout petit peu le regard pour voir le volume direct */
         perspective-origin: 55% 45%;
-        height: fit-content;
-
         display: flex;
         justify-content: center;
         align-items: center;
-
         overflow: visible;
         color: var(--fill-brand);
-
         width: 45px;
         height: 45px;
         padding: 8px;
@@ -63,7 +58,6 @@ const logoPaths = [
         height: 80%;
         transform-style: preserve-3d;
     }
-
     .path-group {
         position: absolute;
         top: 0;
@@ -71,10 +65,8 @@ const logoPaths = [
         width: 100%;
         height: 100%;
         transform-style: preserve-3d;
-        /* Origine au centre pour une rotation propre */
         transform-origin: center center;
     }
-
     .logo-layer {
         position: absolute;
         top: 0;
@@ -83,49 +75,90 @@ const logoPaths = [
         height: 100%;
         overflow: visible;
         transform-style: preserve-3d;
+        /* Correction : point décimal forcé */
         transform: translateZ(calc(var(--l-idx) * 0.7px));
-    }
-
-    .logo-layer path {
-        vector-effect: non-scaling-stroke;
     }
 </style>
 
 <script>
-    // @ts-ignore
-    import anime from "https://cdn.skypack.dev/animejs@3.2.1";
-
-    const animateLogo = () => {
-        const groups = document.querySelectorAll(".path-group");
-        if (!groups.length) return;
-
-        anime
-            .timeline({
-                complete: () => {
-                    // Reset propre sans clignotement
-                    // @ts-ignore
-                    anime.set(groups, { rotateY: 0, scaleZ: 1 });
-                    setTimeout(animateLogo, 3500);
-                },
-            })
-            .add({
-                targets: groups,
-                rotateY: [0, 360],
-                // STAGGER : Chaque ligne du logo commence 60ms après la précédente
-                // Cela crée une magnifique torsion fluide (effet de vague)
-                delay: anime.stagger(60),
-                duration: 2200,
-                easing: "easeInOutQuart",
-                // On gonfle le volume au milieu du tour
-                scaleZ: [
-                    { value: 1, duration: 0 },
-                    { value: 3.5, duration: 1100 },
-                    { value: 1, duration: 1100 },
-                ],
+    async function initLogoAnimation() {
+        try {
+            document.querySelectorAll(".logo-layer").forEach((svg) => {
+                const h = svg.getAttribute("height");
+                if (h && h.includes(","))
+                    svg.setAttribute("height", h.replace(",", "."));
             });
-    };
 
-    window.addEventListener("load", () => {
-        setTimeout(animateLogo, 1000);
-    });
+            // @ts-ignore
+            const animeModule = (await import(
+                /* @vite-ignore */ "https://esm.sh/animejs@3.2.1"
+            )) as any;
+            const anime = animeModule.default;
+
+            const container = document.querySelector(".logo-3d-container");
+            const groups = document.querySelectorAll(".path-group");
+
+            if (!container || !groups.length || !anime) return;
+
+            let isHovering = false;
+            let isAnimating = false; // LE VERROU
+
+            const playVague = (speedMultiplier = 1, isManual = false) => {
+                // Si on essaie de relancer manuellement alors que ça tourne déjà, on bloque
+                if (isManual && isAnimating) return;
+
+                isAnimating = true;
+                anime.remove(groups);
+
+                anime({
+                    targets: groups,
+                    rotateY: "+=360",
+                    delay: (_: any, i: number) => i * (40 * speedMultiplier),
+                    duration: 2000 * speedMultiplier,
+                    easing: "easeInOutQuart",
+                    scaleZ: [
+                        { value: 1, duration: 0 },
+                        {
+                            value: isManual || isHovering ? 4.5 : 3.5,
+                            duration: 800,
+                        },
+                        { value: 1, duration: 800 },
+                    ],
+                    complete: () => {
+                        isAnimating = false; // On libère le verrou
+
+                        // Si la souris est toujours dessus à la fin, on peut relancer
+                        // ou attendre le cycle auto si elle est sortie
+                        if (!isHovering) {
+                            setTimeout(() => {
+                                if (!isHovering && !isAnimating)
+                                    playVague(1.2, false);
+                            }, 3500);
+                        }
+                    },
+                });
+            };
+
+            container.addEventListener("mouseenter", () => {
+                isHovering = true;
+                // On ne lance que si le verrou est ouvert
+                if (!isAnimating) {
+                    playVague(0.8, true);
+                }
+            });
+
+            container.addEventListener("mouseleave", () => {
+                isHovering = false;
+            });
+
+            // Lancement initial
+            playVague(1.2, false);
+        } catch (error) {
+            console.error("Erreur Logo:", error);
+        }
+    }
+
+    document.addEventListener("astro:page-load", initLogoAnimation);
+    if (document.readyState === "complete") initLogoAnimation();
+    else window.addEventListener("load", initLogoAnimation);
 </script>

@@ -94,7 +94,7 @@ import LogoHero from "../ui/Logohero.astro";
 <style>
     #hero-job {
         margin: 0;
-        
+
         font-family: var(--font-family-base);
         font-weight: var(--font-weight-bold);
         font-size: clamp(16px, 1.2vw, 18px);
@@ -394,18 +394,14 @@ import LogoHero from "../ui/Logohero.astro";
         });
     };
 
-    // On exporte uniquement le Cipher pour le changement de langue
     (window as any).runCipher = animateCipher;
 
     // --- GESTION PROPRE DES ÉVÉNEMENTS ---
-    // On retire le check DOMContentLoaded pour ne garder qu'astro:page-load
-    // car Astro déclenche cet événement même au premier chargement.
     document.addEventListener("astro:page-load", () => {
-        isHeroAnimating = false; // Reset de sécurité sur changement de page
+        isHeroAnimating = false;
         startGlobalHeroAnimation();
     });
 
-    // Fallback si Astro n'est pas encore prêt (premier hit)
     if (document.readyState === "complete") {
         startGlobalHeroAnimation();
     }

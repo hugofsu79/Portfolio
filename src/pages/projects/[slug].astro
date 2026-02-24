@@ -3,7 +3,7 @@ import { projects } from "../../data/projects";
 import Layout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/layout/Footer.astro";
 import Carousel from "../../components/ui/Carousel.astro";
-// import TableauProjet from "../../components/ui/TableauProjet.astro";
+import TableauProjet from "../../components/ui/TableauProjet.astro";
 
 export async function getStaticPaths() {
     return projects.map((project) => {
@@ -38,16 +38,25 @@ const content = project.content.fr;
                 >
                     {project.entreprise}
                 </h2>
-                <h4>{project.content.fr.title}</h4>
+                <h4 data-project-slug={project.entreprise}>
+                    {project.content.fr.title}
+                </h4>
             </div>
         </div>
 
         <div class="grid-project">
             <div class="leftCorridor">
                 <section class="context">
-                    <h2 class="project-title-sticky">
-                        {project.entreprise}
-                    </h2>
+                    <div class="project-title-sticky">
+                        <img
+                            class="logo"
+                            src={project.logo}
+                            alt={project.content.fr.title}
+                        />
+                        <h4 data-project-slug={project.entreprise}>
+                            {project.content.fr.title}
+                        </h4>
+                    </div>
 
                     <div>
                         <ul class="skill" data-i18n-project="skills">
@@ -75,7 +84,7 @@ const content = project.content.fr;
                         >
                             {content.context.description}
                         </p>
-                        <!-- <TableauProjet details={content.context.details} /> -->
+                        <TableauProjet details={content.context.details} />
                     </div>
                 </section>
             </div>
@@ -126,22 +135,55 @@ const content = project.content.fr;
                                 />
                             )}
                             <div class="grid-mini">
-                                <div class="textGrid">
-                                    <div class="title__grid">
-                                        <h4 data-i18n-project="role_title">
-                                            {content.role?.title || "Mon rôle"}
-                                        </h4>
-                                        <hr />
+                                <>
+                                    <div class="textGrid">
+                                        <div class="title__grid">
+                                            <h4 data-i18n-project="role_title">
+                                                {content.role?.title ||
+                                                    "Mon rôle"}
+                                            </h4>
+                                        </div>
+                                        <div class="section-content">
+                                            <p
+                                                class="split-texte"
+                                                data-i18n-project="role_description"
+                                            >
+                                                {content.role?.description}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="section-content">
-                                        <p
-                                            class="split-texte"
-                                            data-i18n-project="role_description"
-                                        >
-                                            {content.role?.description}
-                                        </p>
+                                    <div class="textGrid">
+                                        <div class="title__grid">
+                                            <h4 data-i18n-project="role_title">
+                                                {content.demarche?.title}
+                                            </h4>
+                                        </div>
+                                        <div class="section-content">
+                                            <p
+                                                class="split-texte"
+                                                data-i18n-project="role_description"
+                                            >
+                                                {content.demarche?.description}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="textGrid">
+                                        <div class="title__grid">
+                                            <h4 data-i18n-project="role_title">
+                                                {content.resultat?.title ||
+                                                    "Mon rôle"}
+                                            </h4>
+                                        </div>
+                                        <div class="section-content">
+                                            <p
+                                                class="split-texte"
+                                                data-i18n-project="role_description"
+                                            >
+                                                {content.resultat?.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </>
                             </div>
                         </div>
                     )
@@ -170,6 +212,7 @@ const content = project.content.fr;
 </style>
 
 <script>
+    // texte anim <p> et commentaire
     import { animate, stagger } from "animejs";
 
     const initProjectAnimations = () => {
@@ -203,4 +246,48 @@ const content = project.content.fr;
             }, 100);
         }
     });
+</script>
+<script>
+    // scroll <h2>
+    document.addEventListener("astro:page-load", () => {
+        const heroTitle = document.querySelector(".project-title--hero");
+        const stickyTitle = document.querySelector(".project-title-sticky");
+
+        if (!heroTitle || !stickyTitle) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    // Si le titre hero n'est PLUS visible (isIntersecting est faux)
+                    if (!entry.isIntersecting) {
+                        stickyTitle.classList.add("is-visible");
+                    } else {
+                        stickyTitle.classList.remove("is-visible");
+                    }
+                });
+            },
+            {
+                // Déclenche dès que le titre hero quitte le viewport
+                threshold: 0,
+                rootMargin: "-60px 0px 0px 0px", // Ajuste selon la hauteur de ton header
+            },
+        );
+
+        observer.observe(heroTitle);
+    });
+
+    let el = document.querySelector(".context");
+    while (el) {
+        el = el.parentElement;
+        if (!el) break;
+        const style = window.getComputedStyle(el);
+        const hasOverflow =
+            style.overflow !== "visible" ||
+            style.overflowX !== "visible" ||
+            style.overflowY !== "visible";
+        if (hasOverflow) {
+            console.warn("⚠️ BLOQUEUR TROUVÉ :", el);
+            console.log("Valeur de overflow :", style.overflow);
+        }
+    }
 </script>

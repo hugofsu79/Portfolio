@@ -246,7 +246,7 @@ export const projects: Project[] = [
                     alt: { fr: "Vue Dashboard", en: "Dashboard View" }
                 },
                 {
-                    src: "/images/projects/kiro/screen-2.jpg",
+                    src: "/public/images/kiro/gallery/wireframe.png",
                     alt: { fr: "Détail Patient", en: "Patient Details" }
                 }
             ],

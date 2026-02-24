@@ -1,0 +1,180 @@
+<div id="labo-toast" class="toast-liquid-glass">
+    <div class="toast-content">
+        <div class="toast-header">
+            <span class="status-dot-signal"></span>
+            <p class="toast-title">Laboratoire en construction</p>
+        </div>
+        <div class="rect"></div>
+
+        <p class="toast-description">
+            Un espace dédié à l'exploration : <strong>Interaction</strong> (Geste,
+            feedback), <strong>Rythme</strong> (Le temps), <strong
+                >Matière</strong
+            > (Ressenti) et <strong>Système...</strong>
+        </p>
+    </div>
+    <button id="close-toast" aria-label="Fermer">✕</button>
+</div>
+
+<style>
+    .toast-liquid-glass {
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px); /* Caché par défaut */
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        padding: 12px 16px;
+        border-radius: 20px;
+        max-width: 450px;
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        opacity: 0;
+        transition:
+            opacity 0.5s ease,
+            transform 0.6s var(--bezier-reveal, cubic-bezier(0.16, 1, 0.3, 1));
+    }
+
+    .toast-liquid-glass.is-visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-16);
+        margin-bottom: 4px;
+    }
+    .toast-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+    .toast-content .rect {
+        background-color: var(--stroke-tertiary);
+        height: 0.25px;
+        width: 100%;
+    }
+    .toast-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    .status-dot-signal {
+        position: relative;
+        width: 8px;
+        height: 8px;
+        background: #ff0000;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .toast-description {
+        font-size: 10px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .toast-description strong {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    #close-toast {
+        background: transparent;
+        border: none;
+        color: var(--stroke-primary);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+        margin-top: -2px;
+        transition: color 0.3s ease;
+    }
+
+    #close-toast:hover {
+        color: var(--stroke-tertiary);
+    }
+
+    @keyframes pulse {
+        0% {
+            opacity: 0.4;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0.4;
+        }
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--core-red-500);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--core-red-500);
+        animation: pulse 2s infinite;
+    }
+
+    .status-dot-signal::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 1px solid #ff3a3a; /* Une bordure fine pour l'onde */
+        transform: translate(-50%, -50%);
+        animation: signal-wave 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        opacity: 0;
+        z-index: 0; /* Passe derrière le point central */
+    }
+    @keyframes signal-wave {
+        0% {
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+            border-width: 2px;
+        }
+        100% {
+            width: 350%; /* S'étend bien au-delà du point */
+            height: 350%;
+            opacity: 0;
+            border-width: 1px;
+        }
+    }
+    @media (max-width: 720px) {
+        .toast-liquid-glass {
+            width: 80%;
+        }
+    }
+</style>
+
+<script>
+    const handleToast = () => {
+        const toast = document.getElementById("labo-toast");
+        const closeBtn = document.getElementById("close-toast");
+
+        // On ne l'affiche que sur la page laboratoire
+        if (window.location.pathname.includes("laboratoire") && toast) {
+            setTimeout(() => {
+                toast.classList.add("is-visible");
+            }, 800); // Petit délai pour le "Rythme"
+        }
+
+        closeBtn?.addEventListener("click", () => {
+            toast?.classList.remove("is-visible");
+        });
+    };
+
+    document.addEventListener("astro:page-load", handleToast);
+</script>

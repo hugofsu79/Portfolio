@@ -3,6 +3,7 @@ import Layout from "../layouts/BaseLayout.astro";
 import Footer from "../components/layout/Footer.astro";
 import Navbar from "../components/navigation/Navbar.astro";
 import Section from "../components/layout/Section.astro";
+import LaboToast from "../components/ui/LaboToast.astro";
 
 // Récupération des props passées par getStaticPaths
 const { project } = Astro.props;
@@ -11,7 +12,7 @@ const { project } = Astro.props;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
 ></script>
 
-<Layout title="Laboratoire">
+<Layout title="404">
     <Navbar />
     <Section>
         <svg
@@ -254,6 +255,7 @@ const { project } = Astro.props;
             </div>
         </div>
     </Section>
+    <LaboToast />
     <Footer />
 </Layout>
 <style>
@@ -294,7 +296,6 @@ const { project } = Astro.props;
     .svg-wrapper:hover {
         transform: scale(1.02);
         z-index: 10;
-        filter: url(#chromatic-aberration);
     }
 
     .svg-wrapper svg {
@@ -306,8 +307,9 @@ const { project } = Astro.props;
     }
     /* Optionnel : Mobile */
     @media (max-width: 768px) {
-        .quatrecent{
-            display: flex;flex-direction: column;
+        .quatrecent {
+            display: flex;
+            flex-direction: column;
             height: fit-content;
         }
         .svg-wrapper {
@@ -509,7 +511,7 @@ const { project } = Astro.props;
                 // On force le rafraîchissement du filtre sur le wrapper
                 wrappers[i].style.filter = `url(#distort-${i})`;
                 wrappers[i].style.opacity =
-                    track.isActive || track.isPending ? "1" : "0.3";
+                    track.isActive || track.isPending ? "1" : "0.8";
             }
             requestID = requestAnimationFrame(animate);
         }

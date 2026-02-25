@@ -5,13 +5,32 @@ import { projects } from "../data/projects";
 import { aboutData } from '../data/textesAbout';
 import { laboData } from '../data/sectionLabo';
 
-/**
- * Initialise l'écouteur de changement de langue et met à jour le DOM
- */
+function getDeepValue(obj: any, path: string): string | null {
+    const value = path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    return typeof value === 'string' ? value : null;
+}
+
+function flattenObject(obj: any, prefix = ''): Record<string, string> {
+    let items: Record<string, string> = {};
+    for (const key in obj) {
+        const newKey = prefix ? `${prefix}_${key}` : key;
+        if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+            Object.assign(items, flattenObject(obj[key], newKey));
+        } else if (typeof obj[key] === 'string') {
+            items[newKey] = obj[key];
+        }
+    }
+    return items;
+}
+
 export function initI18n() {
     langStore.subscribe((lang: 'fr' | 'en') => {
+        const otherLang = lang === 'fr' ? 'en' : 'fr';
 
-        const flattenedContent: Record<string, string> = {};
+        const flattenedContent: Record<string, string> = {
+            ...navLabels[lang],
+            ...flattenObject(heroContent[lang])
+        };
 
         aboutData.forEach(item => {
             flattenedContent[`${item.id}_titre`] = item[lang].titre;
@@ -25,58 +44,43 @@ export function initI18n() {
             if (content.underSection) flattenedContent[`${item.id}_underSection`] = content.underSection;
         });
 
-        const { context, ...restOfHero } = heroContent[lang];
-
-        const staticContent: Record<string, string> = {
-            ...restOfHero,
-            ...context,
-            ...flattenedContent,
-            ...navLabels[lang]
-        };
-
         const staticElements = document.querySelectorAll('[data-i18n-key]');
         staticElements.forEach((el) => {
             const key = el.getAttribute('data-i18n-key');
-            if (key && staticContent[key]) {
+            if (key && flattenedContent[key]) {
                 el.classList.add('lang-changing');
                 setTimeout(() => {
-                    (el as HTMLElement).textContent = staticContent[key];
+                    (el as HTMLElement).textContent = flattenedContent[key];
                     el.classList.remove('lang-changing');
                 }, 300);
             }
         });
 
-        const projectTitleEl = document.querySelector('[data-project-slug]');
-        if (projectTitleEl) {
-            const slug = projectTitleEl.getAttribute('data-project-slug');
+        const projectContainer = document.querySelector('[data-project-slug]');
+
+        if (projectContainer) {
+            const slug = projectContainer.getAttribute('data-project-slug');
             const project = projects.find(p => p.slug === slug);
 
             if (project) {
                 const projectElements = document.querySelectorAll('[data-i18n-project]');
+
                 projectElements.forEach((el) => {
-                    const part = el.getAttribute('data-i18n-project');
-                    if (!part) return;
+                    const path = el.getAttribute('data-i18n-project');
+                    if (!path) return;
 
-                    let newValue = "";
-                    const content = project.content[lang];
-
-                    switch (part) {
-                        case 'title': newValue = content.title; break;
-                        case 'context_description': newValue = content.context.description; break;
-                        case 'objectifs_title': newValue = content.objectifs?.title || "Objectifs"; break;
-                        case 'objectifs_description': newValue = content.objectifs?.description || ""; break;
-                        case 'role_title': newValue = content.role?.title || "Mon rôle"; break;
-                        case 'role_description': newValue = content.role?.description || ""; break;
-                        case 'demarche_title': newValue = content.demarche?.title || ""; break;
-                        case 'demarche_description': newValue = content.demarche?.description || ""; break;
-                        case 'resultat_title': newValue = content.resultat?.title || ""; break;
-                        case 'resultat_description': newValue = content.resultat?.description || ""; break;
-                    }
+                    const newValue = getDeepValue(project.content[lang], path);
+                    const ghostValue = getDeepValue(project.content[otherLang], path);
 
                     if (newValue) {
                         el.classList.add('lang-changing');
                         setTimeout(() => {
                             (el as HTMLElement).textContent = newValue;
+
+                            if (ghostValue) {
+                                el.setAttribute('data-ghost', ghostValue);
+                            }
+
                             el.classList.remove('lang-changing');
                         }, 300);
                     }

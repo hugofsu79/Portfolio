@@ -1,4 +1,4 @@
-import type { I18n } from "./projects"; // On réutilise ton type global
+import type { I18n } from "./projects"; // On réutilise  type global
 
 export type Contexte = {
     icon: string;

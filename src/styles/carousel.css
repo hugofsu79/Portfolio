@@ -1,146 +1,171 @@
 /* ============================
-   Carousel wrapper
+   Structure & Masque
 ============================ */
-
 .carouselAll {
     position: relative;
     width: 100%;
 }
 
-/* ============================
-   Viewport (masque global)
-============================ */
-
 .carousel__viewport {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-
     overflow: hidden;
     border-radius: var(--radius-S);
     margin-bottom: 20px;
+    background: #000;
 }
-
-/* ============================
-   Track (superposition)
-============================ */
 
 .carousel__track {
     position: absolute;
     inset: 0;
-
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-/* ============================
-   Slide (surface animée)
-============================ */
-
 .carousel__slide {
     position: absolute;
     inset: 0;
-
-    display: flex;
-
+    opacity: 0;
+    z-index: 0;
     pointer-events: none;
-
-    /* État par défaut (plein) */
-    clip-path: inset(0 0 0 0);
-    -webkit-clip-path: inset(0 0 0 0);
 }
 
-/* ============================
-   Image
-============================ */
-
-.carousel__slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.carousel__slide img {
-    transform: scale(1);
-    transition: none;
-}
-
-.carousel__slide.is-entering img {
-    transform: scale(1.06);
-    /* subtil, surtout pas plus */
-    animation: imageDezoom 0.8s cubic-bezier(0.85, 0, 0.15, 1) forwards;
-}
-
-/* ============================
-   États
-============================ */
-
+/* --- ÉTATS --- */
 .carousel__slide.is-active {
     opacity: 1;
     z-index: 1;
     pointer-events: auto;
 }
 
-/* Slide sortante (reste dessous) */
 .carousel__slide.is-leaving {
+    opacity: 1;
     z-index: 2;
 }
 
-/* ============================
-   Direction → masque de départ
-============================ */
-
-/* NEXT : gauche → droite */
-.carouselAll[data-direction="next"] .carousel__slide.is-entering {
-    z-index: 3;
-    opacity: 1;
-    --clip-from: inset(0 100% 0 0);
-}
-
-/* PREV : droite → gauche */
-.carouselAll[data-direction="prev"] .carousel__slide.is-entering {
-    z-index: 3;
-    opacity: 1;
-    --clip-from: inset(0 0 0 100%);
-}
-
-/* ============================
-   Animation d’entrée
-============================ */
-
 .carousel__slide.is-entering {
-    clip-path: var(--clip-from);
-    -webkit-clip-path: var(--clip-from);
-
-    will-change: clip-path;
-
+    opacity: 1;
+    z-index: 3;
     animation: carouselReveal 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
-/* ============================
-   Keyframes
-============================ */
+/* --- DIRECTION --- */
+.carouselAll[data-direction="next"] .carousel__slide.is-entering {
+    --clip-from: inset(0 0 0 100%);
+}
+
+.carouselAll[data-direction="prev"] .carousel__slide.is-entering {
+    --clip-from: inset(0 100% 0 0);
+}
 
 @keyframes carouselReveal {
     from {
         clip-path: var(--clip-from);
-        -webkit-clip-path: var(--clip-from);
     }
 
     to {
         clip-path: inset(0 0 0 0);
-        -webkit-clip-path: inset(0 0 0 0);
     }
+}
+
+.carousel__slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel__slide.is-entering img {
+    animation: imageDezoom 0.8s cubic-bezier(0.85, 0, 0.15, 1) forwards;
 }
 
 @keyframes imageDezoom {
     from {
-        transform: scale(1.16);
+        transform: scale(1.1);
     }
 
     to {
         transform: scale(1);
+    }
+}
+
+/* --- ARROWS --- */
+.arrowMoove {
+    display: flex;
+    gap: 20px;
+}
+
+.sliderArrow {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.5s;
+}
+
+.arrowInner {
+    display: flex;
+    width: 109px;
+    overflow: hidden;
+    color: var(--stroke-primary);
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sliderArrow.left .arrowInner {
+    justify-content: flex-start;
+}
+
+.sliderArrow.right .arrowInner {
+    justify-content: flex-end;
+}
+
+.sliderArrow.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.sliderArrow.is-disabled .arrowInner {
+    width: 80px;
+}
+
+/* --- LOUPE--- */
+@media (min-width: 992px) {
+    .carousel__viewport {
+        cursor: none;
+    }
+
+    .magnifier-lens {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 100;
+
+        /* Aberration chromatique : */
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.3),
+
+            inset 2px 0 2px rgba(255, 0, 0, 0.05),
+
+            inset -2px 0 2px rgba(0, 0, 255, 0.05),
+
+            inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+
+        filter: contrast(1.1) brightness(1.05);
+        backdrop-filter: blur(1px);
+
+        background-repeat: no-repeat;
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+    }
+
+    .magnifier-lens::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+
+        background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.1) 100%);
+        pointer-events: none;
     }
 }

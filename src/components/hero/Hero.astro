@@ -50,8 +50,9 @@ import LogoHero from "../ui/Logohero.astro";
                 class="digit">0</span
             ><span class="digit">0</span>
         </p>
+    </div><div class="logo-hero">
+        <LogoHero />
     </div>
-    <LogoHero />
     <div class="bottom-hero">
         <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
         <div class="scroll-wrapper">
@@ -59,7 +60,6 @@ import LogoHero from "../ui/Logohero.astro";
         </div>
         <p id="hero-city" class="cipher-text">Paris</p>
     </div>
-    <!-- <p>{heroContent[lang].subtitle}</p> -->
 
     <div class="definiton">
         <p id="hero-job" data-i18n-key="job" class="cipher-text">
@@ -132,8 +132,7 @@ import LogoHero from "../ui/Logohero.astro";
         width: fit-content;
     }
     .top-hero,
-    .bottom-hero,
-    LogoHero {
+    .bottom-hero {
         position: relative;
         will-change: filter, transform;
     }
@@ -260,6 +259,18 @@ import LogoHero from "../ui/Logohero.astro";
         padding-left: 18px;
         margin-bottom: 0;
     }
+
+    .definiton {
+        will-change: transform;
+    }
+
+    .linerDefinition {
+        will-change: transform;
+    }
+    .logo-hero {
+        display: flex;
+        justify-content: center;
+    }
 </style>
 <script>
     // @ts-ignore
@@ -325,35 +336,47 @@ import LogoHero from "../ui/Logohero.astro";
         }, delay);
     };
 
-    const updateClock = () => {
-        const clockDigits = document.querySelectorAll(".digit");
-        if (!clockDigits.length) return;
-        const now = new Date();
-        const timeStr =
-            String(now.getHours()).padStart(2, "0") +
-            String(now.getMinutes()).padStart(2, "0");
-        clockDigits.forEach((d, i) => {
-            d.textContent = timeStr[i];
-            d.classList.add("fixed");
-        });
-    };
+    const heroSound = new Audio("/sounds/hero_song.mp3");
+    heroSound.preload = "auto";
+    heroSound.volume = 0.4;
 
     const startGlobalHeroAnimation = () => {
         const hero = document.getElementById("/");
-        // SI déjà en cours OU pas de hero, on s'arrête
         if (isHeroAnimating || !hero) return;
 
-        isHeroAnimating = true; // On verrouille
+        isHeroAnimating = true;
         updateClock();
 
         hero.style.filter = "url(#hero-rgb-filter)";
 
         const tl = anime.timeline({
+            begin: () => {
+                // --- Lancement Systématique ---
+                heroSound.currentTime = 0; // On reset pour être sûr
+                heroSound.play().catch((err) => {
+                    console.warn(
+                        "Audio Hero bloqué par le navigateur. En attente d'interaction.",
+                    );
+
+                    // Fallback : si c'est bloqué, on le jouera au tout premier clic/scroll
+                    const playOnGesture = () => {
+                        heroSound.play();
+                        window.removeEventListener("mousedown", playOnGesture);
+                        window.removeEventListener("scroll", playOnGesture);
+                    };
+                    window.addEventListener("mousedown", playOnGesture, {
+                        once: true,
+                    });
+                    window.addEventListener("scroll", playOnGesture, {
+                        once: true,
+                    });
+                });
+            },
             complete: () => {
                 if (!hero.classList.contains("lang-changing")) {
                     hero.style.filter = "none";
                 }
-                isHeroAnimating = false; // On déverrouille à la fin
+                isHeroAnimating = false;
             },
         });
 
@@ -394,9 +417,21 @@ import LogoHero from "../ui/Logohero.astro";
         });
     };
 
+    const updateClock = () => {
+        const clockDigits = document.querySelectorAll(".digit");
+        if (!clockDigits.length) return;
+        const now = new Date();
+        const timeStr =
+            String(now.getHours()).padStart(2, "0") +
+            String(now.getMinutes()).padStart(2, "0");
+        clockDigits.forEach((d, i) => {
+            d.textContent = timeStr[i];
+            d.classList.add("fixed");
+        });
+    };
+
     (window as any).runCipher = animateCipher;
 
-    // --- GESTION PROPRE DES ÉVÉNEMENTS ---
     document.addEventListener("astro:page-load", () => {
         isHeroAnimating = false;
         startGlobalHeroAnimation();
@@ -405,4 +440,6 @@ import LogoHero from "../ui/Logohero.astro";
     if (document.readyState === "complete") {
         startGlobalHeroAnimation();
     }
+
+    
 </script>

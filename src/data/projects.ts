@@ -17,8 +17,8 @@ export const projects: Project[] = [
                 title: "Fintech qui simplifie le financement de véhicules en proposant une expérience digitale fluide",
                 skills: ["Fintech", "B2C-B2B", "Méthodologie"],
                 context: {
-                    description: "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance...",
-                    // Ton fichier de données (ex: projects.ts)
+                    description: "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance, dans un contexte startup à forte autonomie, nécessitant une compréhension rapide des mécanismes de financement et des enjeux contractuels.",
+
                     details: [
                         { label: "Temps de travail", value: "02.10.2024 | 27.10.2025" },
                         {
@@ -46,7 +46,7 @@ export const projects: Project[] = [
                 title: "A fintech company that simplifies vehicle financing by delivering a seamless digital experience.",
                 skills: ["Fintech", "B2C-B2B", "Methodology"],
                 context: {
-                    description: "Siko Mobility is a fintech startup specializing in vehicle financing. I worked there for a year...",
+                    description: "Siko Mobility is a fintech startup specialized in vehicle financing. I worked there for one year as a work-study student, in a highly autonomous startup environment that required a rapid understanding of financing mechanisms and contractual challenges.",
                     details: [
                         { label: "Working time", value: "02.10.2024 | 27.10.2025" },
                         { label: "Role", value: "UI Designer / App Designer" },
@@ -55,15 +55,15 @@ export const projects: Project[] = [
                 },
                 objectifs: {
                     title: "Objectives",
-                    description: "Objectives were built progressively. Upon arrival..."
+                    description: "The objectives gradually took shape over the course of my apprenticeship. When I joined, the role of design within the technical team was not clearly defined: the founders were not yet fully convinced of the value a UI/UX designer could bring, partly due to a limited understanding of the role itself. The existing interfaces were primarily built using Tailwind components, with loosely structured visual elements that were difficult for developers to leverage effectively. My main objective was therefore to establish solid foundations for product design, working in close collaboration with the CTO.This required significant clarification and structuring work: revisiting all existing screens, sorting and organizing Figma files, and transforming what was essentially a graphic “Diogenes syndrome” into a coherent, readable, and reusable design environment. I also aimed to give design a truly functional role by building components and UI guidelines that could act as a real support system for the development team, rather than merely producing aesthetic mockups.Finally, a key challenge was to move beyond a purely utilitarian, Tailwind- driven approach to design, in order to bring greater personality, visual consistency, and clarity to the interfaces—while remaining fully aligned with the startup’s technical constraints."
                 },
                 role: {
                     title: "My Role",
-                    description: "At Siko Mobility, my role was to structure and evolve key product journeys..."
+                    description: "At Siko Mobility, my role was to structure and evolve the product’s key user journeys within a fast-growing fintech environment. I worked on designing a new insurance flow, as well as creating and improving merchant dashboards, taking into account B2B challenges and the operational needs of partners. I also led a redesign of the financing journeys, adapting them to the different types of offers available(installment payments, consumer credit, long- term lease, and lease with option to purchase).Each flow came with specific constraints—particularly regarding user information, required documentation, and contractual rules—demanding a precise and rigorous design approach. At the same time, I initiated and built a Design System aimed at delivering a more coherent, legible, and modern interface, while serving as a practical support framework for the development team.This work sought to move beyond a purely utilitarian design approach, strengthening interface clarity, visual consistency, and overall product maintainability."
                 },
                 resultat: {
                     title: "Results",
-                    description: "My year at Siko Mobility was a real turning point..."
+                    description: "My year at Siko Mobility marked a real turning point. The beginning was disorienting: a new city, a new startup, and an environment where initiative was not optional but essential. With no direct supervision, I had to learn how to step up, take ownership, and bring structure where it was missing. Over time, the trust placed in me by the founders allowed me to evolve from an execution- focused role to a driving force within the product team.I began leading regular check- ins, facilitating educational workshops with the team, designing a merchant dashboard, redesigning the insurance flow, and creating a new credit journey. This experience gave me strong confidence in collaborative work and reinforced my ability to operate within an agile, product- driven approach."
                 }
             }
         },
@@ -95,7 +95,7 @@ export const projects: Project[] = [
                     description: "Ce projet fictif a été développé dans le cadre de mon année de licence. Le travail portait sur l’analyse d’un besoin utilisateur, la définition des parcours clés et la conception d’une interface cohérente et exploitable.",
                     details: [
                         { label: "Temps de travail", value: "14.12.2024 | 27.08.2025" },
-                        { label: "Collaborateurs", value: "Ma pomme" },
+                        { label: "Collaborateurs", value: "/" },
                         { label: "Rôle", value: "Designer UI / Product Designer" },
                         { label: "Lien", value: "Fichier Figma", href: "#" },
                         { label: "Catégorie", value: "Marketplace" }
@@ -183,7 +183,7 @@ export const projects: Project[] = [
                     description: "Kiro est une application dédiée au suivi de la rééducation fonctionnelle. Ce projet, réalisé lors d'un test technique, visait à proposer une expérience claire adaptée aux usages terrain des praticiens.",
                     details: [
                         { label: "Temps de travail", value: "Exercice technique | 2025" },
-                        { label: "Collaborateurs", value: "Ma pomme" },
+                        { label: "Collaborateurs", value: "/" },
                         { label: "Rôle", value: "Product Designer" },
                         { label: "Lien", value: "Prototype Figma", href: "https://www.figma.com/design/XujzwV1i7ogDs52f51IDTG/Kiro?node-id=30-192" },
                         { label: "Catégorie", value: "SaaS B2B / Santé" }
@@ -196,6 +196,10 @@ export const projects: Project[] = [
                 role: {
                     title: "Mon Rôle",
                     description: "Conception des parcours utilisateurs (dashboard patientèle), réalisation des wireframes et interfaces UI, avec un accent sur la fiabilité des informations métier."
+                },
+                illustration: {
+                    picture: "/public/images/kiro/cover.webp",
+                    description: "",
                 },
                 demarche: {
                     title: "Démarche",
@@ -246,7 +250,11 @@ export const projects: Project[] = [
                     alt: { fr: "Vue Dashboard", en: "Dashboard View" }
                 },
                 {
-                    src: "/public/images/kiro/gallery/wireframe.png",
+                    src: "/public/images/kiro/gallery/wireframe_mobile.png",
+                    alt: { fr: "Détail Patient", en: "Patient Details" }
+                },
+                {
+                    src: "/public/images/kiro/gallery/maquette_desktop.png",
                     alt: { fr: "Détail Patient", en: "Patient Details" }
                 }
             ],

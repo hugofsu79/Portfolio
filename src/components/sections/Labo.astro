@@ -89,32 +89,12 @@ const articles: laboBlock[] = laboData.filter(
         border-radius: var(--radius-basic);
         min-width: 200px;
     }
-    .labo-card {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        border: 0.25px solid var(--stroke-primary);
-        padding: 15px;
-        background-color: var(--layer-background);
-        min-width: 0;
-        /* On s'assure qu'aucune hauteur n'est imposée */
-        height: auto;
-        cursor: pointer;
-        overflow: hidden; /* Pour éviter les débordements pendant l'anim */
-    }
 
     .labo-card-header {
         margin-bottom: 0;
         transition: margin-bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .labo-card .labo-card-preview {
-        overflow: hidden;
-        height: 100%;
-        grid-template-rows: 1fr;
-        opacity: 1;
-        margin-top: 20px;
-    }
     .labo-content-wrapper {
         min-height: 0;
     }
@@ -126,34 +106,32 @@ const articles: laboBlock[] = laboData.filter(
     }
 
     canvas {
-        display: block;
-        width: 100% !important;
-        height: 100% !important;
         object-fit: contain; /* Force le canvas à tenir dans le cadre */
     }
 
     .labo-card-frame {
         min-height: 0;
         width: 100%;
+        overflow: hidden;
         aspect-ratio: 1 / 1;
     }
 
-    .labo-card:hover .labo-card-header {
-        transform: translateY(-2px);
+    .labo-card {
+        padding: var(--space-12);
+        background-color: var(--static-opacit-50);
     }
-
+    .labo-card h4 {
+        margin: 0;
+    }
     canvas {
         display: block;
         width: 100%;
+
         height: 100%;
-        background: var(--layer-background);
-        transform: scale(1.1);
+
         transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .labo-card:hover canvas {
-        transform: scale(1);
-    }
     .labo-cta {
         display: flex;
         justify-content: end;
@@ -168,14 +146,6 @@ const articles: laboBlock[] = laboData.filter(
         .all-articles {
             grid-template-columns: 1fr;
         }
-    }
-    /* Le bouton */
-    #btn-labo-alert {
-        min-width: 260px; /* Force une largeur minimum pour éviter les sauts */
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
     }
 
     /* Le conteneur du texte */
@@ -194,122 +164,11 @@ const articles: laboBlock[] = laboData.filter(
 </style>
 
 <script>
-    // On définit la structure d'un point
+    // --- TYPES & INTERFACES ---
     interface GridPoint {
         x: number;
         y: number;
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        // 1. On "cast" l'élément pour accéder aux méthodes du Canvas
-        const canvas = document.querySelector(
-            'canvas[data-preview="interaction"]',
-        ) as HTMLCanvasElement;
-        if (!canvas) return;
-
-        // 2. On précise le type du contexte
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-        const parent = canvas.parentElement as HTMLElement;
-
-        // 3. Typage explicite des variables (évite le type 'any')
-        let width: number;
-        let height: number;
-        let dpr: number;
-        let points: GridPoint[] = []; // Tableau d'objets respectant l'interface GridPoint
-
-        const spacing: number = 60;
-        const detectionRadius: number = 160;
-        const mouse = { x: -2000, y: -2000, active: false };
-
-        const getBrandColor = (): string => {
-            return (
-                getComputedStyle(canvas)
-                    .getPropertyValue("--fill-brand")
-                    .trim() || "#342818"
-            );
-        };
-
-        function init() {
-            dpr = window.devicePixelRatio || 1;
-
-            // On mesure la largeur disponible dans la carte
-            const rect = parent.getBoundingClientRect();
-            width = rect.width;
-
-            // On force la hauteur à être identique pour garder le carré
-            height = width;
-
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            canvas.style.width = `${width}px`;
-            canvas.style.height = `${height}px`;
-
-            ctx.scale(dpr, dpr);
-
-            points = [];
-            for (let x = spacing / 2; x < width; x += spacing) {
-                for (let y = spacing / 2; y < height; y += spacing) {
-                    points.push({ x, y });
-                }
-            }
-        }
-
-        window.addEventListener("mousemove", (e: MouseEvent) => {
-            const rect = canvas.getBoundingClientRect();
-            if (
-                e.clientX >= rect.left &&
-                e.clientX <= rect.right &&
-                e.clientY >= rect.top &&
-                e.clientY <= rect.bottom
-            ) {
-                mouse.x = e.clientX - rect.left;
-                mouse.y = e.clientY - rect.top;
-                mouse.active = true;
-            } else {
-                mouse.active = false;
-                mouse.x = -2000;
-                mouse.y = -2000;
-            }
-        });
-
-        function animate(): void {
-            ctx.clearRect(0, 0, width, height);
-
-            const brandColor = getBrandColor();
-            ctx.fillStyle = brandColor;
-            ctx.strokeStyle = brandColor;
-            ctx.lineWidth = 0.5;
-
-            points.forEach((p: GridPoint) => {
-                const dx = mouse.x - p.x;
-                const dy = mouse.y - p.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                let currentSize = 1.5;
-
-                if (mouse.active && distance < detectionRadius) {
-                    const proximity = 1 - distance / detectionRadius;
-                    currentSize = 1.5 + 12 * Math.pow(proximity, 1.5);
-
-                    ctx.beginPath();
-                    ctx.moveTo(mouse.x, mouse.y);
-                    ctx.lineTo(p.x, p.y);
-                    ctx.stroke();
-                }
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener("resize", init);
-        init();
-        animate();
-    });
-
     interface MusicDot {
         x: number;
         y: number;
@@ -319,217 +178,6 @@ const articles: laboBlock[] = laboData.filter(
         col: number;
         lastTriggered: number;
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const canvas = document.querySelector(
-            'canvas[data-preview="rythme"]',
-        ) as HTMLCanvasElement;
-        if (!canvas) return;
-
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-        const parent = canvas.parentElement as HTMLElement;
-
-        let audioCtx: AudioContext | null = null;
-        let mainGain: GainNode | null = null;
-        let width: number, height: number, dpr: number;
-        let dots: MusicDot[] = [];
-
-        // Configuration de la grille (24x24 comme demandé)
-        const rows = 24;
-        const cols = 24;
-        const damping = 0.65; // Ajusté pour une propagation plus fluide
-        const tension = 0.02;
-        const dotBaseSize = 0.4; // Plus petit pour la densité 24x24
-
-        function init(): void {
-            dpr = window.devicePixelRatio || 1;
-            width = parent.clientWidth;
-            height = parent.clientHeight;
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            canvas.style.width = `${width}px`;
-            canvas.style.height = `${height}px`;
-            ctx.scale(dpr, dpr);
-
-            dots = [];
-            const spacingX = (width - 60) / (cols - 1);
-            const spacingY = (height - 60) / (rows - 1);
-
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    dots.push({
-                        x: 30 + c * spacingX,
-                        y: 30 + r * spacingY,
-                        z: 0,
-                        v: 0,
-                        row: r,
-                        col: c,
-                        lastTriggered: 0,
-                    });
-                }
-            }
-        }
-        function playAmbientNote(row: number): void {
-            if (!audioCtx) {
-                audioCtx = new (
-                    window.AudioContext || (window as any).webkitAudioContext
-                )();
-                mainGain = audioCtx.createGain();
-                mainGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                mainGain.connect(audioCtx.destination);
-            }
-
-            const scale = [
-                87.31, // 1. Le Grave (Fa 1)
-
-                174.61, // 2. Fondamentale (Fa 2)
-
-                207.65, // 3. Tierce Mineure (Lab 2)
-
-                261.63, // 4. Quinte (Do 3)
-
-                698.46, // 5. L'Aigu (Fa 4)
-                1396.92, // 5. L'Aigu (Fa 5)
-            ];
-            const freq = scale[row % scale.length];
-            const now = audioCtx.currentTime;
-
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain(); // On le nomme gainNode pour plus de clarté
-
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(freq, now);
-
-            // --- GESTION DU GAIN SELON LA FRÉQUENCE ---
-            let volume = 0.004; // Volume de base
-            if (freq < 100) volume = 0.04; // On baisse le grave (87Hz) car il sature vite
-            if (freq > 500) volume = 0.02; // On monte l'aigu (698Hz) pour qu'il perce mieux
-
-            // --- ENVELOPPE (ADSR) ---
-            // Start à 0 pour éviter le "Pop"
-            gainNode.gain.setValueAtTime(0, now);
-            // Attack : Monte au volume cible en 0.1s
-            gainNode.gain.linearRampToValueAtTime(volume, now + 0.1);
-            // Release : Redescend doucement à 0 sur 1.5s
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
-
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            osc.start(now);
-            osc.stop(now + 1.6);
-        }
-
-        canvas.addEventListener("mousemove", (e: MouseEvent) => {
-            const rect = canvas.getBoundingClientRect();
-            const mx = e.clientX - rect.left;
-            const my = e.clientY - rect.top;
-
-            dots.forEach((dot) => {
-                const dist = Math.sqrt((mx - dot.x) ** 2 + (my - dot.y) ** 2);
-                if (dist < 25) {
-                    // Rayon d'influence légèrement augmenté pour 24x24
-                    const now = Date.now();
-                    if (now - dot.lastTriggered > 220) {
-                        dot.v += 12;
-                        dot.lastTriggered = now;
-                        playAmbientNote(dot.row);
-                    }
-                }
-            });
-        });
-
-        function animate(): void {
-            ctx.clearRect(0, 0, width, height);
-
-            // 1. CALCUL PHYSIQUE
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const dot = dots[r * cols + c];
-                    let neighbors = 0;
-                    if (r > 0) neighbors += dots[(r - 1) * cols + c].z;
-                    if (r < rows - 1) neighbors += dots[(r + 1) * cols + c].z;
-                    if (c > 0) neighbors += dots[r * cols + (c - 1)].z;
-                    if (c < cols - 1) neighbors += dots[r * cols + (c + 1)].z;
-
-                    const force = (neighbors / 4 - dot.z) * tension;
-                    dot.v += force;
-                    dot.v *= damping;
-                    dot.z += dot.v;
-                }
-            }
-
-            // 2. RENDU DE LA GRILLE CHROMATIQUE
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const dot = dots[r * cols + c];
-                    const absZ = Math.abs(dot.z);
-
-                    // Effet Arc-en-ciel basé sur la tension (z)
-                    // On fait varier la teinte (Hue) de 180 à 360 selon l'amplitude
-                    const hue = 200 + absZ * 10;
-                    const opacity = 0.1 + Math.min(0.5, absZ / 10);
-
-                    ctx.lineWidth = 0.4;
-                    ctx.strokeStyle =
-                        absZ > 0.5
-                            ? `hsla(${hue}, 70%, 60%, ${opacity})`
-                            : "#eeeeee";
-
-                    if (c < cols - 1) {
-                        const next = dots[r * cols + c + 1];
-                        ctx.beginPath();
-                        ctx.moveTo(dot.x, dot.y - dot.z);
-                        ctx.lineTo(next.x, next.y - next.z);
-                        ctx.stroke();
-                    }
-                    if (r < rows - 1) {
-                        const next = dots[(r + 1) * cols + c];
-                        ctx.beginPath();
-                        ctx.moveTo(dot.x, dot.y - dot.z);
-                        ctx.lineTo(next.x, next.y - next.z);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // 3. RENDU DES POINTS (Lisibilité avec variables neutres)
-            dots.forEach((dot) => {
-                const absZ = Math.abs(dot.z);
-                const drawY = dot.y - dot.z;
-
-                // Point principal
-                ctx.beginPath();
-                ctx.arc(dot.x, drawY, dotBaseSize, 0, Math.PI * 2);
-
-                // Utilisation des variables neutres pour les contours
-                if (absZ > 1.5) {
-                    ctx.fillStyle = "#4d4d4d"; // core-neutral-700
-                } else if (absZ > 0.5) {
-                    ctx.fillStyle = "#808080"; // core-neutral-500
-                } else {
-                    ctx.fillStyle = "#cccccc"; // core-neutral-200
-                }
-                ctx.fill();
-
-                // Ondes de choc subtiles (Arc-en-ciel)
-                if (absZ > 1.2) {
-                    ctx.beginPath();
-                    ctx.arc(dot.x, drawY, absZ * 8, 0, Math.PI * 2);
-                    ctx.strokeStyle = `hsla(${200 + absZ * 15}, 80%, 70%, 0.2)`;
-                    ctx.lineWidth = 0.3;
-                    ctx.stroke();
-                }
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener("resize", init);
-        init();
-        animate();
-    });
-
     interface LiquidParticle {
         x: number;
         y: number;
@@ -539,311 +187,347 @@ const articles: laboBlock[] = laboData.filter(
         vx: number;
         vy: number;
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const canvases = document.querySelectorAll<HTMLCanvasElement>(
-            'canvas[data-preview="matiere"]',
-        );
-
-        if (!document.getElementById("goo-dense")) {
-            const svgFilter = `
-        <svg style="visibility: hidden; position: absolute;" width="0" height="0">
-            <filter id="goo-dense">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 50 -16" result="goo" />
-                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-            </filter>
-        </svg>`;
-            document.body.insertAdjacentHTML("beforeend", svgFilter);
-        }
-
-        canvases.forEach((canvas) => {
-            const ctx = canvas.getContext("2d");
-            const parent = canvas.parentElement;
-            if (!ctx || !parent) return;
-
-            let width: number, height: number, dpr: number;
-            let particles: LiquidParticle[] = [];
-            const mouse = { x: -1000, y: -1000, active: false };
-
-            // Configuration pour la DENSITÉ
-            const colCount = 4; // Moins de colonnes = des blocs de matière plus larges
-            const brandColor =
-                getComputedStyle(document.documentElement)
-                    .getPropertyValue("--fill-brand")
-                    .trim() || "#000";
-
-            canvas.style.filter = "url(#goo-dense)";
-
-            function init() {
-                dpr = window.devicePixelRatio || 1;
-                width = parent!.clientWidth;
-                height = width;
-
-                canvas.width = width * dpr;
-                canvas.height = height * dpr;
-                ctx!.scale(dpr, dpr);
-
-                particles = [];
-                const colWidth = width / colCount;
-
-                for (let c = 0; c < colCount; c++) {
-                    const speed = 0.15 + Math.random() * 0.25; // Plus lent = plus lourd
-                    const count = 12; // Beaucoup de particules pour boucher les trous
-                    for (let r = 0; r < count; r++) {
-                        particles.push({
-                            x: c * colWidth + colWidth / 2,
-                            y: Math.random() * height,
-                            baseX: c * colWidth + colWidth / 2,
-                            radius: colWidth * 1.3, // RAYON MASSIF pour fusionner
-                            speed: speed,
-                            vx: 0,
-                            vy: 0,
-                        });
-                    }
-                }
-            }
-
-            function animate() {
-                ctx!.clearRect(0, 0, width, height);
-                ctx!.fillStyle = brandColor;
-
-                particles.forEach((p) => {
-                    p.y += p.speed;
-                    if (p.y > height + p.radius) p.y = -p.radius;
-
-                    if (mouse.active) {
-                        const dx = p.x - mouse.x;
-                        const dy = p.y - mouse.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        const repelRadius = 120; // Rayon d'interaction plus court pour garder la densité
-
-                        if (dist < repelRadius) {
-                            const force = (repelRadius - dist) / repelRadius;
-                            const angle = Math.atan2(dy, dx);
-                            // Répulsion plus faible pour que la matière s'étire sans se briser
-                            p.vx += Math.cos(angle) * force * 1.2;
-                            p.vy += Math.sin(angle) * force * 1.2;
-                        }
-                    }
-
-                    p.vx *= 0.88; // Très visqueux
-                    p.vy *= 0.88;
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.x += (p.baseX - p.x) * 0.03; // Rappel lent
-
-                    ctx!.beginPath();
-                    ctx!.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx!.fill();
-                });
-
-                requestAnimationFrame(animate);
-            }
-
-            canvas.addEventListener("mousemove", (e: MouseEvent) => {
-                const rect = canvas.getBoundingClientRect();
-                mouse.x = e.clientX - rect.left;
-                mouse.y = e.clientY - rect.top;
-                mouse.active = true;
-            });
-
-            canvas.addEventListener("mouseleave", () => (mouse.active = false));
-            window.addEventListener("resize", init);
-            init();
-            animate();
-        });
-    });
-
     interface Crawler {
         t: number;
         size: number;
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const canvas = document.querySelector(
-            'canvas[data-preview="systeme"]',
-        ) as HTMLCanvasElement;
-        if (!canvas) return;
+    // --- 1. EXPÉRIENCE : INTERACTION (Points & Lignes) ---
+    function initInteraction(canvas: HTMLCanvasElement) {
+        const ctx = canvas.getContext("2d")!;
+        const parent = canvas.parentElement!;
+        let width: number,
+            height: number,
+            dpr: number,
+            points: GridPoint[] = [];
+        const spacing = 60,
+            detectionRadius = 160;
+        const mouse = { x: -2000, y: -2000, active: false };
 
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const getBrandColor = () =>
+            getComputedStyle(canvas).getPropertyValue("--fill-brand").trim() ||
+            "#342818";
+
+        function resize() {
+            dpr = window.devicePixelRatio || 1;
+            width = parent.getBoundingClientRect().width;
+            height = width;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            ctx.scale(dpr, dpr);
+            points = [];
+            for (let x = spacing / 2; x < width; x += spacing) {
+                for (let y = spacing / 2; y < height; y += spacing)
+                    points.push({ x, y });
+            }
+        }
+
+        window.addEventListener("mousemove", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.active =
+                e.clientX >= rect.left &&
+                e.clientX <= rect.right &&
+                e.clientY >= rect.top &&
+                e.clientY <= rect.bottom;
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = ctx.strokeStyle = getBrandColor();
+            ctx.lineWidth = 0.5;
+            points.forEach((p) => {
+                const dx = mouse.x - p.x,
+                    dy = mouse.y - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                let size = 1.5;
+                if (mouse.active && dist < detectionRadius) {
+                    const prox = 1 - dist / detectionRadius;
+                    size = 1.5 + 12 * Math.pow(prox, 1.5);
+                    ctx.beginPath();
+                    ctx.moveTo(mouse.x, mouse.y);
+                    ctx.lineTo(p.x, p.y);
+                    ctx.stroke();
+                }
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        resize();
+        animate();
+        window.addEventListener("resize", resize);
+    }
+
+    // --- 2. EXPÉRIENCE : RYTHME (Grille Audio) ---
+    function initRythme(canvas: HTMLCanvasElement) {
+        const ctx = canvas.getContext("2d")!;
+        const parent = canvas.parentElement!;
+        let audioCtx: AudioContext | null = null;
+        let width: number,
+            height: number,
+            dpr: number,
+            dots: MusicDot[] = [];
+        const rows = 24,
+            cols = 24,
+            damping = 0.65,
+            tension = 0.2;
+
+        function resize() {
+            dpr = window.devicePixelRatio || 1;
+            width = parent.clientWidth;
+            height = parent.clientHeight;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            ctx.scale(dpr, dpr);
+            dots = [];
+            const spX = (width - 60) / (cols - 1),
+                spY = (height - 60) / (rows - 1);
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++)
+                    dots.push({
+                        x: 30 + c * spX,
+                        y: 30 + r * spY,
+                        z: 0,
+                        v: 0,
+                        row: r,
+                        col: c,
+                        lastTriggered: 0,
+                    });
+            }
+        }
+
+        function playNote(row: number) {
+            if (!audioCtx)
+                audioCtx = new (
+                    window.AudioContext || (window as any).webkitAudioContext
+                )();
+            const scale = [87.31, 174.61, 207.65, 261.63, 698.46, 1396.92];
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(scale[row % scale.length], now);
+            g.gain.setValueAtTime(0, now);
+            g.gain.linearRampToValueAtTime(0.02, now + 0.1);
+            g.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+            osc.connect(g);
+            g.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 1.6);
+        }
+
+        canvas.addEventListener("mousemove", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left,
+                my = e.clientY - rect.top;
+            dots.forEach((d) => {
+                if (Math.sqrt((mx - d.x) ** 2 + (my - d.y) ** 2) < 25) {
+                    if (Date.now() - d.lastTriggered > 220) {
+                        d.v += 12;
+                        d.lastTriggered = Date.now();
+                        playNote(d.row);
+                    }
+                }
+            });
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            dots.forEach((d, i) => {
+                let neighbors = 0;
+                if (d.row > 0) neighbors += dots[i - cols].z;
+                if (d.row < rows - 1) neighbors += dots[i + cols].z;
+                if (d.col > 0) neighbors += dots[i - 1].z;
+                if (d.col < cols - 1) neighbors += dots[i + 1].z;
+                d.v = (d.v + (neighbors / 4 - d.z) * tension) * damping;
+                d.z += d.v;
+            });
+            dots.forEach((d) => {
+                ctx.beginPath();
+                ctx.arc(d.x, d.y - d.z, 0.5, 0, Math.PI * 2);
+                ctx.fillStyle =
+                    Math.abs(d.z) > 0.5
+                        ? `hsla(${200 + Math.abs(d.z) * 10}, 70%, 60%, 1)`
+                        : "#cccccc";
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        resize();
+        animate();
+    }
+
+    // --- 3. EXPÉRIENCE : MATIÈRE (Gooey Liquid) ---
+    function initMatiere(canvas: HTMLCanvasElement) {
+        if (!document.getElementById("goo-dense")) {
+            document.body.insertAdjacentHTML(
+                "beforeend",
+                `<svg style="display:none;"><filter id="goo-dense"><feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 50 -16" result="goo"/><feComposite in="SourceGraphic" in2="goo" operator="atop"/></filter></svg>`,
+            );
+        }
+        const ctx = canvas.getContext("2d")!;
+        let width: number,
+            height: number,
+            particles: LiquidParticle[] = [];
+        const mouse = { x: -1000, y: -1000, active: false };
+        canvas.style.filter = "url(#goo-dense)";
+
+        function resize() {
+            width = canvas.parentElement!.clientWidth;
+            height = width;
+            canvas.width = width * devicePixelRatio;
+            canvas.height = height * devicePixelRatio;
+            ctx.scale(devicePixelRatio, devicePixelRatio);
+            particles = [];
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    baseX: Math.random() * width,
+                    radius: 40 + Math.random() * 40,
+                    speed: 0.2 + Math.random() * 0.3,
+                    vx: 0,
+                    vy: 0,
+                });
+            }
+        }
+
+        canvas.addEventListener("mousemove", (e) => {
+            const r = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - r.left;
+            mouse.y = e.clientY - r.top;
+            mouse.active = true;
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle =
+                getComputedStyle(document.documentElement).getPropertyValue(
+                    "--fill-brand",
+                ) || "#000";
+            particles.forEach((p) => {
+                p.y =
+                    p.y + p.speed > height + p.radius
+                        ? -p.radius
+                        : p.y + p.speed;
+                if (mouse.active) {
+                    const dx = p.x - mouse.x,
+                        dy = p.y - mouse.y,
+                        dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        const f = (120 - dist) / 120;
+                        p.vx += (dx / dist) * f * 2;
+                        p.vy += (dy / dist) * f * 2;
+                    }
+                }
+                p.vx *= 0.9;
+                p.vy *= 0.9;
+                p.x += p.vx;
+                p.y += p.vy;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        resize();
+        animate();
+    }
+
+    // --- 4. EXPÉRIENCE : SYSTÈME (S Alphabet) ---
+    function initSysteme(canvas: HTMLCanvasElement) {
+        const ctx = canvas.getContext("2d")!;
         const size = 300;
-
-        const getThemeColor = (name: string) =>
-            getComputedStyle(document.documentElement)
-                .getPropertyValue(name)
-                .trim();
-        const strokeColor = getThemeColor("--stroke-primary") || "#ccc";
-        const bgColor = getThemeColor("--layer-background") || "#fff";
-
-        // Création d'un chemin SVG précis pour un "S" Helvetica Bold
-        // Ce tracé représente le squelette central de la lettre pour un contournement total
-        const sPath = new Path2D(
-            "M150,55 C230,55 240,110 150,135 C60,160 70,245 150,245 C230,245 240,190 240,190",
-        );
-
         const crawlers: Crawler[] = [
-            { t: 0.0, size: 5 },
+            { t: 0, size: 5 },
             { t: 0.2, size: 3 },
             { t: 0.4, size: 6 },
             { t: 0.6, size: 4 },
             { t: 0.8, size: 5 },
         ];
 
-        const speed = 0.0005; // Vitesse lente
-
-        function init() {
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = canvas.height = size * dpr;
-            canvas.style.width = canvas.style.height = `${size}px`;
-            ctx.scale(dpr, dpr);
-        }
-
-        // Fonction pour obtenir un point sur le Path2D
-        // Comme Path2D n'a pas de méthode native "getPointAtLength" en Canvas standard,
-        // on simule le tracé pour garantir le contournement.
         function getPointOnS(t: number) {
-            // Paramétrage manuel de la courbe du S pour une précision totale
-            const p0 = { x: 150, y: 55 }; // Sommet
-            const p1 = { x: 280, y: 55 }; // Arrondi haut
-            const p2 = { x: 280, y: 135 }; // Milieu droite
-            const p3 = { x: 150, y: 135 }; // Centre
-            const p4 = { x: 20, y: 135 }; // Milieu gauche
-            const p5 = { x: 20, y: 245 }; // Arrondi bas
-            const p6 = { x: 150, y: 245 }; // Base
-
-            let x, y;
-            if (t < 0.5) {
-                const nt = t * 2;
-                x =
-                    (1 - nt) ** 3 * p0.x +
-                    3 * (1 - nt) ** 2 * nt * p1.x +
-                    3 * (1 - nt) * nt ** 2 * p2.x +
-                    nt ** 3 * p3.x;
-                y =
-                    (1 - nt) ** 3 * p0.y +
-                    3 * (1 - nt) ** 2 * nt * p1.y +
-                    3 * (1 - nt) * nt ** 2 * p2.y +
-                    nt ** 3 * p3.y;
-            } else {
-                const nt = (t - 0.5) * 2;
-                x =
-                    (1 - nt) ** 3 * p3.x +
-                    3 * (1 - nt) ** 2 * nt * p4.x +
-                    3 * (1 - nt) * nt ** 2 * p5.x +
-                    nt ** 3 * p6.x;
-                y =
-                    (1 - nt) ** 3 * p3.y +
-                    3 * (1 - nt) ** 2 * nt * p4.y +
-                    3 * (1 - nt) * nt ** 2 * p5.y +
-                    nt ** 3 * p6.y;
-            }
-            return { x, y };
+            const p = [
+                { x: 150, y: 55 },
+                { x: 280, y: 55 },
+                { x: 280, y: 135 },
+                { x: 150, y: 135 },
+                { x: 20, y: 135 },
+                { x: 20, y: 245 },
+                { x: 150, y: 245 },
+            ];
+            const nt = (t % 0.5) * 2,
+                b =
+                    t < 0.5
+                        ? [p[0], p[1], p[2], p[3]]
+                        : [p[3], p[4], p[5], p[6]];
+            return {
+                x:
+                    (1 - nt) ** 3 * b[0].x +
+                    3 * (1 - nt) ** 2 * nt * b[1].x +
+                    3 * (1 - nt) * nt ** 2 * b[2].x +
+                    nt ** 3 * b[3].x,
+                y:
+                    (1 - nt) ** 3 * b[0].y +
+                    3 * (1 - nt) ** 2 * nt * b[1].y +
+                    3 * (1 - nt) * nt ** 2 * b[2].y +
+                    nt ** 3 * b[3].y,
+            };
         }
 
         function animate() {
             ctx.clearRect(0, 0, size, size);
-
-            // 1. Rendu de la lettre S Helvetica Bold
             ctx.font = "900 250px Helvetica, Arial, sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-
-            ctx.fillStyle = bgColor;
-            ctx.fillText("S", size / 2, size / 2 + 10);
-
-            ctx.strokeStyle = strokeColor;
+            ctx.strokeStyle =
+                getComputedStyle(document.documentElement).getPropertyValue(
+                    "--stroke-primary",
+                ) || "#ccc";
             ctx.lineWidth = 1.5;
             ctx.strokeText("S", size / 2, size / 2 + 10);
-
-            // 2. Rendu des ronds sur le contour
             crawlers.forEach((c) => {
-                c.t = (c.t + speed) % 1;
+                c.t = (c.t + 0.001) % 1;
                 const pos = getPointOnS(c.t);
-
                 ctx.beginPath();
                 ctx.arc(pos.x, pos.y, c.size, 0, Math.PI * 2);
-                ctx.fillStyle = bgColor;
+                ctx.fillStyle =
+                    getComputedStyle(document.documentElement).getPropertyValue(
+                        "--layer-background",
+                    ) || "#fff";
                 ctx.fill();
-                ctx.strokeStyle = strokeColor;
-                ctx.lineWidth = 1.2;
                 ctx.stroke();
             });
-
             requestAnimationFrame(animate);
         }
-
-        init();
+        canvas.width = canvas.height = size * devicePixelRatio;
+        canvas.style.width = canvas.style.height = `${size}px`;
+        ctx.scale(devicePixelRatio, devicePixelRatio);
         animate();
-    });
-</script>
-<script>
-    const GLYPHS = "0123456789@#$%&*";
+    }
 
-    const runCipher = (container: HTMLElement, newText: string) => {
-        if ((container as any)._interval)
-            clearInterval((container as any)._interval);
-
-        // Préparation des spans (si pas déjà fait ou si texte différent)
-        container.innerHTML = "";
-        const targetChars = newText.split("");
-        const spans = targetChars.map((char) => {
-            const s = document.createElement("span");
-            s.className = "char-fixed";
-            s.textContent = char === " " ? "\u00A0" : char;
-            container.appendChild(s);
-            return { el: s, final: char };
-        });
-
-        let iterations = 0;
-        (container as any)._interval = setInterval(() => {
-            let completed = true;
-
-            spans.forEach((obj, index) => {
-                // Si on n'a pas encore atteint l'index de révélation
-                if (iterations < index * 2) {
-                    completed = false;
-                    // On affiche un glyphe aléatoire
-                    if (obj.final !== " ") {
-                        obj.el.textContent =
-                            GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-                    }
-                } else {
-                    // On affiche le caractère final
-                    obj.el.textContent =
-                        obj.final === " " ? "\u00A0" : obj.final;
-                }
-            });
-
-            if (completed && iterations > spans.length * 2) {
-                clearInterval((container as any)._interval);
-            }
-            iterations++;
-        }, 30);
+    // --- INITIALISATION GÉNÉRALE ---
+    const startLabo = () => {
+        document
+            .querySelectorAll('canvas[data-preview="interaction"]')
+            .forEach((el) => initInteraction(el as HTMLCanvasElement));
+        document
+            .querySelectorAll('canvas[data-preview="rythme"]')
+            .forEach((el) => initRythme(el as HTMLCanvasElement));
+        document
+            .querySelectorAll('canvas[data-preview="matiere"]')
+            .forEach((el) => initMatiere(el as HTMLCanvasElement));
+        document
+            .querySelectorAll('canvas[data-preview="systeme"]')
+            .forEach((el) => initSysteme(el as HTMLCanvasElement));
     };
 
-    const initLabo = () => {
-        const btn = document.getElementById("btn-labo-alert");
-        const textWrapper = btn?.querySelector(
-            ".btn-content-text",
-        ) as HTMLElement;
-
-        if (!btn || !textWrapper) return;
-
-        const originalText = "Explorer le laboratoire →";
-        const warningText = "WORK IN PROGRESS";
-
-        btn.addEventListener("mouseenter", () => {
-            runCipher(textWrapper, warningText);
-        });
-
-        btn.addEventListener("mouseleave", () => {
-            runCipher(textWrapper, originalText);
-        });
-    };
-
-    // Support Astro (Page Transitions)
-    document.addEventListener("astro:page-load", initLabo);
-    // Initialisation immédiate
-    initLabo();
+    document.addEventListener("astro:page-load", startLabo);
 </script>

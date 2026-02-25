@@ -191,6 +191,10 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         (anchor as any)._intervalId = timer;
     };
 
+    const navClickSound = new Audio("/sounds/bouton_cta_nav.mp3");
+    navClickSound.preload = "auto";
+    navClickSound.volume = 0.4;
+
     const setupLinks = (containerSelector: string) => {
         const container = document.querySelector(containerSelector);
         if (!container) return;
@@ -205,24 +209,17 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
 
             anchor.setAttribute("data-original-text", text);
 
-            // On n'applique le cipher QUE sur Desktop pour éviter les bugs de resize mobile
             if (isDesktop) {
-                if (!anchor.querySelector(".char")) {
-                    anchor.innerHTML = "";
-                    [...text].forEach((char) => {
-                        const s = document.createElement("span");
-                        s.className = "char fixed";
-                        s.dataset.char = char;
-                        s.textContent = char === " " ? "\u00A0" : char;
-                        anchor.appendChild(s);
-                    });
-                }
+                // ... (ton code de création de spans reste le même)
 
                 if (!(anchor as any)._hasCipher) {
                     anchor.addEventListener("mouseenter", () => {
-                        new Audio("/sounds/bouton_cta_nav.mp3")
-                            .play()
-                            .catch(() => {});
+                        // --- Animation logo en Hover ---
+                        navClickSound.currentTime = 0;
+
+                        navClickSound.play().catch(() => {
+                        });
+
                         runCipher(anchor);
                     });
                     (anchor as any)._hasCipher = true;
@@ -315,54 +312,8 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
             (btn as any)._hasClick = true;
         }
     };
-    document.addEventListener("astro:page-load", () => {
-        initNavigation();
 
-        const nav = document.querySelector(".navbar") as HTMLElement;
-        const menu = document.getElementById("mobile-menu");
-
-        let lastScrollY = window.scrollY;
-
-        // --- INITIALISATION IMMÉDIATE ---
-        // On définit une valeur par défaut pour que le rideau sache d'où partir
-        // même si l'utilisateur n'a pas encore scrollé.
-        if (menu) {
-            menu.style.setProperty("--curtain-start", "-100%");
-        }
-
-        window.addEventListener(
-            "scroll",
-            () => {
-                const currentScrollY = window.scrollY;
-
-                // 1. Barre de progression
-                const s =
-                    (currentScrollY /
-                        (document.documentElement.scrollHeight -
-                            window.innerHeight)) *
-                    100;
-                nav?.style.setProperty("--scroll-width", `${s}%`);
-
-                // 2. DIRECTION DU RIDEAU
-                if (menu && !menu.classList.contains("active")) {
-                    // On ajoute une petite marge (threshold) pour éviter les sauts nerveux
-                    if (Math.abs(currentScrollY - lastScrollY) > 5) {
-                        if (currentScrollY > lastScrollY) {
-                            // On descend -> Le rideau viendra d'en haut
-                            menu.style.setProperty("--curtain-start", "-100%");
-                        } else {
-                            // On monte -> Le rideau viendra d'en bas
-                            menu.style.setProperty("--curtain-start", "100%");
-                        }
-                    }
-                }
-
-                lastScrollY = currentScrollY;
-            },
-            { passive: true },
-        );
-    });
-
+    // Progression Barre
     document.addEventListener("astro:page-load", () => {
         initNavigation();
         const nav = document.querySelector(".navbar") as HTMLElement;

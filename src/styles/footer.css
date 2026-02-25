@@ -337,24 +337,51 @@ body {
     margin: 0 auto;
 }
 
+.signature_logo {
+    position: absolute;
+}
+
+.signature_logo:first-child {
+    top: 8px;
+    right: 8px;
+}
+
+.signature_logo:last-child {
+    bottom: 8px;
+    left: 8px;
+}
+
 @media (max-width: 973px) {
 
     footer {
         display: flex;
         flex-direction: column;
+        align-items: center;
         justify-content: center;
         gap: var(--space-32);
     }
 
+    #contact {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
     .medium-container {
-        display: grid;
+        display: flex;
         /* Une seule colonne principale */
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         gap: 30px;
     }
 
     .col-1-footer {
-        grid-column: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
 
@@ -374,6 +401,7 @@ body {
     .footer-logo {
         max-width: clamp(270px, 27vw, 300px);
     }
+
 }
 
 

@@ -224,6 +224,10 @@ import { navLabels } from "../../data/navigation";
             transform: none;
             clip-path: none;
         }
+
+    .project-row.is-active .project-subtitle {
+        transform: scale(1);
+    }
     }
 
     /* =====================================================
@@ -235,11 +239,22 @@ import { navLabels } from "../../data/navigation";
         inset: 0;
         z-index: 2;
         cursor: pointer;
+        
     }
-
     .project-row-link:focus-visible {
         outline: 2px solid var(--text-primary);
         outline-offset: -2px;
+    }
+
+    .project-row.is-active .project-preview img {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    /* Optionnel : réduire l'opacité des voisins pour focus celui du milieu */
+    .projects-list:has(.project-row.is-active) .project-row:not(.is-active) {
+        opacity: 0.4;
+        transition: opacity 0.3s ease;
     }
 </style>
 
@@ -296,6 +311,49 @@ import { navLabels } from "../../data/navigation";
             });
         });
     };
+const setupMobileScrollActive = () => {
+        const projectRows = document.querySelectorAll(".project-row");
+        let observer: IntersectionObserver | null = null;
 
+        const initObserver = () => {
+            const isMobile = window.innerWidth <= 768;
+
+            // Si on est sur Desktop et qu'un observer existe, on le nettoie
+            if (!isMobile && observer) {
+                observer.disconnect();
+                projectRows.forEach(row => row.classList.remove("is-active"));
+                return;
+            }
+
+            // Si on est sur Mobile et qu'il n'y a pas encore d'observer
+            if (isMobile && !observer) {
+                const options = {
+                    root: null,
+                    rootMargin: "-45% 0% -45% 0%", // Zone de détection centrale
+                    threshold: 0
+                };
+
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-active");
+                        } else {
+                            entry.target.classList.remove("is-active");
+                        }
+                    });
+                }, options);
+
+                projectRows.forEach(row => observer?.observe(row));
+            }
+        };
+
+        // Lancement initial
+        initObserver();
+
+        // On ré-évalue si l'utilisateur redimensionne sa fenêtre (ex: passage paysage/portrait)
+        window.addEventListener("resize", initObserver);
+    };
+
+    document.addEventListener("astro:page-load", setupMobileScrollActive);
     document.addEventListener("astro:page-load", setupProjectSounds);
 </script>

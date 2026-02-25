@@ -74,7 +74,6 @@ ol {
 body {
     color: var(--text-primary);
 
-    /* 1. On définit la couleur de fond via ton token */
     background-color: var(--layer-background);
     position: relative;
     min-height: 100vh;

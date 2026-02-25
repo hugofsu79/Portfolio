@@ -94,11 +94,10 @@ body.app-root {
     position: -webkit-sticky;
     position: sticky;
     top: 80px;
-    /* Ajuste selon ton header */
+
     align-self: start;
     z-index: 10;
 
-    /* Important : avec Lenis, le sticky peut parfois sauter si on a des transforms */
     will-change: transform;
 
 }
@@ -247,9 +246,8 @@ td span {
 .elementproject p {
     position: relative;
     display: inline-block;
-    /* important si ton <p> ne doit pas prendre toute la largeur */
+    
     padding: 4px 8px;
-    /* ajuste selon ton design */
 }
 
 /* coins */

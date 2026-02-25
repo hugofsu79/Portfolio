@@ -1,0 +1,174 @@
+---
+import ArrowTransition from "../../components/ui/ArrowTransition.astro"; // Ajuste le chemin
+
+interface Props {
+    images: {
+        src: string;
+        alt: string;
+    }[];
+}
+
+const { images } = Astro.props;
+---
+
+{
+    images && images.length > 0 && (
+        <div class="carouselAll" data-carousel data-direction="next">
+            <div class="carousel__viewport">
+                <ul class="carousel__track">
+                    {images.map((img, index) => (
+                        <li
+                            class={`carousel__slide ${index === 0 ? "is-active" : ""}`}
+                            data-index={index}
+                            aria-hidden={index !== 0 ? "true" : "false"}
+                        >
+                            <img
+                                src={img.src.replace("/public", "")}
+                                alt={img.alt}
+                                loading={index === 0 ? "eager" : "lazy"}
+                            />
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <ArrowTransition />
+        </div>
+    )
+}
+<script>
+    function initCarousel(carousel: HTMLElement) {
+        // 1. Sécurité anti-double exécution
+        if (!carousel || (carousel as any).__carouselBound) return;
+        (carousel as any).__carouselBound = true;
+
+        const viewport = carousel.querySelector(
+            ".carousel__viewport",
+        ) as HTMLElement;
+        const slides = Array.from(
+            carousel.querySelectorAll(".carousel__slide"),
+        ) as HTMLElement[];
+        const prevBtn = carousel.querySelector(
+            ".sliderArrow.left",
+        ) as HTMLButtonElement;
+        const nextBtn = carousel.querySelector(
+            ".sliderArrow.right",
+        ) as HTMLButtonElement;
+
+        if (!slides.length || !viewport) return;
+
+        // 2. État initial
+        let currentIndex = slides.findIndex((s) =>
+            s.classList.contains("is-active"),
+        );
+        if (currentIndex === -1) currentIndex = 0;
+
+        let isAnimating = false;
+        const DURATION = 800;
+
+        // 3. Mise à jour des flèches (effet queue rétractable)
+        const updateArrows = () => {
+            if (prevBtn)
+                prevBtn.classList.toggle("is-disabled", currentIndex === 0);
+            if (nextBtn)
+                nextBtn.classList.toggle(
+                    "is-disabled",
+                    currentIndex === slides.length - 1,
+                );
+        };
+
+        // 4. Logique de navigation
+        const goTo = (nextIndex: number, direction: "next" | "prev") => {
+            if (isAnimating || nextIndex < 0 || nextIndex >= slides.length)
+                return;
+            isAnimating = true;
+
+            const currentSlide = slides[currentIndex];
+            const nextSlide = slides[nextIndex];
+
+            carousel.setAttribute("data-direction", direction);
+
+            currentSlide.classList.remove("is-active");
+            currentSlide.classList.add("is-leaving");
+            nextSlide.classList.add("is-entering");
+
+            void nextSlide.offsetWidth; // Force le rendu pour l'animation clip-path
+
+            currentIndex = nextIndex;
+            updateArrows();
+
+            setTimeout(() => {
+                currentSlide.classList.remove("is-leaving");
+                nextSlide.classList.remove("is-entering");
+                nextSlide.classList.add("is-active");
+                isAnimating = false;
+            }, DURATION);
+        };
+
+        // 5. Système de Loupe (Isolé pour éviter les crashs)
+        const initMagnifier = () => {
+            if (window.innerWidth < 992 || "ontouchstart" in window) return;
+
+            let lens: HTMLElement | null = null;
+
+            viewport.addEventListener("mouseenter", () => {
+                if (isAnimating) return;
+                const activeSlide = slides[currentIndex];
+                const img = activeSlide?.querySelector("img");
+                if (!img || lens) return;
+
+                lens = document.createElement("div");
+                lens.className = "magnifier-lens";
+
+                // On s'assure que l'image est bien chargée sans le prefixe public
+                const cleanSrc = img.src.replace("/public", "");
+                lens.style.backgroundImage = `url('${cleanSrc}')`;
+
+                viewport.appendChild(lens);
+            });
+
+            viewport.addEventListener("mousemove", (e) => {
+                if (!lens) return;
+                const rect = viewport.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                lens.style.left = `${x}px`;
+                lens.style.top = `${y}px`;
+
+                const z = 2.5;
+                const lSize = 180; // Doit matcher la taille CSS
+                lens.style.backgroundSize = `${rect.width * z}px ${rect.height * z}px`;
+                lens.style.backgroundPosition = `${-(x * z - lSize / 2)}px ${-(y * z - lSize / 2)}px`;
+            });
+
+            viewport.addEventListener("mouseleave", () => {
+                if (lens) {
+                    lens.remove();
+                    lens = null;
+                }
+            });
+        };
+
+        // 6. Bindings
+        nextBtn?.addEventListener("click", () =>
+            goTo(currentIndex + 1, "next"),
+        );
+        prevBtn?.addEventListener("click", () =>
+            goTo(currentIndex - 1, "prev"),
+        );
+
+        // 7. Launch
+        updateArrows();
+        initMagnifier();
+    }
+
+    // Initialisation au chargement Astro
+    const setup = () => {
+        document
+            .querySelectorAll("[data-carousel]")
+            .forEach((c) => initCarousel(c as HTMLElement));
+    };
+
+    document.addEventListener("astro:page-load", setup);
+</script>

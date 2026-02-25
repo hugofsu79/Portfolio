@@ -12,7 +12,8 @@ export interface ProjectDetail {
 
 export interface ProjectSectionContent {
     title?: string;
-    description: string;
+    description?: string;
+    picture?: string;
 }
 
 export interface Project {
@@ -32,9 +33,10 @@ export interface Project {
             description: string;
             details: ProjectDetail[];
         };
-        // On rend les sections optionnelles avec "?" pour éviter les erreurs
+
         objectifs?: ProjectSectionContent;
         role?: ProjectSectionContent;
+        illustration?: ProjectSectionContent;
         demarche?: ProjectSectionContent;
         resultat?: ProjectSectionContent;
     }>;

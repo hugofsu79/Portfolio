@@ -4,10 +4,9 @@ import Software from "../ui/Software.astro";
 import { navLabels } from "../../data/navigation";
 const about = aboutData;
 ---
+<h2 data-i18n-key="about" class="section-title">{navLabels.fr.about}</h2>
 
-<h2 data-i18n-key="about">{navLabels.fr.about}</h2>
-
-<section id="about" class="about">
+<section id="about" class="about-grid">
     <article class="about-block a">
         <div class="title-about">
             <h4 data-i18n-key={`${about[0].id}_titre`}>{about[0].fr.titre}</h4>
@@ -79,7 +78,7 @@ const about = aboutData;
     </article>
 </section>
 
-<section class="about">
+<section class="about-grid">
     <article class="about-block c">
         <div class="title-about">
             <h4 data-i18n-key={`${about[2].id}_titre`}>{about[2].fr.titre}</h4>
@@ -130,7 +129,7 @@ const about = aboutData;
 </section>
 
 <style>
-    .about {
+    .about-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--space-32);

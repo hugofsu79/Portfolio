@@ -1,5 +1,16 @@
 import type { Project, Lang, HomeProject } from "../types/projects";
 
+export type HomeProject = {
+    slug: string;
+    entreprise: string;
+    year: number;
+    cover: string;
+    title: string;
+    skills: string[];
+};
+
+
+
 export const projects: Project[] = [
     // Siko
     {
@@ -14,10 +25,10 @@ export const projects: Project[] = [
         // Données Traduisibles
         content: {
             fr: {
-                title: "Fintech qui simplifie le financement de véhicules en proposant une expérience digitale fluide",
+                title: "Fintech qui simplifie le financement de véhicules en proposant une expérience digitale simple et fluide",
                 skills: ["Fintech", "B2C-B2B", "Méthodologie"],
                 context: {
-                    description: "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance, dans un contexte startup à forte autonomie, nécessitant une compréhension rapide des mécanismes de financement et des enjeux contractuels.",
+                    description: "Siko Mobility est une startup fintech spécialisée dans le financement de véhicules. J’y ai travaillé un an en alternance, dans un contexte startup à forte autonomie, nécessitant une compréhension rapide des mécanismes de financement et des enjeux contractuels, afin de concevoir des interfaces simples et adaptées au type de financement que l’utilisateur souhaite contracter.",
 
                     details: [
                         { label: "Temps de travail", value: "02.10.2024 | 27.10.2025" },
@@ -31,22 +42,22 @@ export const projects: Project[] = [
                 },
                 objectifs: {
                     title: "Objectifs",
-                    description: "Les objectifs se sont construits progressivement au fil de l’alternance. À mon arrivée, la place du design au sein de l’équipe technique n’était pas clairement définie : les fondateurs n’étaient pas encore convaincus de la valeur d’un designer UI/UX, en partie par méconnaissance du rôle. Les interfaces existantes reposaient principalement sur des composants Tailwind, avec des éléments graphiques peu structurés et difficilement exploitables par les développeurs.\n\nMon objectif principal a donc été de poser des bases solides pour le design produit, en collaboration étroite avec le CTO. Cela a impliqué un important travail de clarification et de structuration : reprendre l’ensemble des écrans, trier et organiser les fichiers Figma, et transformer un environnement de travail proche d’un véritable « syndrome de Diogène » graphique en un espace cohérent, lisible et réutilisable.\n\nJ’ai également cherché à donner un rôle fonctionnel au design, en construisant des composants et des règles UI capables de servir de véritable béquille pour l’équipe de développement, plutôt que de simples maquettes esthétiques. Enfin, un enjeu clé a été de dépasser les limites d’un design purement utilitaire lié à Tailwind, afin d’apporter plus de personnalité, de cohérence visuelle et de lisibilité aux interfaces, tout en restant compatible avec les contraintes techniques de la startup.",
+                    description: "Les objectifs se sont construits progressivement au fil de l’alternance. À mon arrivée, la place du design au sein de l’équipe technique n’était pas clairement définie. Les interfaces existantes reposaient principalement sur des composants Tailwind, avec des éléments graphiques peu structurés et difficilement exploitables par les développeurs.\n\nMon objectif principal a donc été de poser des bases solides pour le design produit, en collaboration étroite avec le CTO. Cela a impliqué un important travail de clarification et de structuration, reprendre l’ensemble des écrans et transformer l'environnement d'avant en un espace cohérent, lisible et réutilisable.\n\nJ’ai également cherché à donner un rôle fonctionnel au design, en construisant des composants et des règles UI capables de servir de véritable béquille pour l’équipe de développement, plutôt que de simples maquettes esthétiques. Enfin, un enjeu clé a été de dépasser les limites d’un design purement utilitaire lié à Tailwind, afin d’apporter plus de personnalité, de cohérence visuelle et de lisibilité aux interfaces, tout en restant compatible avec les contraintes techniques de la startup.",
                 },
                 role: {
                     title: "Mon Rôle",
-                    description: "Chez Siko Mobility, mon rôle consistait à structurer et faire évoluer les parcours clés du produit dans un contexte fintech en forte croissance. J’ai travaillé sur la conception d’un nouveau parcours assurance, ainsi que sur la création et l’amélioration des dashboards marchands, en tenant compte des enjeux B2B et des besoins opérationnels des partenaires.\n\nJ’ai également mené une refonte des parcours de financement, en les adaptant aux différents types d’offres proposées (paiement fractionné, crédit, LLD, LOA). Chaque parcours impliquait des contraintes spécifiques, notamment en matière d’informations utilisateurs, de documents requis et de règles contractuelles, nécessitant une conception précise et rigoureuse.\n\nEn parallèle, j’ai initié et construit un Design System, avec pour objectif d’apporter une interface plus cohérente, lisible et moderne, tout en servant de véritable support pour l’équipe de développement. Ce travail visait à dépasser un design purement utilitaire pour renforcer la clarté des interfaces, la cohérence visuelle et la maintenabilité du produit."
+                    description: "Il consistait à structurer et faire évoluer les parcours clés du produit dans un contexte fintech en forte croissance. J’ai travaillé sur la conception d’un nouveau parcours assurance, ainsi que sur la création et l’amélioration des dashboards marchands, en tenant compte des enjeux B2B et des besoins opérationnels des partenaires.\n\nJ’ai également mené une refonte des parcours de financement, en les adaptant aux différents types d’offres proposées (paiement fractionné, crédit, LLD, LOA). Chaque parcours impliquait des contraintes spécifiques, notamment en matière d’informations utilisateurs, de documents requis et de règles contractuelles, nécessitant une conception précise et rigoureuse.\n\nEn parallèle, j’ai initié et construit un Design System, avec pour objectif d’apporter une interface plus cohérente, lisible et moderne, tout en servant de véritable support pour l’équipe de développement. Ce travail visait à dépasser un design purement utilitaire pour renforcer la clarté des interfaces, la cohérence visuelle et la maintenabilité du produit."
                 },
                 resultat: {
                     title: "Résultat",
-                    description: "Mon année chez Siko Mobility a marqué un vrai tournant.Les débuts ont été déroutants: nouvelle ville, nouvelle startup, et un cadre où l’initiative est indispensable.Sans supervision directe, j’ai dû apprendre à prendre ma place, proposer et structurer. Progressivement, la confiance accordée par les fondateurs m’a permis d’évoluer d’un rôle exécutant à un rôle moteur: animation de points réguliers, ateliers pédagogiques avec les équipes, conception d’un dashboard marchand, refonte du parcours assurance et création d’un nouveau parcours crédit.Cette expérience m’a donné une vraie assurance dans le travail en équipe et dans une approche produit agile.",
+                    description: "Mon année chez Siko Mobility a marqué un vrai tournant.Les débuts ont été déroutants car nouvelle ville, nouvelle environnement, et un cadre où l’initiative est indispensable. Sans supervision directe, j’ai dû apprendre à prendre ma place, proposer et structurer. Progressivement, la confiance accordée par les fondateurs m’a permis d’évoluer d’un rôle exécutant à un rôle moteur, animation de points réguliers, ateliers pédagogiques avec les équipes, conception d’un dashboard marchand, refonte du parcours assurance et création d’un nouveau parcours crédit. Cette expérience m’a donné une vraie assurance dans le travail en équipe et dans une approche produit agile.",
                 }
             },
             en: {
                 title: "A fintech company that simplifies vehicle financing by delivering a seamless digital experience.",
                 skills: ["Fintech", "B2C-B2B", "Methodology"],
                 context: {
-                    description: "Siko Mobility is a fintech startup specialized in vehicle financing. I worked there for one year as a work-study student, in a highly autonomous startup environment that required a rapid understanding of financing mechanisms and contractual challenges.",
+                    description: "Siko Mobility is a fintech startup specialized in vehicle financing. I worked there for one year as a work-study student in a highly autonomous startup environment, which required a rapid understanding of financing mechanisms and contractual constraints, in order to design simple interfaces tailored to the type of financing the user intends to apply for.",
                     details: [
                         { label: "Working time", value: "02.10.2024 | 27.10.2025" },
                         { label: "Role", value: "UI Designer / App Designer" },
@@ -89,10 +100,10 @@ export const projects: Project[] = [
         // --- DONNÉES TRADUISIBLES ---
         content: {
             fr: {
-                title: "Rhizome, le Vinted des plantes pour les passionnés de botanique",
+                title: "Un espace de transmission et d’échange autour du végétal",
                 skills: ["Product Design", "UX Research", "Design System"],
                 context: {
-                    description: "Ce projet fictif a été développé dans le cadre de mon année de licence. Le travail portait sur l’analyse d’un besoin utilisateur, la définition des parcours clés et la conception d’une interface cohérente et exploitable.",
+                    description: "Ce projet fictif a été développé dans le cadre de mon année de licence. Le travail portait sur l’analyse d’un besoin utilisateur, la définition des parcours clés et la conception d’une interface cohérente et exploitable. Ce projet est le résultat de deux constat, j'adore les plantes ",
                     details: [
                         { label: "Temps de travail", value: "14.12.2024 | 27.08.2025" },
                         { label: "Collaborateurs", value: "/" },
@@ -352,12 +363,14 @@ export const projects: Project[] = [
 /**
  * 
  */
+
+
 export const getProjectsList = (lang: Lang): HomeProject[] =>
     projects.map((p) => ({
         slug: p.slug,
         entreprise: p.entreprise,
         year: p.year,
         cover: p.cover,
-        title: p.content[lang].title,
+        title: p.content[lang].title, // On aplatit les données ici
         skills: p.content[lang].skills,
     }));

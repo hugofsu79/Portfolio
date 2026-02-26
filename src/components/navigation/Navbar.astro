@@ -139,11 +139,23 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
 
     const GLYPHS = "0123456789@#$%&*";
 
+    // SINGLETON AUDIO
+    const getNavSound = () => {
+        if (!(window as any)._navSound) {
+            const audio = new Audio("/sounds/bouton_cta_nav.mp3");
+            audio.preload = "auto";
+            audio.volume = 0.4;
+            (window as any)._navSound = audio;
+        }
+        return (window as any)._navSound;
+    };
+
     const runCipher = (anchor: HTMLElement) => {
         const targetText =
             anchor.getAttribute("data-original-text") ||
             anchor.innerText.trim();
 
+        // Initialisation des spans si besoin
         if (!anchor.querySelector(".char")) {
             anchor.innerHTML = "";
             [...targetText].forEach((char) => {
@@ -158,13 +170,11 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         const spans = Array.from(
             anchor.querySelectorAll(".char"),
         ) as HTMLElement[];
-
         if ((anchor as any)._intervalId)
             clearInterval((anchor as any)._intervalId);
 
         spans.forEach((s) => {
-            s.classList.remove("fixed");
-            s.classList.add("shuffling");
+            s.classList.replace("fixed", "shuffling");
         });
 
         let iterations = 0;
@@ -173,8 +183,7 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
                 const final = span.dataset.char || "";
                 if (iterations > index * 2) {
                     span.textContent = final === " " ? "\u00A0" : final;
-                    span.classList.remove("shuffling");
-                    span.classList.add("fixed");
+                    span.classList.replace("shuffling", "fixed");
                 } else if (final !== " ") {
                     span.textContent =
                         GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
@@ -187,45 +196,7 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
             }
             iterations++;
         }, 35);
-
         (anchor as any)._intervalId = timer;
-    };
-
-    const navClickSound = new Audio("/sounds/bouton_cta_nav.mp3");
-    navClickSound.preload = "auto";
-    navClickSound.volume = 0.4;
-
-    const setupLinks = (containerSelector: string) => {
-        const container = document.querySelector(containerSelector);
-        if (!container) return;
-
-        const links = container.querySelectorAll("a:not(.logo-link)");
-        const isDesktop = window.innerWidth > 973;
-
-        links.forEach((a) => {
-            const anchor = a as HTMLElement;
-            const text = anchor.innerText.trim();
-            if (!text) return;
-
-            anchor.setAttribute("data-original-text", text);
-
-            if (isDesktop) {
-                // ... (ton code de création de spans reste le même)
-
-                if (!(anchor as any)._hasCipher) {
-                    anchor.addEventListener("mouseenter", () => {
-                        // --- Animation logo en Hover ---
-                        navClickSound.currentTime = 0;
-
-                        navClickSound.play().catch(() => {
-                        });
-
-                        runCipher(anchor);
-                    });
-                    (anchor as any)._hasCipher = true;
-                }
-            }
-        });
     };
 
     const initNavigation = () => {
@@ -238,100 +209,86 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
 
         if (!desktopUl) return;
 
-        // 1. Visibilité Desktop
+        // Gestion des classes de page
         const path = window.location.pathname.replace(/\/$/, "") || "/";
-        const isHome = path === "/" || path === "/index.html";
-        const isProject = path.includes("/projects/");
+        document.body.classList.toggle(
+            "is-home",
+            path === "/" || path === "/index.html",
+        );
+        document.body.classList.toggle(
+            "is-project-page",
+            path.includes("/projects/"),
+        );
 
-        document.body.classList.toggle("is-home", isHome);
-        document.body.classList.toggle("is-project-page", isProject);
+        // Setup Hover Desktop
+        const links = desktopUl.querySelectorAll("a:not(.logo-link)");
+        links.forEach((a) => {
+            const anchor = a as HTMLElement;
+            if (!(anchor as any)._hasCipher) {
+                anchor.setAttribute(
+                    "data-original-text",
+                    anchor.innerText.trim(),
+                );
+                anchor.addEventListener("mouseenter", () => {
+                    const sound = getNavSound();
+                    sound.currentTime = 0;
+                    sound.play().catch(() => {});
+                    runCipher(anchor);
+                });
+                (anchor as any)._hasCipher = true;
+            }
+        });
 
-        // 2. Setup Desktop
-        setupLinks("#main-nav-links");
-
-        // 3. CLONAGE MOBILE INTELLIGENT (Fix: home-only / project-only)
-        if (mobileContainer) {
+        // Clonage Mobile Intelligent
+        if (mobileContainer && desktopUl) {
             mobileContainer.innerHTML = "";
-            const items = desktopUl.querySelectorAll("li");
+            const items = Array.from(desktopUl.querySelectorAll("li"));
             let visibleIdx = 0;
 
             items.forEach((li) => {
-                // On vérifie si l'élément est actuellement affiché par le CSS desktop
                 const isVisible =
                     window.getComputedStyle(li).display !== "none";
-
-                // On ne clone que les <li> qui sont censés être là (pas les SVG rectangles)
-                if (isVisible && li.tagName.toLowerCase() === "li") {
+                if (isVisible) {
                     const clone = li.cloneNode(true) as HTMLElement;
+                    // Nettoyage IDs pour éviter les doublons
+                    clone.removeAttribute("id");
+                    clone
+                        .querySelectorAll("[id]")
+                        .forEach((el) => el.removeAttribute("id"));
 
-                    // On nettoie les classes pour que le CSS mobile puisse forcer l'affichage
-                    clone.classList.remove(
-                        "home-only",
-                        "project-only",
-                        "desktop-only",
-                    );
-                    clone.querySelectorAll("*").forEach((child) => {
-                        child.classList.remove("home-only", "project-only");
-                    });
-
-                    // On applique l'index pour l'animation d'entrée (stagger)
                     clone.style.setProperty("--index", visibleIdx.toString());
-
                     mobileContainer.appendChild(clone);
                     visibleIdx++;
                 }
             });
-
-            setupLinks("#mobile-links-container");
         }
 
-        // Auto-close
+        // Hamburger & Menu
         if (btn && menu && !(btn as any)._hasClick) {
-            const closeMenu = () => {
-                menu.classList.remove("active");
-                btn.classList.remove("is-active");
-                document.body.style.overflow = "";
-            };
-
             btn.onclick = () => {
                 const open = menu.classList.toggle("active");
                 btn.classList.toggle("is-active");
                 document.body.style.overflow = open ? "hidden" : "";
             };
-
-            if (mobileContainer) {
-                mobileContainer.addEventListener("click", (e) => {
-                    const target = e.target as HTMLElement;
-
-                    if (target.closest("a")) {
-                        setTimeout(closeMenu, 300);
-                    }
-                });
-            }
-
             (btn as any)._hasClick = true;
         }
     };
 
-    // Progression Barre
     document.addEventListener("astro:page-load", () => {
         initNavigation();
+
+        // Barre de progression scroll
         const nav = document.querySelector(".navbar") as HTMLElement;
-        window.addEventListener(
-            "scroll",
-            () => {
-                const s =
-                    (window.scrollY /
-                        (document.documentElement.scrollHeight -
-                            window.innerHeight)) *
-                    100;
-                nav?.style.setProperty("--scroll-width", `${s}%`);
-            },
-            { passive: true },
-        );
+        const updateScroll = () => {
+            const s =
+                (window.scrollY /
+                    (document.documentElement.scrollHeight -
+                        window.innerHeight)) *
+                100;
+            nav?.style.setProperty("--scroll-width", `${s}%`);
+        };
+        window.addEventListener("scroll", updateScroll, { passive: true });
     });
 
-    langStore.subscribe(() => {
-        setTimeout(initNavigation, 100);
-    });
+    langStore.subscribe(() => setTimeout(initNavigation, 100));
 </script>

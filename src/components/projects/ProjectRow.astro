@@ -1,31 +1,35 @@
 ---
-import { projects } from "../../data/projects";
+import {
+    getProjectsList,
+    type Lang,
+    type HomeProject,
+} from "../../data/projects";
 import { navLabels } from "../../data/navigation";
+
+const lang = (Astro.currentLocale || "fr") as Lang;
+
+const projectsList: HomeProject[] = getProjectsList(lang);
+
+const labels = (navLabels as Record<Lang, any>)[lang];
 ---
 
 <section id="projects">
-    <h2 data-i18n-key="projects">{navLabels.fr.projects}</h2>
+    <h2 data-i18n-key="projects">{labels.projects}</h2>
 
     <ul class="projects-list">
         {
-            projects.map((project) => (
+            projectsList.map((project) => (
                 <li class="project-row">
                     <a
                         class="project-row-link"
-                        href={`/projects/${project.slug}`}
-                        aria-label={`Voir le projet ${project.entreprise}`}
+                        href={`/${lang}/projects/${project.slug}`}
                     >
                         <div class="project-title">
                             <span class="project-year">{project.year}</span>
                             <h3>{project.entreprise}</h3>
-
-                            {}
-                            {}
-                            <span
-                                class="project-subtitle"
-                                data-project-slug={project.slug}
-                            >
-                                {project.content.fr.title}
+                            <span class="project-subtitle">
+                                {/* project.title contient déjà la bonne langue */}
+                                <p>{project.title}</p>
                             </span>
                         </div>
 
@@ -40,43 +44,41 @@ import { navLabels } from "../../data/navigation";
 </section>
 
 <style>
-    /* =====================================================
-   Base layout
-===================================================== */
-
+    /* TA BASE CONSERVÉE (FONTS, COLORS, ETC.) */
     .project-row {
         position: relative;
-        overflow: hidden;
+        overflow: hidden; /* L'IMAGE SERA COUPÉE ICI */
         border-bottom: 0.5px solid var(--stroke-primary);
         cursor: pointer;
-
-        /* 👇 hauteur stable */
         min-height: 140px;
+    }
+    .project-preview {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .project-preview img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 320px;
+        height: auto;
+        opacity: 0;
+        will-change: transform;
+        /* AUCUNE transition sur le transform pour la physique JS, sinon ça lag */
+        transition: opacity 0.3s ease-out;
     }
     .project-row:last-child {
         border-bottom: none;
     }
 
-    /* =====================================================
-   Title & meta
-===================================================== */
-
     .project-title {
-        position: relative;
-        transform: translateY(0);
-        transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-
-        padding: 0;
         display: flex;
         align-items: center;
         gap: var(--space-12);
-        padding: 0;
         transition: padding 420ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .project-year {
-        display: flex;
-        align-items: center;
     }
 
     .project-title h3 {
@@ -89,271 +91,218 @@ import { navLabels } from "../../data/navigation";
             color 400ms ease;
     }
 
-    .project-subtitle {
-        transition:
-            transform 420ms ease,
-            color 400ms ease;
-    }
-
-    /* Default (inactive) state */
     .project-year,
     .project-title h3,
     .project-subtitle {
         color: var(--text-primary);
-        font-weight: (--font-weight-light);
         opacity: 0.2;
         transform: scale(0.98);
     }
-    .project-subtitle {
-        font-weight: var(--font-weight-regular);
-    }
-    /* =====================================================
-   Hover / active states (desktop hover + scroll)
-===================================================== */
-
-    .project-title:hover,
-    .project-row.is-active .project-title {
-        padding: 10px 0;
-    }
 
     .project-row:hover h3,
-    .project-row.is-active h3,
     .project-row:hover .project-subtitle,
-    .project-row.is-active .project-subtitle,
-    .project-year:hover .project-subtitle,
-    .project-year.is-active .project-subtitle {
+    .project-row:hover .project-year {
         opacity: 1;
-    }
-
-    .project-row:hover h3,
-    .project-row.is-active h3 {
         transform: scale(1);
     }
 
-    .project-title:hover .project-subtitle,
-    .project-row.is-active .project-subtitle {
-        transform: scale(1.01);
+    /* --- LE FIX POUR DESKTOP --- */
+    #global-preview {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none !important;
+        z-index: 9999;
+        display: none;
+        will-change: transform;
+
+        transition: none;
     }
 
-    /* =====================================================
-   Preview image
-===================================================== */
-
-    .project-preview {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        width: 100%;
-    }
-
-    .project-preview img {
-        position: absolute;
-        width: 260px;
+    #global-preview img {
+        width: 320px;
         height: auto;
-
-        /* Hidden by default */
+        display: block;
         opacity: 0;
 
-        /* Subtle resting pose */
-        transform: translateY(12px) scale(0.98) rotate(-0.6deg);
-        transform-origin: top left;
+        transition: opacity 0.3s ease-out;
 
-        transition:
-            opacity 360ms ease,
-            transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-        transition-delay: 40ms;
-
-        will-change: transform, left, top, clip-path, opacity;
+        transform: rotate(-1deg);
     }
 
-    .project-row:hover .project-preview img,
-    .project-row.is-active .project-preview img {
-        opacity: 1;
-        transform: translateY(0) scale(1) rotate(0deg);
+    /* CACHER LES PREVIEWS INDIVIDUELLES SUR DESKTOP */
+    .mobile-preview-only {
+        display: none;
     }
 
-    .project-row.is-active .project-preview img {
-        opacity: 1;
-        transform: translateY(0) scale(1) rotate(0deg);
-    }
-    /* =====================================================
-   Mobile layout
-===================================================== */
-
+    /* --- MOBILE LAYOUT --- */
     @media (max-width: 768px) {
+        #global-preview {
+            display: none !important;
+        } /* On tue l'image fantôme sur mobile */
+
+        .mobile-preview-only {
+            display: block;
+            position: relative;
+            width: 100%;
+            margin-top: var(--space-16);
+        }
+
+        .mobile-preview-only img {
+            position: absolute;
+            right: 0;
+            width: 30vw;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-row.is-active .mobile-preview-only img {
+            opacity: 1;
+        }
+
+        /* Tes styles mobile existants... */
         .project-row {
             padding: var(--space-24) 0;
             display: flex;
             justify-content: space-between;
         }
-
         .project-title {
             flex-direction: column;
             align-items: flex-start;
             gap: var(--space-8);
         }
-
         .project-title h3 {
             margin: 0;
         }
-
-        .project-year {
-            font-size: 12px;
-        }
-
-        .project-subtitle {
-            font-size: 14px;
-        }
-
-        .project-preview {
-            position: relative;
-            inset: auto;
-            width: 100%;
-            margin-top: var(--space-16);
-        }
-
-        .project-preview img {
-            right: 0;
-            width: 30vw;
-            max-width: 100%;
-
-            /* Hidden by default; revealed via .is-active (scroll) */
-            opacity: 0;
-
-            /* Keep it stable in mobile (no mouse-driven transform) */
-            transform: none;
-            clip-path: none;
-        }
-
-    .project-row.is-active .project-subtitle {
-        transform: scale(1);
     }
-    }
-
-    /* =====================================================
-   Clickable row overlay
-===================================================== */
 
     .project-row-link {
         position: absolute;
         inset: 0;
         z-index: 2;
-        cursor: pointer;
-        
-    }
-    .project-row-link:focus-visible {
-        outline: 2px solid var(--text-primary);
-        outline-offset: -2px;
-    }
-
-    .project-row.is-active .project-preview img {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-
-    /* Optionnel : réduire l'opacité des voisins pour focus celui du milieu */
-    .projects-list:has(.project-row.is-active) .project-row:not(.is-active) {
-        opacity: 0.4;
-        transition: opacity 0.3s ease;
     }
 </style>
 
 <script>
+    // AUDIO (Ton code original)
     const setupProjectSounds = () => {
         const soundPaths = [
             "/sounds/projetColumnList.mp3",
             "/sounds/projetColumnList_2.mp3",
-            "/sounds/projetColumnList_3.mp3"
+            "/sounds/projetColumnList_3.mp3",
         ];
-
-        // 1. Initialisation du contexte Audio (nécessaire pour le traitement mono)
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        const AudioContext =
+            window.AudioContext || (window as any).webkitAudioContext;
         const ctx = new AudioContext();
-
-        // 2. Pré-chargement et routage vers un mixeur Mono
-        const audioPlayers = soundPaths.map(path => {
+        const audioPlayers = soundPaths.map((path) => {
             const audio = new Audio(path);
             audio.volume = 0.8;
-            
-            // Création du noeud source et du mélangeur mono
             const source = ctx.createMediaElementSource(audio);
-            const merger = ctx.createChannelMerger(1); // Force la sortie sur 1 canal
-            
+            const merger = ctx.createChannelMerger(1);
             source.connect(merger);
             merger.connect(ctx.destination);
-            
             return audio;
         });
 
-        const projectRows = document.querySelectorAll(".project-row");
-
-        projectRows.forEach((row) => {
+        document.querySelectorAll(".project-row").forEach((row) => {
             row.addEventListener("mouseenter", async () => {
-                // Relance le contexte s'il a été suspendu par le navigateur
-                if (ctx.state === 'suspended') {
-                    await ctx.resume();
-                }
-
-                // Sélection aléatoire
-                const randomIndex = Math.floor(Math.random() * audioPlayers.length);
-                const selectedAudio = audioPlayers[randomIndex];
-
-                // Stop propre des autres sons
-                audioPlayers.forEach(audio => {
-                    audio.pause();
-                    audio.currentTime = 0;
+                if (ctx.state === "suspended") await ctx.resume();
+                const selectedAudio =
+                    audioPlayers[
+                        Math.floor(Math.random() * audioPlayers.length)
+                    ];
+                audioPlayers.forEach((a) => {
+                    a.pause();
+                    a.currentTime = 0;
                 });
-
-                // Lecture
-                selectedAudio.play().catch(() => {
-                    console.warn("Audio bloqué : interaction requise.");
-                });
+                selectedAudio.play().catch(() => {});
             });
         });
     };
-const setupMobileScrollActive = () => {
+
+    const setupMouseFollow = () => {
+        const rows = document.querySelectorAll(".project-row");
+
+        rows.forEach((row) => {
+            const img = row.querySelector(
+                ".project-preview img",
+            ) as HTMLElement;
+            if (!img) return;
+
+            // Variables de physique propres à CHAQUE ligne
+            let mouseX = 0;
+            let mouseY = 0;
+            let currentX = 0;
+            let currentY = 0;
+            const speed = 0.15; // Ton agrippe élastique
+            let isInside = false;
+
+            row.addEventListener("mousemove", (e: any) => {
+                isInside = true;
+                const rect = row.getBoundingClientRect();
+
+                // On calcule la position de la souris RELATIVE au coin haut-gauche du <li>
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            row.addEventListener("mouseenter", () => {
+                img.style.opacity = "1";
+            });
+
+            row.addEventListener("mouseleave", () => {
+                isInside = false;
+                img.style.opacity = "0";
+            });
+
+            const animate = () => {
+                if (isInside) {
+                    // Physique élastique
+                    const dx = mouseX - currentX;
+                    const dy = mouseY - currentY;
+
+                    currentX += dx * speed;
+                    currentY += dy * speed;
+
+                    // On applique le mouvement.
+                    // Note : on enlève les offsets (ex: -150px) pour que le coin soit collé.
+                    const tilt = dx * 0.02;
+                    img.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotate(${tilt}deg)`;
+                }
+                requestAnimationFrame(animate);
+            };
+
+            animate();
+        });
+    };
+
+    const setupMobileScrollActive = () => {
         const projectRows = document.querySelectorAll(".project-row");
         let observer: IntersectionObserver | null = null;
-
         const initObserver = () => {
             const isMobile = window.innerWidth <= 768;
-
-            // Si on est sur Desktop et qu'un observer existe, on le nettoie
-            if (!isMobile && observer) {
-                observer.disconnect();
-                projectRows.forEach(row => row.classList.remove("is-active"));
-                return;
-            }
-
-            // Si on est sur Mobile et qu'il n'y a pas encore d'observer
             if (isMobile && !observer) {
-                const options = {
-                    root: null,
-                    rootMargin: "-45% 0% -45% 0%", // Zone de détection centrale
-                    threshold: 0
-                };
-
-                observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add("is-active");
-                        } else {
-                            entry.target.classList.remove("is-active");
-                        }
-                    });
-                }, options);
-
-                projectRows.forEach(row => observer?.observe(row));
+                observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            entry.target.classList.toggle(
+                                "is-active",
+                                entry.isIntersecting,
+                            );
+                        });
+                    },
+                    { rootMargin: "-45% 0% -45% 0%", threshold: 0 },
+                );
+                projectRows.forEach((row) => observer?.observe(row));
             }
         };
-
-        // Lancement initial
         initObserver();
-
-        // On ré-évalue si l'utilisateur redimensionne sa fenêtre (ex: passage paysage/portrait)
         window.addEventListener("resize", initObserver);
     };
 
-    document.addEventListener("astro:page-load", setupMobileScrollActive);
-    document.addEventListener("astro:page-load", setupProjectSounds);
+    document.addEventListener("astro:page-load", () => {
+        setupProjectSounds();
+        setupMobileScrollActive();
+        if (window.innerWidth > 768) setupMouseFollow();
+    });
 </script>

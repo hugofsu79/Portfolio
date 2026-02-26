@@ -53,25 +53,17 @@ import LogoHero from "../ui/Logohero.astro";
     </div><div class="logo-hero">
         <LogoHero />
     </div>
-    <div class="bottom-hero">
-        <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
-        <div class="scroll-wrapper">
-            <p id="scroll-text">↓↓↓ Scroll ↓↓↓</p>
-        </div>
-        <p id="hero-city" class="cipher-text">Paris</p>
-    </div>
-
     <div class="definiton">
         <p id="hero-job" data-i18n-key="job" class="cipher-text">
             {heroContent.fr.job}
         </p>
         <div class="linerDefinition">
             <p>
-                <span id="hero-label" data-i18n-key="label">
-                    {heroContent.fr.context.label}
+                <span id="hero-label" data-i18n-key="context.label">
+                    {heroContent.fr["context.label"]}
                 </span>
-                <span id="hero-description" data-i18n-key="description">
-                    {heroContent.fr.context.description}
+                <span id="hero-description" data-i18n-key="context.description">
+                    {heroContent.fr["context.description"]}
                 </span>
             </p>
             <div class="definitionText">
@@ -88,6 +80,13 @@ import LogoHero from "../ui/Logohero.astro";
                 </ol>
             </div>
         </div>
+    </div>
+    <div class="bottom-hero">
+        <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
+        <div class="scroll-wrapper">
+            <p id="scroll-text">↓↓↓ Scroll ↓↓↓</p>
+        </div>
+        <p id="hero-city" class="cipher-text">Paris</p>
     </div>
 </section>
 
@@ -260,10 +259,6 @@ import LogoHero from "../ui/Logohero.astro";
         margin-bottom: 0;
     }
 
-    .definiton {
-        will-change: transform;
-    }
-
     .linerDefinition {
         will-change: transform;
     }
@@ -271,14 +266,26 @@ import LogoHero from "../ui/Logohero.astro";
         display: flex;
         justify-content: center;
     }
+
+    @media (max-width: 720px) {
+        .definiton {
+            position: static;
+        }
+    }
 </style>
 <script>
     // @ts-ignore
     import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
 
+    // --- CONFIGURATION & SINGLETONS ---
     const glyphs = "0123456789@#$%&*";
-    let isHeroAnimating = false; // Le verrou global
+    const AUDIO_PATH = "/sounds/hero_song.mp3";
 
+    // On utilise window pour garder une référence unique même après un changement de page partiel
+    let heroSound = (window as any)._heroSound || null;
+    let isHeroAnimating = false;
+
+    // --- 1. FONCTION CIPHER (Texte Matrix) ---
     const animateCipher = (el: HTMLElement, delay = 0) => {
         const targetText =
             el.getAttribute("data-target-text") || el.textContent?.trim() || "";
@@ -304,8 +311,6 @@ import LogoHero from "../ui/Logohero.astro";
         setTimeout(() => {
             let iteration = 0;
             const step = 8;
-            const intervalSpeed = 40;
-
             (el as any)._cipherInterval = setInterval(() => {
                 let countFixed = 0;
                 chars.forEach((obj, index) => {
@@ -314,7 +319,6 @@ import LogoHero from "../ui/Logohero.astro";
                             obj.span.textContent =
                                 obj.final === " " ? "\u00A0" : obj.final;
                             obj.span.classList.replace("shuffling", "fixed");
-                            obj.span.style.filter = "none";
                         }
                         countFixed++;
                     } else if (obj.final !== " ") {
@@ -322,23 +326,26 @@ import LogoHero from "../ui/Logohero.astro";
                             glyphs[Math.floor(Math.random() * glyphs.length)];
                     }
                 });
-
                 if (countFixed >= chars.length) {
                     clearInterval((el as any)._cipherInterval);
                     (el as any)._cipherInterval = null;
-                    requestAnimationFrame(() => {
-                        el.textContent = "";
-                        el.innerText = targetText;
-                    });
                 }
                 iteration++;
-            }, intervalSpeed);
+            }, 40);
         }, delay);
     };
 
-    const heroSound = new Audio("/sounds/hero_song.mp3");
-    heroSound.preload = "auto";
-    heroSound.volume = 0.4;
+    // --- 2. GESTION DE L'AUDIO (Anti-Bug & Déblocage) ---
+    function initHeroSound() {
+        if (heroSound) return heroSound;
+
+        heroSound = new Audio(AUDIO_PATH);
+        heroSound.preload = "auto";
+        heroSound.volume = 0; // On commence à 0 pour un fade-in propre
+        heroSound.loop = false; // À mettre sur true si tu veux que le son du hero boucle
+        (window as any)._heroSound = heroSound;
+        return heroSound;
+    }
 
     const startGlobalHeroAnimation = () => {
         const hero = document.getElementById("/");
@@ -346,31 +353,41 @@ import LogoHero from "../ui/Logohero.astro";
 
         isHeroAnimating = true;
         updateClock();
+        const sound = initHeroSound();
 
         hero.style.filter = "url(#hero-rgb-filter)";
 
         const tl = anime.timeline({
             begin: () => {
-                // --- Lancement Systématique ---
-                heroSound.currentTime = 0; // On reset pour être sûr
-                heroSound.play().catch((err) => {
-                    console.warn(
-                        "Audio Hero bloqué par le navigateur. En attente d'interaction.",
-                    );
-
-                    // Fallback : si c'est bloqué, on le jouera au tout premier clic/scroll
-                    const playOnGesture = () => {
-                        heroSound.play();
-                        window.removeEventListener("mousedown", playOnGesture);
-                        window.removeEventListener("scroll", playOnGesture);
-                    };
-                    window.addEventListener("mousedown", playOnGesture, {
-                        once: true,
+                // Tentative de lecture avec Fade-in
+                sound.currentTime = 0;
+                sound
+                    .play()
+                    .then(() => {
+                        // Si ça réussit, on fait un fade-in de volume
+                        anime({
+                            targets: sound,
+                            volume: 0.4,
+                            duration: 2000,
+                            easing: "linear",
+                        });
+                    })
+                    .catch(() => {
+                        // Si bloqué, on attend la première interaction
+                        const unlock = () => {
+                            sound.play();
+                            anime({
+                                targets: sound,
+                                volume: 0.4,
+                                duration: 1000,
+                                easing: "linear",
+                            });
+                            window.removeEventListener("click", unlock);
+                            window.removeEventListener("touchstart", unlock);
+                        };
+                        window.addEventListener("click", unlock);
+                        window.addEventListener("touchstart", unlock);
                     });
-                    window.addEventListener("scroll", playOnGesture, {
-                        once: true,
-                    });
-                });
             },
             complete: () => {
                 if (!hero.classList.contains("lang-changing")) {
@@ -380,6 +397,7 @@ import LogoHero from "../ui/Logohero.astro";
             },
         });
 
+        // --- L'ANIMATION VISUELLE ---
         tl.add(
             {
                 targets: ["#intro-red", "#intro-blue"],
@@ -411,8 +429,7 @@ import LogoHero from "../ui/Logohero.astro";
                 "-=2200",
             );
 
-        const texts = document.querySelectorAll(".cipher-text");
-        texts.forEach((text, i) => {
+        document.querySelectorAll(".cipher-text").forEach((text, i) => {
             animateCipher(text as HTMLElement, 800 + i * 300);
         });
     };
@@ -430,16 +447,15 @@ import LogoHero from "../ui/Logohero.astro";
         });
     };
 
-    (window as any).runCipher = animateCipher;
-
+    // --- 3. LIFECYCLE ASTRO ---
     document.addEventListener("astro:page-load", () => {
         isHeroAnimating = false;
-        startGlobalHeroAnimation();
+        // Petit délai pour laisser le temps au DOM de se stabiliser
+        setTimeout(startGlobalHeroAnimation, 100);
     });
 
+    // Fallback si Astro:page-load n'est pas déclenché (chargement direct)
     if (document.readyState === "complete") {
         startGlobalHeroAnimation();
     }
-
-    
 </script>

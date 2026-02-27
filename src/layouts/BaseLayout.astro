@@ -3,6 +3,7 @@ import "../styles/globals.css";
 
 import Navbar from "../components/navigation/Navbar.astro";
 import { ClientRouter } from "astro:transitions";
+import Sas from "../components/Sas.astro";
 
 interface Props {
 	title?: string;
@@ -26,6 +27,8 @@ const { title = "Portfolio" } = Astro.props;
 	</head>
 
 	<body class="app-root">
+		<Sas />
+
 		<header class="app-header">
 			<nav class="navbar">
 				<Navbar />
@@ -112,21 +115,33 @@ const { title = "Portfolio" } = Astro.props;
 	});
 
 	function setupProjectSounds() {
-		const clickSound = new Audio("/sounds/slider.mp3");
-		clickSound.preload = "auto";
-		clickSound.volume = 0.5; // Ajuste le volume si besoin
+		const soundChoice = sessionStorage.getItem("soundPreference");
+		const isSoundEnabled = soundChoice === "enabled";
+
+		let clickSound: HTMLAudioElement | null = null;
+
+		if (isSoundEnabled) {
+			clickSound = new Audio("/sounds/slider.mp3");
+			clickSound.preload = "auto";
+			clickSound.volume = 0.5;
+		}
 
 		const targets = document.querySelectorAll(
 			"nav a, .project-row-link, .dropdown-item",
 		);
 
 		targets.forEach((target) => {
-			target.addEventListener("click", (e) => {
-				clickSound.currentTime = 0; // Reset au début si on clique vite
-				clickSound.play();
+			target.addEventListener("click", () => {
+				if (isSoundEnabled && clickSound) {
+					clickSound.currentTime = 0;
+					clickSound.play().catch(() => {
+					});
+				}
 			});
 		});
 	}
 
 	setupProjectSounds();
+
 </script>
+

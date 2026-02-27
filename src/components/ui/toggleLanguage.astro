@@ -152,28 +152,43 @@ export const toggleLang = () => {
 
     const setupToggle = () => {
         const btn = document.querySelector(".toggle-langue") as HTMLElement;
-
         if (!btn) return;
 
-        const sEn = new Audio("/sounds/en_to_fr.mp3");
-        const sFr = new Audio("/sounds/fr_to_en.mp3");
+        // On vérifie le choix du SAS
+        const soundChoice = sessionStorage.getItem("soundPreference");
+        const isSoundEnabled = soundChoice === "enabled";
 
-        sEn.volume = 0.2; //volume
-        sFr.volume = 0.2; //volume
-        // ----------------------------
+        // On prépare les sons (ils resteront null si le son est désactivé)
+        let sEn: HTMLAudioElement | null = null;
+        let sFr: HTMLAudioElement | null = null;
+
+        if (isSoundEnabled) {
+            sEn = new Audio("/sounds/en_to_fr.mp3");
+            sFr = new Audio("/sounds/fr_to_en.mp3");
+            sEn.volume = 0.2;
+            sFr.volume = 0.2;
+        }
 
         // GÉRER LE CLIC
         btn.onclick = () => {
             toggleLang();
-            const nextLang = langStore.get();
-            const sound = nextLang === "en" ? sFr : sEn;
 
-            if (sound) {
-                sound.currentTime = 0;
-                sound.play().catch(() => {});
+            // On ne déclenche la logique audio que si le son est autorisé
+            if (isSoundEnabled) {
+                const nextLang = langStore.get();
+                // Si on passe vers l'anglais, on joue le son fr_to_en, sinon l'inverse
+                const sound = nextLang === "en" ? sFr : sEn;
+
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(() => {
+                        /* Silence si le navigateur bloque */
+                    });
+                }
             }
         };
 
+        // GÉRER L'APPARENCE VISUELLE (toujours active)
         langStore.subscribe((lang) => {
             if (lang === "fr") {
                 btn.classList.add("is-fr");

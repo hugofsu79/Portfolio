@@ -285,7 +285,6 @@ const articles: laboBlock[] = laboData.filter(
         animate();
     }
 
-    // --- 2. EXPÉRIENCE : RYTHME (Grille Audio) ---
     // --- 2. EXPÉRIENCE : RYTHME (Grille Audio + Ondes) ---
     function initRythme(canvas: HTMLCanvasElement) {
         const ctx = canvas.getContext("2d")!;
@@ -298,6 +297,11 @@ const articles: laboBlock[] = laboData.filter(
             cols = 24;
         const damping = 0.65,
             tension = 1;
+
+        // --- 1. LE VERROU ---
+        // On vérifie une fois au démarrage si le son est autorisé
+        const soundChoice = sessionStorage.getItem("soundPreference");
+        const isSoundEnabled = soundChoice === "enabled";
 
         const resize = () => {
             const dpr = window.devicePixelRatio || 1;
@@ -322,7 +326,10 @@ const articles: laboBlock[] = laboData.filter(
         };
 
         const playNote = (row: number) => {
-            // Initialisation de l'AudioContext au premier clic/mouvement
+            // CONDITION CRUCIALE : Si le son est désactivé, on sort immédiatement
+            if (!isSoundEnabled) return;
+
+            // Initialisation de l'AudioContext au premier mouvement uniquement si autorisé
             if (!audioCtx)
                 audioCtx = new (
                     window.AudioContext || (window as any).webkitAudioContext
@@ -360,11 +367,12 @@ const articles: laboBlock[] = laboData.filter(
                 const dy = my - d.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
-                // Déclenchement de l'onde et du son si la souris est proche
                 if (dist < 25) {
                     if (Date.now() - d.lastTriggered > 220) {
-                        d.v += 12; // Impulsion de vélocité
+                        d.v += 12; // L'onde physique est toujours calculée
                         d.lastTriggered = Date.now();
+
+                        // La fonction playNote décidera elle-même si elle fait du bruit
                         playNote(d.row);
                     }
                 }
@@ -374,7 +382,6 @@ const articles: laboBlock[] = laboData.filter(
         const animate = () => {
             ctx.clearRect(0, 0, width, width);
 
-            // Calcul de la propagation (Physique des fluides)
             dots.forEach((d, i) => {
                 let neighbors = 0;
                 if (d.row > 0) neighbors += dots[i - cols].z;
@@ -386,7 +393,6 @@ const articles: laboBlock[] = laboData.filter(
                 d.z += d.v;
             });
 
-            // Dessin des points
             dots.forEach((d) => {
                 ctx.beginPath();
                 ctx.arc(d.x, d.y - d.z, 2, 0, Math.PI * 2);

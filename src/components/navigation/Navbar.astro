@@ -141,6 +141,9 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
 
     // SINGLETON AUDIO
     const getNavSound = () => {
+        const soundChoice = sessionStorage.getItem("soundPreference");
+        if (soundChoice !== "enabled") return null; // Retourne null si pas de son
+
         if (!(window as any)._navSound) {
             const audio = new Audio("/sounds/bouton_cta_nav.mp3");
             audio.preload = "auto";
@@ -209,7 +212,7 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
 
         if (!desktopUl) return;
 
-        // Gestion des classes de page
+        // 1. GESTION DES CLASSES DE PAGE (CSS contextuel)
         const path = window.location.pathname.replace(/\/$/, "") || "/";
         document.body.classList.toggle(
             "is-home",
@@ -220,26 +223,36 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
             path.includes("/projects/"),
         );
 
-        // Setup Hover Desktop
+        // 2. SETUP HOVER DESKTOP (Son + Cipher)
         const links = desktopUl.querySelectorAll("a:not(.logo-link)");
         links.forEach((a) => {
             const anchor = a as HTMLElement;
             if (!(anchor as any)._hasCipher) {
+                // On stocke le texte original pour l'effet Matrix
                 anchor.setAttribute(
                     "data-original-text",
                     anchor.innerText.trim(),
                 );
+
                 anchor.addEventListener("mouseenter", () => {
+                    // TENTATIVE AUDIO SÉCURISÉE
                     const sound = getNavSound();
-                    sound.currentTime = 0;
-                    sound.play().catch(() => {});
+                    if (sound) {
+                        sound.currentTime = 0;
+                        sound.play().catch(() => {
+                            /* Empêche l'erreur si le navigateur bloque l'autoplay */
+                        });
+                    }
+
+                    // L'EFFET VISUEL (Lui, il tourne toujours)
                     runCipher(anchor);
                 });
                 (anchor as any)._hasCipher = true;
             }
         });
 
-        // Clonage Mobile Intelligent
+        // 3. CLONAGE MOBILE INTELLIGENT
+        // On vide et on reclone pour que les liens mobiles soient à jour (langue, etc.)
         if (mobileContainer && desktopUl) {
             mobileContainer.innerHTML = "";
             const items = Array.from(desktopUl.querySelectorAll("li"));
@@ -250,12 +263,14 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
                     window.getComputedStyle(li).display !== "none";
                 if (isVisible) {
                     const clone = li.cloneNode(true) as HTMLElement;
-                    // Nettoyage IDs pour éviter les doublons
+
+                    // Nettoyage des IDs pour éviter les conflits dans le DOM
                     clone.removeAttribute("id");
                     clone
                         .querySelectorAll("[id]")
                         .forEach((el) => el.removeAttribute("id"));
 
+                    // Variable CSS pour décaler l'animation d'entrée du menu mobile
                     clone.style.setProperty("--index", visibleIdx.toString());
                     mobileContainer.appendChild(clone);
                     visibleIdx++;
@@ -263,11 +278,12 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
             });
         }
 
-        // Hamburger & Menu
+        // 4. HAMBURGER & MENU MOBILE
         if (btn && menu && !(btn as any)._hasClick) {
             btn.onclick = () => {
                 const open = menu.classList.toggle("active");
                 btn.classList.toggle("is-active");
+                // Empêche le scroll de la page quand le menu est ouvert
                 document.body.style.overflow = open ? "hidden" : "";
             };
             (btn as any)._hasClick = true;

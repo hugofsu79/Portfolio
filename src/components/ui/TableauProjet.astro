@@ -2,44 +2,75 @@
 import type { ProjectDetail } from "../../types/projects";
 
 interface Props {
-    details: ProjectDetail[];
+    detailsFr: ProjectDetail[];
+    detailsEn: ProjectDetail[];
 }
 
-const { details } = Astro.props;
+const { detailsFr, detailsEn } = Astro.props;
 ---
 
 <table class="tableContexte">
     <tbody>
         {
-            details.map((detail) => (
-                <tr>
-                    <th>{detail.label}</th>
-                    <td>
-                        {detail.href ? (
-                            /* Le lien principal avec target="_blank" */
-                            <a
-                                href={detail.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="project-link"
-                            >
-                                {detail.value}
-                            </a>
-                        ) : Array.isArray(detail.value) ? (
-                            detail.value.map((item, index) => (
-                                <span class="detail-item">
-                                    {item}
-                                    {index < detail.value.length - 1
-                                        ? ","
-                                        : ""}
+            detailsFr.map((detail, index) => {
+                // On récupère le détail anglais correspondant à l'index
+                const detailEn = detailsEn ? detailsEn[index] : null;
+
+                return (
+                    <tr>
+                        <th
+                            class="i18n-anim"
+                            data-i18n-project={`context.details.${index}.label`}
+                            data-ghost={detailEn?.label}
+                        >
+                            {detail.label}
+                        </th>
+                        <td>
+                            {detail.href ? (
+                                <a
+                                    href={detail.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="project-link i18n-anim"
+                                    data-i18n-project={`context.details.${index}.value`}
+                                    data-ghost={detailEn?.value}
+                                >
+                                    {detail.value}
+                                </a>
+                            ) : Array.isArray(detail.value) ? (
+                                /* Pour les tableaux (collaborateurs), le script langEngine gérera 
+                                   le .join(', ') automatiquement grâce à la modif de getDeepValue */
+                                <span
+                                    class="detail-item i18n-anim"
+                                    data-i18n-project={`context.details.${index}.value`}
+                                    data-ghost={
+                                        Array.isArray(detailEn?.value)
+                                            ? detailEn.value.join(", ")
+                                            : detailEn?.value
+                                    }
+                                >
+                                    {detail.value.map((item, idx) => (
+                                        <>
+                                            {item}
+                                            {idx < detail.value.length - 1
+                                                ? ", "
+                                                : ""}
+                                        </>
+                                    ))}
                                 </span>
-                            ))
-                        ) : (
-                            <span class="detail-item">{detail.value}</span>
-                        )}
-                    </td>
-                </tr>
-            ))
+                            ) : (
+                                <span
+                                    class="detail-item i18n-anim"
+                                    data-i18n-project={`context.details.${index}.value`}
+                                    data-ghost={detailEn?.value}
+                                >
+                                    {detail.value}
+                                </span>
+                            )}
+                        </td>
+                    </tr>
+                );
+            })
         }
     </tbody>
 </table>

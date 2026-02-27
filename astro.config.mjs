@@ -1,3 +1,5 @@
+import { defineConfig } from 'astro/config';
+
 export default defineConfig({
     i18n: {
         defaultLocale: 'fr',
@@ -6,4 +8,4 @@ export default defineConfig({
             prefixDefaultLocale: false
         }
     }
-})
+});

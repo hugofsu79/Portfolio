@@ -1,21 +1,9 @@
-import type { Project, Lang, HomeProject } from "../types/projects";
-
-export type HomeProject = {
-    slug: string;
-    entreprise: string;
-    year: number;
-    cover: string;
-    title: string;
-    skills: string[];
-};
-
-
+import type { Project } from "../types/projects";
 
 export const projects: Project[] = [
     // Siko
     {
         slug: "siko-mobility",
-        // Données Statiques (ne changent jamais)
         entreprise: "Siko Mobility",
         year: 2025,
         cover: "/images/siko-mobility/cover.webp",
@@ -360,17 +348,13 @@ export const projects: Project[] = [
         },
     }
 ];
-/**
- * 
- */
 
-
-export const getProjectsList = (lang: Lang): HomeProject[] =>
+export const getProjectsList = (lang: "fr" | "en") =>
     projects.map((p) => ({
         slug: p.slug,
         entreprise: p.entreprise,
         year: p.year,
         cover: p.cover,
-        title: p.content[lang].title, // On aplatit les données ici
+        title: p.content[lang].title,
         skills: p.content[lang].skills,
     }));

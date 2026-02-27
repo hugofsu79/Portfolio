@@ -100,7 +100,10 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                         >
                             {fr.context.description}
                         </p>
-                        <TableauProjet details={fr.context.details} />
+                        <TableauProjet
+                            detailsFr={fr.context.details}
+                            detailsEn={en.context.details}
+                        />
                     </div>
                 </section>
             </div>
@@ -215,7 +218,7 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                         </div>
 
                         <div class="mini-grid">
-                            {/* Résultat */}
+                            {}
                             {
                                 fr.resultat && (
                                     <div class="textGrid">

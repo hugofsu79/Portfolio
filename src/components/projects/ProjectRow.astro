@@ -1,40 +1,36 @@
 ---
-import {
-    getProjectsList,
-    type Lang,
-    type HomeProject,
-} from "../../data/projects";
+import { projects } from "../../data/projects";
 import { navLabels } from "../../data/navigation";
-
-const lang = (Astro.currentLocale || "fr") as Lang;
-
-const projectsList: HomeProject[] = getProjectsList(lang);
-
-const labels = (navLabels as Record<Lang, any>)[lang];
+const lang = Astro.currentLocale || "fr";
 ---
 
 <section id="projects">
-    <h2 data-i18n-key="projects">{labels.projects}</h2>
+    <h2 data-i18n-key="projects">{navLabels.fr.projects}</h2>
 
     <ul class="projects-list">
         {
-            projectsList.map((project) => (
+            projects.map((item) => (
                 <li class="project-row">
                     <a
                         class="project-row-link"
-                        href={`/${lang}/projects/${project.slug}`}
+                        href={`/${lang}/projects/${item.slug}`}
                     >
                         <div class="project-title">
-                            <span class="project-year">{project.year}</span>
-                            <h3>{project.entreprise}</h3>
+                            <span class="project-year">{item.year}</span>
+                            <h3>{item.entreprise}</h3>
+
                             <span class="project-subtitle">
-                                {/* project.title contient déjà la bonne langue */}
-                                <p>{project.title}</p>
+                                {/* Logique Labo : slug + nom du champ */}
+                                <p
+                                    data-i18n-key={`${item.slug}_title`}
+                                    data-ghost={item.content.fr.title}
+                                >
+                                    {item.content.fr.title}
+                                </p>
                             </span>
                         </div>
-
                         <div class="project-preview">
-                            <img src={project.cover} alt={project.entreprise} />
+                            <img src={item.cover} alt={item.entreprise} />
                         </div>
                     </a>
                 </li>
@@ -63,7 +59,7 @@ const labels = (navLabels as Record<Lang, any>)[lang];
         position: absolute;
         top: 0;
         left: 0;
-        width: 320px;
+        width: 280px;
         height: auto;
         opacity: 0;
         will-change: transform;
@@ -186,14 +182,23 @@ const labels = (navLabels as Record<Lang, any>)[lang];
 <script>
     // AUDIO (Ton code original)
     const setupProjectSounds = () => {
+        const soundChoice = sessionStorage.getItem("soundPreference");
+        if (soundChoice !== "enabled") {
+            console.log("SAS : Mode silencieux, AudioContext non initialisé.");
+            return;
+        }
+
         const soundPaths = [
             "/sounds/projetColumnList.mp3",
             "/sounds/projetColumnList_2.mp3",
             "/sounds/projetColumnList_3.mp3",
         ];
+
+        // 2. INITIALISATION (Uniquement si autorisé)
         const AudioContext =
             window.AudioContext || (window as any).webkitAudioContext;
         const ctx = new AudioContext();
+
         const audioPlayers = soundPaths.map((path) => {
             const audio = new Audio(path);
             audio.volume = 0.8;
@@ -204,18 +209,27 @@ const labels = (navLabels as Record<Lang, any>)[lang];
             return audio;
         });
 
+        // 3. ATTACHEMENT DES ÉVÉNEMENTS
         document.querySelectorAll(".project-row").forEach((row) => {
             row.addEventListener("mouseenter", async () => {
+                // Sécurité pour l'AudioContext (nécessite souvent une interaction)
                 if (ctx.state === "suspended") await ctx.resume();
+
+                // Sélection aléatoire d'un son
                 const selectedAudio =
                     audioPlayers[
                         Math.floor(Math.random() * audioPlayers.length)
                     ];
+
+                // On stoppe les autres sons avant de jouer le nouveau
                 audioPlayers.forEach((a) => {
                     a.pause();
                     a.currentTime = 0;
                 });
-                selectedAudio.play().catch(() => {});
+
+                selectedAudio.play().catch(() => {
+                    /* Empêche les erreurs si le navigateur bloque */
+                });
             });
         });
     };

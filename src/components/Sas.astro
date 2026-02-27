@@ -1,0 +1,405 @@
+---
+// Sas.astro
+import Button from "../components/ui/Button.astro";
+---
+
+<div class="container-sas">
+    <div id="sound-sas" class="sas-overlay">
+        <div class="sas-content">
+            <div class="text-block">
+                <h3 class="split-texte">Expérience Sensorielle</h3>
+
+                <h4 class="split-texte">Sensory Experience</h4>
+            </div>
+            <div class="branding">
+                <div class="loader-container">
+                    <div class="stage" id="stage"></div>
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        version="1.1"
+                        class="svg-filter"
+                    >
+                        <defs>
+                            <filter id="goo">
+                                <feGaussianBlur
+                                    in="SourceGraphic"
+                                    stdDeviation="12"
+                                    result="blur"></feGaussianBlur>
+                                <feColorMatrix
+                                    in="blur"
+                                    mode="matrix"
+                                    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"
+                                    result="goo"></feColorMatrix>
+                                <feComposite
+                                    in="SourceGraphic"
+                                    in2="goo"
+                                    operator="atop"></feComposite>
+                            </filter>
+                        </defs>
+                    </svg>
+                </div>
+                <p class="status-text">SYSTEM READY</p>
+            </div>
+            <div class="rectangle"></div>
+            <div class="actions">
+                <div class="context-folio">
+                    <p class="split-texte">
+                        Ce portfolio utilise le sound design pour enrichir la
+                        navigation.
+                    </p>
+                    <p class="split-texte">
+                        This portfolio uses sound design to enhance navigation.
+                    </p>
+                </div>
+                <div class="choice-noise">
+                    <div id="trigger-sound" style="cursor: pointer;">
+                        <Button
+                            class="js-btn-sound"
+                            variant="secondary"
+                            size="lg"
+                            target="_self"
+                            type="button"
+                            style="width:180px"
+                        >
+                            Activer le son
+                        </Button>
+                    </div>
+
+                    <div class="rectangle"></div>
+                    <div id="trigger-no-sound" style="cursor: pointer;">
+                        <Button
+                            class="js-btn-no-sound"
+                            size="lg"
+                            type="button"
+                            target="_self"
+                            variant="primary"
+                            style="width:180px"
+                        >
+                            Continuer sans son</Button
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sas-content .rectangle:nth-child(3) {
+        transform: rotate(90deg);
+    }
+    #sound-sas {
+        height: 100vh;
+
+        background-color: var(--layer-background);
+    }
+    .text-block h3 {
+        margin: 0;
+        font-weight: var(--font-weight-bold);
+        font-size: var(--h3-font-size);
+    }
+    .text-block h4 {
+        color: var(--text-initial);
+        margin: 0;
+        display: flex;
+        align-items: left;
+        font-style: italic;
+        font-size: var(--h4-font-size);
+        font-weight: var(--font-weight-regular);
+    }
+    .context-folio p {
+        margin: 0;
+    }
+
+    .context-folio p:nth-child(2) {
+        font-style: italic;
+        align-items: left;
+        color: var(--text-initial);
+    }
+    .loader-container {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        pointer-events: none;
+    }
+
+    .stage {
+        width: 100%;
+        height: 100%;
+        filter: url("#goo");
+        position: relative;
+
+        pointer-events: none;
+    }
+
+    :global(.ball) {
+        position: absolute;
+        background: var(--fill-hover);
+        border-radius: 50%;
+        will-change: transform, filter;
+        pointer-events: none;
+    }
+
+    .svg-filter {
+        position: absolute;
+        visibility: hidden;
+        width: 0;
+        height: 0;
+    }
+
+    .sas-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+            opacity 1s cubic-bezier(0.77, 0, 0.175, 1),
+            visibility 1s;
+    }
+
+    .sas-overlay.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .sas-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-32);
+        align-items: center;
+    }
+
+    .branding {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-12);
+    }
+
+    .status-text {
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        font-weight: bold;
+        color: var(--static-opacit-2);
+        text-transform: uppercase;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-24);
+        width: 100%;
+
+        position: relative;
+        z-index: 20;
+    }
+    .choice-noise {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        width: 100%;
+        gap: var(--space-12);
+
+        pointer-events: all;
+    }
+
+    @media (max-width: 720px) {
+        .sas-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+
+            height: 100%;
+        }
+        .sas-content .rectangle:nth-child(3) {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    interface Ball {
+        el: HTMLDivElement;
+        x: number;
+        y: number;
+        vx: number;
+        vy: number;
+        targetRadius: number;
+        currentRadius: number;
+        angle: number;
+        baseSpeed: number;
+        noiseOffset: number;
+        size: number;
+        gravity: number;
+        friction: number;
+        opacity: number;
+    }
+
+    // --- LOGIQUE DE VÉRIFICATION DU SAS ---
+    function checkSasStatus() {
+        const sasOverlay = document.getElementById("sound-sas");
+        const hasMadeChoice = sessionStorage.getItem("soundPreference");
+
+        if (sasOverlay && hasMadeChoice) {
+            sasOverlay.style.display = "none";
+            return true;
+        }
+        return false;
+    }
+
+    function initLiquidLoader() {
+        const stage = document.getElementById("stage");
+        if (!stage) return;
+
+        const ballCount = 10;
+        const balls: Ball[] = [];
+        const stageSize = 250;
+        const centerX = stageSize / 2;
+        const centerY = stageSize / 2;
+
+        const mouse = { x: -1000, y: -1000 };
+        stage.addEventListener("mousemove", (e: MouseEvent) => {
+            const rect = stage.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+
+        stage.querySelectorAll(".ball").forEach((b) => b.remove());
+
+        let ballsCreated = 0;
+        const creationInterval = setInterval(() => {
+            if (ballsCreated >= ballCount) {
+                clearInterval(creationInterval);
+                return;
+            }
+
+            const el = document.createElement("div");
+            el.className = "ball";
+            stage.appendChild(el);
+
+            const size = 30 + Math.random() * 20;
+
+            balls.push({
+                el: el,
+                x: centerX,
+                y: centerY,
+                vx: 0,
+                vy: 0,
+                targetRadius: 65 + Math.random() * 20,
+                currentRadius: 0,
+                angle: (ballsCreated / ballCount) * Math.PI * 2,
+                baseSpeed: 0.01 + Math.random() * 0.02,
+                noiseOffset: Math.random() * 1000,
+                size: size,
+                gravity: 0.25,
+                friction: 0.85,
+                opacity: 0,
+            });
+
+            el.style.width = el.style.height = `${size}px`;
+            ballsCreated++;
+        }, 400);
+
+        function animate() {
+            balls.forEach((ball) => {
+                if (ball.currentRadius < ball.targetRadius) {
+                    ball.currentRadius +=
+                        (ball.targetRadius - ball.currentRadius) * 0.02;
+                }
+                ball.noiseOffset += 0.008;
+                ball.angle +=
+                    ball.baseSpeed + Math.sin(ball.noiseOffset) * 0.01;
+                const targetX =
+                    centerX + Math.cos(ball.angle) * ball.currentRadius;
+                const targetY =
+                    centerY + Math.sin(ball.angle) * ball.currentRadius;
+                ball.vx += (targetX - ball.x) * 0.1;
+                ball.vy += (targetY - ball.y) * 0.1;
+                ball.vy += ball.gravity;
+                const dxMouse = ball.x - mouse.x;
+                const dyMouse = ball.y - mouse.y;
+                const distMouse = Math.sqrt(
+                    dxMouse * dxMouse + dyMouse * dyMouse,
+                );
+                if (distMouse < 35) {
+                    const force = (35 - distMouse) / 35;
+                    ball.vx += (dxMouse / distMouse) * force * 2;
+                    ball.vy += (dyMouse / distMouse) * force * 2;
+                }
+                ball.vx *= ball.friction;
+                ball.vy *= ball.friction;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+                const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+                const motionBlur = Math.min(speed * 0.8, 4);
+                const rotation = Math.atan2(ball.vy, ball.vx) * (180 / Math.PI);
+                const stretch = 1 + Math.min(speed * 0.1, 0.5);
+                const targetOpacity = Math.min(1, ball.currentRadius / 40);
+                ball.opacity += (targetOpacity - ball.opacity) * 0.05;
+                ball.el.style.opacity = ball.opacity.toFixed(2);
+                ball.el.style.transform = `translate(${ball.x - ball.size / 2}px, ${ball.y - ball.size / 2}px) rotate(${rotation}deg) scaleX(${stretch})`;
+                ball.el.style.filter = `blur(${motionBlur}px)`;
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    function initSasLogic() {
+        const sasOverlay = document.getElementById("sound-sas");
+        const triggerSound = document.getElementById("trigger-sound");
+        const triggerNoSound = document.getElementById("trigger-no-sound");
+
+        // Sécurité : on vérifie que tous les éléments sont présents dans le DOM
+        if (!sasOverlay || !triggerSound || !triggerNoSound) return;
+
+        const handleChoice = (sound: boolean) => {
+            // 1. Stockage du choix dans la session
+            sessionStorage.setItem(
+                "soundPreference",
+                sound ? "enabled" : "disabled",
+            );
+
+            // 2. Déclenchement de l'animation de sortie (opacité via CSS)
+            sasOverlay.classList.add("is-hidden");
+
+            // 3. Redirection vers la racine après la fin de la transition
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000);
+        };
+
+        // Gestion du clic pour "Activer le son"
+        triggerSound.addEventListener("click", (e) => {
+            e.preventDefault();
+            handleChoice(true);
+        });
+
+        // Gestion du clic pour "Continuer sans son"
+        triggerNoSound.addEventListener("click", (e) => {
+            e.preventDefault();
+            handleChoice(false);
+        });
+    }
+
+    // --- INITIALISATION ---
+    document.addEventListener("astro:page-load", () => {
+        const choiceAlreadyMade = checkSasStatus();
+
+        // Si on n'a pas encore choisi, on lance le loader et la logique
+        if (!choiceAlreadyMade) {
+            initLiquidLoader();
+            initSasLogic();
+        }
+    });
+</script>

@@ -108,6 +108,8 @@ import LogoHero from "../ui/Logohero.astro";
         margin: 0;
     }
     .hero {
+        opacity: 0;
+        visibility: hidden;
         position: relative;
         background-color: var(--layer-background-hero);
         overflow: hidden;
@@ -122,8 +124,14 @@ import LogoHero from "../ui/Logohero.astro";
 
         filter: url(#hero-intro-filter);
         transition: filter 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-        will-change: filter;
+        will-change: filter, opacity;
     }
+
+    .hero.is-visible {
+        visibility: visible;
+    }
+    
+
     .is-clear {
         filter: none !important;
     }
@@ -274,26 +282,36 @@ import LogoHero from "../ui/Logohero.astro";
     }
 </style>
 <script>
-    // @ts-ignore
     import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
 
-    // --- CONFIGURATION & SINGLETONS ---
-    const glyphs = "0123456789@#$%&*";
+    // --- CONFIGURATION ---
+    const GLYPHS = "0123456789@#$%&*";
     const AUDIO_PATH = "/sounds/hero_song.mp3";
 
-    // On utilise window pour garder une référence unique même après un changement de page partiel
     let heroSound = (window as any)._heroSound || null;
     let isHeroAnimating = false;
+    let hasRun = false;
 
-    // --- 1. FONCTION CIPHER (Texte Matrix) ---
-    const animateCipher = (el: HTMLElement, delay = 0) => {
+    // --- 1. FONCTIONS UTILITAIRES ---
+
+    function updateClock() {
+        const clockDigits = document.querySelectorAll(".digit");
+        if (!clockDigits.length) return;
+        const now = new Date();
+        const timeStr =
+            String(now.getHours()).padStart(2, "0") +
+            String(now.getMinutes()).padStart(2, "0");
+        clockDigits.forEach((d, i) => {
+            d.textContent = timeStr[i];
+            d.classList.add("fixed");
+        });
+    }
+
+    function animateCipher(el: HTMLElement, delay = 0) {
         const targetText =
             el.getAttribute("data-target-text") || el.textContent?.trim() || "";
         if (!targetText) return;
-
         el.setAttribute("data-target-text", targetText);
-        if ((el as any)._cipherInterval)
-            clearInterval((el as any)._cipherInterval);
 
         const chars = targetText.split("").map((char) => {
             const span = document.createElement("span");
@@ -301,7 +319,7 @@ import LogoHero from "../ui/Logohero.astro";
             span.textContent =
                 char === " "
                     ? "\u00A0"
-                    : glyphs[Math.floor(Math.random() * glyphs.length)];
+                    : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
             return { span, final: char };
         });
 
@@ -323,35 +341,39 @@ import LogoHero from "../ui/Logohero.astro";
                         countFixed++;
                     } else if (obj.final !== " ") {
                         obj.span.textContent =
-                            glyphs[Math.floor(Math.random() * glyphs.length)];
+                            GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
                     }
                 });
-                if (countFixed >= chars.length) {
+                if (countFixed >= chars.length)
                     clearInterval((el as any)._cipherInterval);
-                    (el as any)._cipherInterval = null;
-                }
                 iteration++;
             }, 40);
         }, delay);
-    };
+    }
 
-    // --- 2. GESTION DE L'AUDIO (Anti-Bug & Déblocage) ---
     function initHeroSound() {
+        const soundChoice = sessionStorage.getItem("soundPreference");
+        if (soundChoice !== "enabled") return null;
         if (heroSound) return heroSound;
 
         heroSound = new Audio(AUDIO_PATH);
-        heroSound.preload = "auto";
-        heroSound.volume = 0; // On commence à 0 pour un fade-in propre
-        heroSound.loop = false; // À mettre sur true si tu veux que le son du hero boucle
+        heroSound.volume = 0;
         (window as any)._heroSound = heroSound;
         return heroSound;
     }
 
-    const startGlobalHeroAnimation = () => {
-        const hero = document.getElementById("/");
-        if (isHeroAnimating || !hero) return;
+    // --- 2. CŒUR DE L'ANIMATION ---
 
+    function startGlobalHeroAnimation() {
+        const hero = document.getElementById("/");
+        if (hasRun || !hero) return;
+
+        hasRun = true;
         isHeroAnimating = true;
+
+        // On rend le hero "calculable" par le navigateur mais encore invisible (via CSS initial)
+        hero.classList.add("is-visible");
+
         updateClock();
         const sound = initHeroSound();
 
@@ -359,45 +381,39 @@ import LogoHero from "../ui/Logohero.astro";
 
         const tl = anime.timeline({
             begin: () => {
-                // Tentative de lecture avec Fade-in
-                sound.currentTime = 0;
-                sound
-                    .play()
-                    .then(() => {
-                        // Si ça réussit, on fait un fade-in de volume
-                        anime({
-                            targets: sound,
-                            volume: 0.4,
-                            duration: 2000,
-                            easing: "linear",
-                        });
-                    })
-                    .catch(() => {
-                        // Si bloqué, on attend la première interaction
-                        const unlock = () => {
-                            sound.play();
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound
+                        .play()
+                        .then(() => {
                             anime({
                                 targets: sound,
                                 volume: 0.4,
-                                duration: 1000,
+                                duration: 2000,
                                 easing: "linear",
                             });
-                            window.removeEventListener("click", unlock);
-                            window.removeEventListener("touchstart", unlock);
-                        };
-                        window.addEventListener("click", unlock);
-                        window.addEventListener("touchstart", unlock);
-                    });
+                        })
+                        .catch(() => {
+                            const unlock = () => {
+                                if (sound) sound.play();
+                                anime({
+                                    targets: sound,
+                                    volume: 0.4,
+                                    duration: 1000,
+                                    easing: "linear",
+                                });
+                                window.removeEventListener("click", unlock);
+                            };
+                            window.addEventListener("click", unlock);
+                        });
+                }
             },
             complete: () => {
-                if (!hero.classList.contains("lang-changing")) {
-                    hero.style.filter = "none";
-                }
+                hero.style.filter = "none";
                 isHeroAnimating = false;
             },
         });
 
-        // --- L'ANIMATION VISUELLE ---
         tl.add(
             {
                 targets: ["#intro-red", "#intro-blue"],
@@ -432,30 +448,30 @@ import LogoHero from "../ui/Logohero.astro";
         document.querySelectorAll(".cipher-text").forEach((text, i) => {
             animateCipher(text as HTMLElement, 800 + i * 300);
         });
-    };
-
-    const updateClock = () => {
-        const clockDigits = document.querySelectorAll(".digit");
-        if (!clockDigits.length) return;
-        const now = new Date();
-        const timeStr =
-            String(now.getHours()).padStart(2, "0") +
-            String(now.getMinutes()).padStart(2, "0");
-        clockDigits.forEach((d, i) => {
-            d.textContent = timeStr[i];
-            d.classList.add("fixed");
-        });
-    };
-
-    // --- 3. LIFECYCLE ASTRO ---
-    document.addEventListener("astro:page-load", () => {
-        isHeroAnimating = false;
-        // Petit délai pour laisser le temps au DOM de se stabiliser
-        setTimeout(startGlobalHeroAnimation, 100);
-    });
-
-    // Fallback si Astro:page-load n'est pas déclenché (chargement direct)
-    if (document.readyState === "complete") {
-        startGlobalHeroAnimation();
     }
+
+    // --- 3. GESTION DU CYCLE DE VIE (ASTRO) ---
+
+    document.addEventListener("astro:page-load", () => {
+        hasRun = false;
+
+        const checkSasAndStart = () => {
+            const sas = document.getElementById("sound-sas");
+
+            // Si le SAS est présent et n'est pas encore masqué (display none ou opacity 0)
+            if (
+                sas &&
+                window.getComputedStyle(sas).display !== "none" &&
+                window.getComputedStyle(sas).opacity !== "0"
+            ) {
+                requestAnimationFrame(checkSasAndStart);
+                return;
+            }
+
+            // Dès que le SAS est invisible ou absent, on lance le Hero
+            startGlobalHeroAnimation();
+        };
+
+        checkSasAndStart();
+    });
 </script>

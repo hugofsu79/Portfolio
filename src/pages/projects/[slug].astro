@@ -1,5 +1,6 @@
 ---
 import { projects } from "../../data/projects";
+
 import Layout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/layout/Footer.astro";
 import Carousel from "../../components/sections/Carousel.astro";
@@ -91,7 +92,13 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                         </ul>
                     </div>
 
-                    <h4 data-i18n-key="context_title">Contexte</h4>
+                    <h4
+                        class="i18n-anim"
+                        data-i18n-project="context.title"
+                        data-ghost={en.context?.title}
+                    >
+                        {en.context.title}
+                    </h4>
                     <div class="section-content">
                         <p
                             class="split-texte i18n-anim"
@@ -114,15 +121,15 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                 {/* Section Objectifs */}
                 {
                     fr.objectifs && (
-                        <div class="grid-mini">
-                            <div class="blocText">
-                                <h4
-                                    class="i18n-anim"
-                                    data-i18n-project="objectifs.title"
-                                    data-ghost={en.objectifs?.title}
-                                >
-                                    {fr.objectifs.title}
-                                </h4>
+                        <div class="blocText expandable-container">
+                            <h4
+                                class="i18n-anim"
+                                data-i18n-project="objectifs.title"
+                                data-ghost={en.objectifs?.title}
+                            >
+                                {fr.objectifs.title}
+                            </h4>
+                            <div class="expandable-content">
                                 <p
                                     class="split-texte i18n-anim"
                                     data-i18n-project="objectifs.description"
@@ -130,15 +137,7 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                                 >
                                     {fr.objectifs.description}
                                 </p>
-                            </div>
-                            <div class="blocImage">
-                                {project.media.objectifs && (
-                                    <img
-                                        class="objectifIllustration"
-                                        src={project.media.objectifs}
-                                        alt="Illustration objectifs"
-                                    />
-                                )}
+                                <button class="expand-btn">plus</button>
                             </div>
                         </div>
                     )
@@ -147,116 +146,87 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                 <div class="carousel">
                     <Carousel images={formattedCarouselImages} />
                 </div>
-
                 {/* Section Rôle / Démarche / Résultat */}
-                <div class="role">
+
+                {
+                    project.media.role && (
+                        <img src={project.media.role} alt="Illustration rôle" />
+                    )
+                }
+                <div class="grid-mini">
+                    {/* Rôle */}
                     {
-                        project.media.role && (
-                            <img
-                                src={project.media.role}
-                                alt="Illustration rôle"
-                            />
+                        fr.role && (
+                            <div class="blocText expandable-container">
+                                <h4
+                                    class="i18n-anim"
+                                    data-i18n-project="role.title"
+                                    data-ghost={en.role?.title}
+                                >
+                                    {fr.role.title}
+                                </h4>
+                                <div class="expandable-content">
+                                    <p
+                                        class="split-texte i18n-anim"
+                                        data-i18n-project="role.description"
+                                        data-ghost={en.role?.description}
+                                    >
+                                        {fr.role.description}
+                                    </p>
+                                    <button class="expand-btn">plus</button>
+                                </div>
+                            </div>
                         )
                     }
-                    <div class="grid-mini">
-                        <div class="mini-grid">
-                            {/* Rôle */}
-                            {
-                                fr.role && (
-                                    <div class="textGrid">
-                                        <div class="title__grid">
-                                            <h4
-                                                class="i18n-anim"
-                                                data-i18n-project="role.title"
-                                                data-ghost={en.role?.title}
-                                            >
-                                                {fr.role.title}
-                                            </h4>
-                                        </div>
-                                        <div class="section-content">
-                                            <p
-                                                class="split-texte i18n-anim"
-                                                data-i18n-project="role.description"
-                                                data-ghost={
-                                                    en.role?.description
-                                                }
-                                            >
-                                                {fr.role.description}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )
-                            }
 
-                            {/* Démarche */}
-                            {
-                                fr.demarche && (
-                                    <div class="textGrid">
-                                        <div class="title__grid">
-                                            <h4
-                                                class="i18n-anim"
-                                                data-i18n-project="demarche.title"
-                                                data-ghost={en.demarche?.title}
-                                            >
-                                                {fr.demarche.title}
-                                            </h4>
-                                        </div>
-                                        <div class="section-content">
-                                            <p
-                                                class="split-texte i18n-anim"
-                                                data-i18n-project="demarche.description"
-                                                data-ghost={
-                                                    en.demarche?.description
-                                                }
-                                            >
-                                                {fr.demarche.description}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                        </div>
-
-                        <div class="mini-grid">
-                            {}
-                            {
-                                fr.resultat && (
-                                    <div class="textGrid">
-                                        <div class="title__grid">
-                                            <h4
-                                                class="i18n-anim"
-                                                data-i18n-project="resultat.title"
-                                                data-ghost={en.resultat?.title}
-                                            >
-                                                {fr.resultat.title}
-                                            </h4>
-                                        </div>
-                                        <div class="section-content">
-                                            <p
-                                                class="split-texte i18n-anim"
-                                                data-i18n-project="resultat.description"
-                                                data-ghost={
-                                                    en.resultat?.description
-                                                }
-                                            >
-                                                {fr.resultat.description}
-                                            </p>
-                                        </div>
-
-                                        {fr.illustration?.picture && (
-                                            <img
-                                                class="illustrationProjet"
-                                                src={fr.illustration.picture}
-                                                alt={
-                                                    fr.illustration.description
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                )
-                            }
-                        </div>
-                    </div>
+                    {/* Démarche */}
+                    {
+                        fr.demarche && (
+                            <div class="blocText expandable-container">
+                                <h4
+                                    class="i18n-anim"
+                                    data-i18n-project="demarche.title"
+                                    data-ghost={en.demarche?.title}
+                                >
+                                    {fr.demarche.title}
+                                </h4>
+                                <div class="expandable-content">
+                                    <p
+                                        class="split-texte i18n-anim"
+                                        data-i18n-project="demarche.description"
+                                        data-ghost={en.demarche?.description}
+                                    >
+                                        {fr.demarche.description}
+                                    </p>
+                                    <button class="expand-btn">plus</button>
+                                </div>
+                            </div>
+                        )
+                    }
+                    {/* Résultat */}
+                    {
+                        fr.resultat && (
+                            <div class="blocText expandable-container">
+                                <h4
+                                    class="i18n-anim"
+                                    data-i18n-project="resultat.title"
+                                    data-ghost={en.resultat?.title}
+                                >
+                                    {fr.resultat.title}
+                                </h4>
+                                <div class="expandable-content">
+                                    <p
+                                        class="split-texte i18n-anim"
+                                        data-i18n-project="resultat.description"
+                                        data-ghost={en.resultat?.description}
+                                    >
+                                        {fr.resultat.description}
+                                    </p>
+                                    <button class="expand-btn">plus</button>
+                                </div>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         </div>
@@ -265,17 +235,23 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
 </Layout>
 
 <style>
-    grid-mini:last-child {
+    .grid-mini {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: var(--space-24);
+        width: 100%;
+        margin: var(--space-48) auto;
+    }
+    .mini-grid {
+        display: flex;
+        flex-direction: column;
         width: 100%;
     }
     h4 {
         margin: 0;
     }
-    .textGrid:first-child {
+    .textGrid:first-child,
+    .blocText {
         display: flex;
         flex-direction: column;
     }
@@ -295,11 +271,92 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
         visibility: visible !important;
         transform: translateY(0) !important;
     }
+    .expand-btn {
+        visibility: hidden;
+    }
+    @media (max-width: 768px) {
+        .rightCorridor {
+            padding-top: var(--space-32);
+        }
+        .expandable-container {
+            position: relative;
+            margin-bottom: var(--space-24);
+        }
 
-    @media (max-width: 720px) {
-        .role {
-            display: grid;
-            grid-template-columns: 1fr;
+        .expandable-content {
+            position: relative;
+            /* ON FIXE LE MODE D'AFFICHAGE DÈS LE DÉPART */
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            line-height: 1.4;
+
+            /* Animation de la hauteur */
+            max-height: 2.8em;
+            transition: max-height 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+
+            /* On fige le padding pour que le texte ne saute pas au clic */
+            padding-right: 0;
+        }
+
+        .expandable-content p {
+            margin: 0;
+            /* On force le texte à ne pas se réorganiser */
+            width: 100%;
+        }
+
+        /* ÉTAT DÉPLIÉ */
+        .expandable-container.is-expanded .expandable-content {
+            /* On ne change PAS le display, on augmente juste le nombre de lignes autorisées */
+            -webkit-line-clamp: 100;
+            max-height: 2000px; /* Une valeur sûre pour tout ton texte */
+        }
+
+        .expandable-content::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 120px;
+            height: 1.4em;
+            background: linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0) 0%,
+                var(--layer-background) 80%
+            );
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .expand-btn {
+            visibility: visible;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            background: var(--layer-background);
+            border: none;
+            color: var(--text-primary);
+            font-weight: bold;
+            cursor: pointer;
+            padding-left: 8px;
+            font-size: 0.9rem;
+            z-index: 2;
+            line-height: 1.4;
+            opacity: 0.4;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .expand-btn:hover {
+            opacity: 1;
+        }
+
+        /* Quand on ouvre, on fait disparaître les caches en douceur */
+        .expandable-container.is-expanded .expandable-content::after,
+        .expandable-container.is-expanded .expand-btn {
+            opacity: 0 !important;
+            pointer-events: none;
         }
     }
 </style>
@@ -383,4 +440,31 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
             console.log("Valeur de overflow :", style.overflow);
         }
     }
+
+    const initExpandableTexts = () => {
+        const containers = document.querySelectorAll(".expandable-container");
+
+        containers.forEach((container) => {
+            const btn = container.querySelector(".expand-btn");
+            const content = container.querySelector(".expandable-content p");
+
+            // Optionnel : Cacher le bouton si le texte est déjà très court
+            if (content && content.textContent.length < 100) {
+                (btn as HTMLElement).style.display = "none";
+            }
+
+            btn?.addEventListener("click", () => {
+                container.classList.add("is-expanded");
+
+                // On force l'opacité au cas où l'animation animejs n'est pas finie
+                if (content) {
+                    (content as HTMLElement).style.opacity = "1";
+                    (content as HTMLElement).style.transform = "translateY(0)";
+                }
+            });
+        });
+    };
+
+    // Lancer au chargement de la page Astro
+    document.addEventListener("astro:page-load", initExpandableTexts);
 </script>

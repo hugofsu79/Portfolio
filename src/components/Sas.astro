@@ -1,15 +1,23 @@
 ---
-// Sas.astro
 import Button from "../components/ui/Button.astro";
 ---
 
 <div class="container-sas">
+    <script is:inline>
+        (function () {
+            if (sessionStorage.getItem("soundPreference")) {
+                document.write(
+                    "<style>#sound-sas { display: none !important; }</style>",
+                );
+            }
+        })();
+    </script>
     <div id="sound-sas" class="sas-overlay">
         <div class="sas-content">
             <div class="text-block">
-                <h3 class="split-texte">Expérience Sensorielle</h3>
+                <h3 class="split-texte">Bienvenue sur mon portfolio</h3>
 
-                <h4 class="split-texte">Sensory Experience</h4>
+                <h4 class="split-texte">Welcome to my portfolio</h4>
             </div>
             <div class="branding">
                 <div class="loader-container">
@@ -100,11 +108,10 @@ import Button from "../components/ui/Button.astro";
         font-size: var(--h3-font-size);
     }
     .text-block h4 {
-        color: var(--text-initial);
+        color: var(--text-primary);
         margin: 0;
         display: flex;
         align-items: left;
-        font-style: italic;
         font-size: var(--h4-font-size);
         font-weight: var(--font-weight-regular);
     }
@@ -115,7 +122,7 @@ import Button from "../components/ui/Button.astro";
     .context-folio p:nth-child(2) {
         font-style: italic;
         align-items: left;
-        color: var(--text-initial);
+        color: var(--text-secondary);
     }
     .loader-container {
         position: relative;
@@ -245,17 +252,9 @@ import Button from "../components/ui/Button.astro";
         opacity: number;
     }
 
-    // --- LOGIQUE DE VÉRIFICATION DU SAS ---
-    function checkSasStatus() {
-        const sasOverlay = document.getElementById("sound-sas");
-        const hasMadeChoice = sessionStorage.getItem("soundPreference");
-
-        if (sasOverlay && hasMadeChoice) {
-            sasOverlay.style.display = "none";
-            return true;
-        }
-        return false;
-    }
+    // Variable globale au script pour pouvoir stopper l'anim n'importe où
+    let sasAnimationId: number | null = null;
+    let isTerminated = false;
 
     function initLiquidLoader() {
         const stage = document.getElementById("stage");
@@ -263,143 +262,122 @@ import Button from "../components/ui/Button.astro";
 
         const ballCount = 10;
         const balls: Ball[] = [];
-        const stageSize = 250;
-        const centerX = stageSize / 2;
-        const centerY = stageSize / 2;
+        const centerX = 125;
+        const centerY = 125;
 
-        const mouse = { x: -1000, y: -1000 };
-        stage.addEventListener("mousemove", (e: MouseEvent) => {
-            const rect = stage.getBoundingClientRect();
-            mouse.x = e.clientX - rect.left;
-            mouse.y = e.clientY - rect.top;
-        });
+        // Reset stage
+        stage.innerHTML = "";
+        isTerminated = false;
 
-        stage.querySelectorAll(".ball").forEach((b) => b.remove());
-
-        let ballsCreated = 0;
-        const creationInterval = setInterval(() => {
-            if (ballsCreated >= ballCount) {
-                clearInterval(creationInterval);
-                return;
-            }
-
+        for (let i = 0; i < ballCount; i++) {
             const el = document.createElement("div");
             el.className = "ball";
             stage.appendChild(el);
-
             const size = 30 + Math.random() * 20;
+            el.style.width = el.style.height = `${size}px`;
 
             balls.push({
-                el: el,
+                el,
                 x: centerX,
                 y: centerY,
                 vx: 0,
                 vy: 0,
                 targetRadius: 65 + Math.random() * 20,
                 currentRadius: 0,
-                angle: (ballsCreated / ballCount) * Math.PI * 2,
-                baseSpeed: 0.01 + Math.random() * 0.02,
+                angle: (i / ballCount) * Math.PI * 2,
+                baseSpeed: 0.01 + Math.random() * 0.01,
                 noiseOffset: Math.random() * 1000,
-                size: size,
+                size,
                 gravity: 0.25,
                 friction: 0.85,
                 opacity: 0,
             });
-
-            el.style.width = el.style.height = `${size}px`;
-            ballsCreated++;
-        }, 400);
+        }
 
         function animate() {
+            if (isTerminated) return; // Arrêt propre du calcul
+
             balls.forEach((ball) => {
-                if (ball.currentRadius < ball.targetRadius) {
+                if (ball.currentRadius < ball.targetRadius)
                     ball.currentRadius +=
                         (ball.targetRadius - ball.currentRadius) * 0.02;
-                }
                 ball.noiseOffset += 0.008;
                 ball.angle +=
                     ball.baseSpeed + Math.sin(ball.noiseOffset) * 0.01;
+
                 const targetX =
                     centerX + Math.cos(ball.angle) * ball.currentRadius;
                 const targetY =
                     centerY + Math.sin(ball.angle) * ball.currentRadius;
+
                 ball.vx += (targetX - ball.x) * 0.1;
                 ball.vy += (targetY - ball.y) * 0.1;
                 ball.vy += ball.gravity;
-                const dxMouse = ball.x - mouse.x;
-                const dyMouse = ball.y - mouse.y;
-                const distMouse = Math.sqrt(
-                    dxMouse * dxMouse + dyMouse * dyMouse,
-                );
-                if (distMouse < 35) {
-                    const force = (35 - distMouse) / 35;
-                    ball.vx += (dxMouse / distMouse) * force * 2;
-                    ball.vy += (dyMouse / distMouse) * force * 2;
-                }
                 ball.vx *= ball.friction;
                 ball.vy *= ball.friction;
                 ball.x += ball.vx;
                 ball.y += ball.vy;
+
                 const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-                const motionBlur = Math.min(speed * 0.8, 4);
                 const rotation = Math.atan2(ball.vy, ball.vx) * (180 / Math.PI);
                 const stretch = 1 + Math.min(speed * 0.1, 0.5);
-                const targetOpacity = Math.min(1, ball.currentRadius / 40);
-                ball.opacity += (targetOpacity - ball.opacity) * 0.05;
+
+                ball.opacity +=
+                    (Math.min(1, ball.currentRadius / 40) - ball.opacity) *
+                    0.05;
                 ball.el.style.opacity = ball.opacity.toFixed(2);
                 ball.el.style.transform = `translate(${ball.x - ball.size / 2}px, ${ball.y - ball.size / 2}px) rotate(${rotation}deg) scaleX(${stretch})`;
-                ball.el.style.filter = `blur(${motionBlur}px)`;
             });
-            requestAnimationFrame(animate);
+
+            sasAnimationId = requestAnimationFrame(animate);
         }
-        animate();
+
+        sasAnimationId = requestAnimationFrame(animate);
     }
 
     function initSasLogic() {
         const sasOverlay = document.getElementById("sound-sas");
-        const triggerSound = document.getElementById("trigger-sound");
-        const triggerNoSound = document.getElementById("trigger-no-sound");
+        const btnSound = document.getElementById("trigger-sound");
+        const btnNoSound = document.getElementById("trigger-no-sound");
 
-        // Sécurité : on vérifie que tous les éléments sont présents dans le DOM
-        if (!sasOverlay || !triggerSound || !triggerNoSound) return;
+        if (!sasOverlay || !btnSound || !btnNoSound) return;
 
         const handleChoice = (sound: boolean) => {
-            // 1. Stockage du choix dans la session
             sessionStorage.setItem(
                 "soundPreference",
                 sound ? "enabled" : "disabled",
             );
 
-            // 2. Déclenchement de l'animation de sortie (opacité via CSS)
+            // 1. On lance la transition visuelle
             sasOverlay.classList.add("is-hidden");
 
-            // 3. Redirection vers la racine après la fin de la transition
+            // 2. STOP : On arrête immédiatement les calculs JS
+            isTerminated = true;
+            if (sasAnimationId) cancelAnimationFrame(sasAnimationId);
+
+            // 3. SIGNAL : On prévient le Hero de se préparer
+            window.dispatchEvent(new CustomEvent("sas-finished"));
+
+            // 4. CLEANUP : On vide le DOM après la transition pour libérer le GPU (Filtre SVG)
             setTimeout(() => {
-                window.location.href = "/";
-            }, 1000);
+                sasOverlay.style.display = "none";
+                sasOverlay.innerHTML = "";
+            }, 850);
         };
 
-        // Gestion du clic pour "Activer le son"
-        triggerSound.addEventListener("click", (e) => {
-            e.preventDefault();
-            handleChoice(true);
-        });
-
-        // Gestion du clic pour "Continuer sans son"
-        triggerNoSound.addEventListener("click", (e) => {
-            e.preventDefault();
-            handleChoice(false);
-        });
+        btnSound.addEventListener("click", () => handleChoice(true));
+        btnNoSound.addEventListener("click", () => handleChoice(false));
     }
 
-    // --- INITIALISATION ---
     document.addEventListener("astro:page-load", () => {
-        const choiceAlreadyMade = checkSasStatus();
+        const hasMadeChoice = sessionStorage.getItem("soundPreference");
+        const sasOverlay = document.getElementById("sound-sas");
 
-        // Si on n'a pas encore choisi, on lance le loader et la logique
-        if (!choiceAlreadyMade) {
+        if (sasOverlay && !hasMadeChoice) {
             initLiquidLoader();
             initSasLogic();
+        } else if (sasOverlay) {
+            sasOverlay.style.display = "none";
         }
     });
 </script>

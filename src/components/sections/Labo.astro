@@ -13,7 +13,7 @@ const articles: laboBlock[] = laboData.filter(
 ---
 
 <section id="labo" class="labo-section">
-    <h2 data-i18n-key="labo">{navLabels.fr.labo}</h2>
+    <h2 class="reveal-title" data-i18n-key="labo">{navLabels.fr.labo}</h2>
     {}
     {
         intro && (
@@ -37,10 +37,8 @@ const articles: laboBlock[] = laboData.filter(
                     </header>
 
                     <div class="labo-card-preview">
-                        <div class="labo-content-wrapper">
-                            <div class="labo-card-frame">
-                                <canvas data-preview={item.id} />
-                            </div>
+                        <div class="labo-card-frame">
+                            <canvas data-preview={item.id} />
                         </div>
                     </div>
                 </article>
@@ -49,34 +47,32 @@ const articles: laboBlock[] = laboData.filter(
     </div>
 
     <div class="labo-cta">
-        <div class="labo-cta-wrapper">
-            <Button
-                href="/laboratoire"
-                variant="secondary"
-                size="lg"
-                id="btn-labo-alert"
-                class="btn-labo-warning"
+        <Button
+            href="/laboratoire"
+            variant="secondary"
+            size="lg"
+            id="btn-labo-alert"
+            class="btn-labo-warning"
+        >
+            Explorer le laboratoire
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="26"
+                fill="none"
             >
-                Explorer le laboratoire
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="26"
-                    fill="none"
-                >
-                    <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M5.715 8.52v5.52c0 .64-.22 1.27-.62 1.77l-3.87 4.85c-1.48 1.86-.16 4.6 2.22 4.6h9.11c2.38 0 3.7-2.75 2.22-4.6l-3.87-4.85c-.4-.5-.62-1.13-.62-1.77V8.52h-2.28"
-                    ></path>
-                    <path
-                        fill="currentColor"
-                        d="m13.825 21.4-2.72-3.41a.5.5 0 0 0-.39-.19h-5.44c-.15 0-.3.07-.39.19l-2.72 3.41c-.4.5-.47 1.15-.2 1.73.28.58.83.92 1.47.92h9.1c.64 0 1.19-.35 1.47-.93s.21-1.22-.2-1.73zM10.215 6.73a2.42 2.42 0 1 0 0-4.84 2.42 2.42 0 0 0 0 4.84M7.005 1.58a.79.79 0 1 0 0-1.58.79.79 0 0 0 0 1.58M5.515 6.76a1.13 1.13 0 1 0 0-2.26 1.13 1.13 0 0 0 0 2.26"
-                    ></path>
-                </svg>
-            </Button>
-        </div>
+                <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5.715 8.52v5.52c0 .64-.22 1.27-.62 1.77l-3.87 4.85c-1.48 1.86-.16 4.6 2.22 4.6h9.11c2.38 0 3.7-2.75 2.22-4.6l-3.87-4.85c-.4-.5-.62-1.13-.62-1.77V8.52h-2.28"
+                ></path>
+                <path
+                    fill="currentColor"
+                    d="m13.825 21.4-2.72-3.41a.5.5 0 0 0-.39-.19h-5.44c-.15 0-.3.07-.39.19l-2.72 3.41c-.4.5-.47 1.15-.2 1.73.28.58.83.92 1.47.92h9.1c.64 0 1.19-.35 1.47-.93s.21-1.22-.2-1.73zM10.215 6.73a2.42 2.42 0 1 0 0-4.84 2.42 2.42 0 0 0 0 4.84M7.005 1.58a.79.79 0 1 0 0-1.58.79.79 0 0 0 0 1.58M5.515 6.76a1.13 1.13 0 1 0 0-2.26 1.13 1.13 0 0 0 0 2.26"
+                ></path>
+            </svg>
+        </Button>
     </div>
 </section>
 
@@ -85,6 +81,7 @@ const articles: laboBlock[] = laboData.filter(
         display: flex;
         flex-direction: column;
         gap: var(--space-12);
+        align-items: flex-start;
     }
     .labo-intro {
         margin: 0;
@@ -112,16 +109,6 @@ const articles: laboBlock[] = laboData.filter(
         transition: margin-bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .labo-content-wrapper {
-        min-height: 0;
-    }
-
-    .labo-card-frame {
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        display: block;
-    }
-
     canvas {
         object-fit: contain; /* Force le canvas à tenir dans le cadre */
     }
@@ -131,24 +118,30 @@ const articles: laboBlock[] = laboData.filter(
         width: 100%;
         overflow: hidden;
         aspect-ratio: 1 / 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .labo-card {
         padding: var(--space-12);
-        background-color: var(--static-opacit-50);
+        background-color: var(--static-opacit-2);
     }
     .labo-card h4 {
         margin: 0;
     }
-    canvas {
+    .labo-card-frame canvas {
         display: block;
-        width: 100%;
 
-        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
 
         transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
+    .labo-cta {
+        width: 100%;
+    }
     .labo-cta {
         display: flex;
         justify-content: end;

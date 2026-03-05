@@ -15,7 +15,7 @@ import Button from "../ui/Button.astro";
 
     <textarea name="message" placeholder="Votre message" required></textarea>
 
-    <Button size="lg" type="submit">Envoyer</Button>
+    <Button variant="secondary" size="lg" type="submit">Envoyer</Button>
 </form>
 
 <div id="toast" class="toast"></div>
@@ -38,7 +38,6 @@ import Button from "../ui/Button.astro";
 
         try {
             const response = await fetch("/api/contact", {
-
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: { "Content-Type": "application/json" },

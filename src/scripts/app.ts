@@ -3,6 +3,7 @@ import { paralaxe } from "./paralaxe";
 import { titreProjet } from "./titreProjet";
 import { useProjectScrollActive } from "./useProjectScrollActive";
 import { initSmoothScroll, initAnchorScroll } from "./smoothScroll";
+import { reveal } from "./reveal";
 
 function initApp() {
     initSmoothScroll();
@@ -14,6 +15,7 @@ function initApp() {
     useProjectScrollActive(".project-row");
     paralaxe();
     titreProjet();
+    reveal();
 }
 
 document.addEventListener("astro:after-swap", () => {

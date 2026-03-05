@@ -5,22 +5,19 @@ const lang = Astro.currentLocale || "fr";
 ---
 
 <section id="projects">
-    <h2 data-i18n-key="projects">{navLabels.fr.projects}</h2>
+    <h2 class="reveal-title" data-i18n-key="projects">
+        {navLabels.fr.projects}
+    </h2>
 
     <ul class="projects-list">
         {
             projects.map((item) => (
                 <li class="project-row">
-                    <a
-                        class="project-row-link"
-                        href={`/${lang}/projects/${item.slug}`}
-                    >
+                    <a class="project-row-link" href={`/projects/${item.slug}`}>
                         <div class="project-title">
                             <span class="project-year">{item.year}</span>
                             <h3>{item.entreprise}</h3>
-
                             <span class="project-subtitle">
-                                {/* Logique Labo : slug + nom du champ */}
                                 <p
                                     data-i18n-key={`${item.slug}_title`}
                                     data-ghost={item.content.fr.title}
@@ -29,7 +26,18 @@ const lang = Astro.currentLocale || "fr";
                                 </p>
                             </span>
                         </div>
-                        <div class="project-preview">
+
+                        {/* VERSION DESKTOP : Gérée par le script setupMouseFollow */}
+                        <div class="project-preview desktop-only">
+                            <img
+                                src={item.cover}
+                                alt={item.entreprise}
+                                class="desktop-img"
+                            />
+                        </div>
+
+                        {/* VERSION MOBILE : Gérée par le CSS et Intersection Observer */}
+                        <div class="mobile-preview-only">
                             <img src={item.cover} alt={item.entreprise} />
                         </div>
                     </a>
@@ -40,10 +48,9 @@ const lang = Astro.currentLocale || "fr";
 </section>
 
 <style>
-    /* TA BASE CONSERVÉE (FONTS, COLORS, ETC.) */
     .project-row {
         position: relative;
-        overflow: hidden; /* L'IMAGE SERA COUPÉE ICI */
+        overflow: hidden;
         border-bottom: 0.5px solid var(--stroke-primary);
         cursor: pointer;
         min-height: 140px;
@@ -52,7 +59,10 @@ const lang = Astro.currentLocale || "fr";
         position: absolute;
         inset: 0;
         pointer-events: none;
-        z-index: 1;
+        z-index: 5;
+
+        top: 0;
+        left: 0;
     }
 
     .project-preview img {
@@ -66,6 +76,19 @@ const lang = Astro.currentLocale || "fr";
         /* AUCUNE transition sur le transform pour la physique JS, sinon ça lag */
         transition: opacity 0.3s ease-out;
     }
+
+    .project-preview img.desktop-img {
+        position: absolute;
+        width: 280px;
+        height: auto;
+        display: block;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+
+        top: 0;
+        left: 0;
+    }
+
     .project-row:last-child {
         border-bottom: none;
     }
@@ -126,67 +149,95 @@ const lang = Astro.currentLocale || "fr";
         transform: rotate(-1deg);
     }
 
+    .project-row-link {
+        position: relative;
+        z-index: 12;
+        display: block;
+    }
+
     /* CACHER LES PREVIEWS INDIVIDUELLES SUR DESKTOP */
     .mobile-preview-only {
         display: none;
     }
-
+    @media (min-width: 769px) {
+        .project-row {
+            overflow: hidden;
+        }
+        .mobile-preview-only {
+            display: none;
+        }
+    }
     /* --- MOBILE LAYOUT --- */
     @media (max-width: 768px) {
-        #global-preview {
-            display: none !important;
-        } /* On tue l'image fantôme sur mobile */
-
-        .mobile-preview-only {
-            display: block;
-            position: relative;
-            width: 100%;
-            margin-top: var(--space-16);
-        }
-
-        .mobile-preview-only img {
-            position: absolute;
-            right: 0;
-            width: 30vw;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .project-row.is-active .mobile-preview-only img {
-            opacity: 1;
-        }
-
-        /* Tes styles mobile existants... */
         .project-row {
+            /* On force l'overflow visible pour que l'image puisse "déborder" sur la ligne du dessus */
+            overflow: visible !important;
             padding: var(--space-24) 0;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column; /* On empile pour laisser la place à l'image en absolute */
+            position: relative;
         }
+
         .project-title {
+            display: flex;
             flex-direction: column;
             align-items: flex-start;
             gap: var(--space-8);
+            z-index: 2; /* Pour rester lisible */
         }
+
         .project-title h3 {
             margin: 0;
         }
-    }
 
-    .project-row-link {
-        position: absolute;
-        inset: 0;
-        z-index: 2;
+        /* L'image mobile */
+        .mobile-preview-only img {
+            display: block;
+            position: absolute;
+            right: 0;
+            top: 50%; /* On part du milieu de la ligne */
+            transform: translateY(-50%) scale(0.8); /* On réduit un peu au départ */
+            border-radius: var(--radius-basic, 8px);
+            width: 120px; /* Taille un peu plus visible */
+            height: auto;
+            opacity: 0;
+            transition:
+                opacity 0.6s ease,
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 1;
+            pointer-events: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Quand la ligne est active au scroll */
+        .project-row.is-active .mobile-preview-only img {
+            opacity: 1;
+            /* Petit effet de remontée fluide au scroll */
+            transform: translateY(-70%) scale(1);
+        }
+
+        .project-row.is-active h3,
+        .project-row.is-active .project-subtitle,
+        .project-row.is-active .project-year {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .mobile-preview-only {
+            /* Sur mobile, on n'a pas besoin que la div prenne de la place physique */
+            position: absolute;
+            inset: 0;
+        }
     }
 </style>
 
 <script>
-    // AUDIO (Ton code original)
+    /**
+     * 2. AUDIO (Gestion des sons au survol)
+     */
     const setupProjectSounds = () => {
         const soundChoice = sessionStorage.getItem("soundPreference");
-        if (soundChoice !== "enabled") {
-            console.log("SAS : Mode silencieux, AudioContext non initialisé.");
-            return;
-        }
+        if (soundChoice !== "enabled") return;
 
         const soundPaths = [
             "/sounds/projetColumnList.mp3",
@@ -194,70 +245,58 @@ const lang = Astro.currentLocale || "fr";
             "/sounds/projetColumnList_3.mp3",
         ];
 
-        // 2. INITIALISATION (Uniquement si autorisé)
-        const AudioContext =
+        // On crée le contexte une seule fois
+        const AudioContextClass =
             window.AudioContext || (window as any).webkitAudioContext;
-        const ctx = new AudioContext();
+        const ctx = new AudioContextClass();
 
         const audioPlayers = soundPaths.map((path) => {
             const audio = new Audio(path);
             audio.volume = 0.8;
-            const source = ctx.createMediaElementSource(audio);
-            const merger = ctx.createChannelMerger(1);
-            source.connect(merger);
-            merger.connect(ctx.destination);
             return audio;
         });
 
-        // 3. ATTACHEMENT DES ÉVÉNEMENTS
         document.querySelectorAll(".project-row").forEach((row) => {
             row.addEventListener("mouseenter", async () => {
-                // Sécurité pour l'AudioContext (nécessite souvent une interaction)
                 if (ctx.state === "suspended") await ctx.resume();
 
-                // Sélection aléatoire d'un son
                 const selectedAudio =
                     audioPlayers[
                         Math.floor(Math.random() * audioPlayers.length)
                     ];
 
-                // On stoppe les autres sons avant de jouer le nouveau
                 audioPlayers.forEach((a) => {
                     a.pause();
                     a.currentTime = 0;
                 });
 
-                selectedAudio.play().catch(() => {
-                    /* Empêche les erreurs si le navigateur bloque */
-                });
+                selectedAudio.play().catch(() => {});
             });
         });
     };
 
+    /**
+     * 3. MOUSE FOLLOW (Physique des images sur Desktop)
+     */
     const setupMouseFollow = () => {
         const rows = document.querySelectorAll(".project-row");
 
         rows.forEach((row) => {
-            const img = row.querySelector(
-                ".project-preview img",
-            ) as HTMLElement;
+            const img = row.querySelector(".desktop-img") as HTMLElement;
             if (!img) return;
 
-            // Variables de physique propres à CHAQUE ligne
-            let mouseX = 0;
-            let mouseY = 0;
-            let currentX = 0;
-            let currentY = 0;
-            const speed = 0.15; // Ton agrippe élastique
-            let isInside = false;
+            let mouseX = 0,
+                mouseY = 0;
+            let currentX = 0,
+                currentY = 0;
+            const speed = 0.15;
+            let isMoving = false; // Pour ne pas consommer de ressources si la souris ne bouge pas
 
             row.addEventListener("mousemove", (e: any) => {
-                isInside = true;
                 const rect = row.getBoundingClientRect();
-
-                // On calcule la position de la souris RELATIVE au coin haut-gauche du <li>
                 mouseX = e.clientX - rect.left;
                 mouseY = e.clientY - rect.top;
+                isMoving = true;
             });
 
             row.addEventListener("mouseenter", () => {
@@ -265,58 +304,67 @@ const lang = Astro.currentLocale || "fr";
             });
 
             row.addEventListener("mouseleave", () => {
-                isInside = false;
                 img.style.opacity = "0";
+                isMoving = false;
             });
 
             const animate = () => {
-                if (isInside) {
-                    // Physique élastique
-                    const dx = mouseX - currentX;
-                    const dy = mouseY - currentY;
+                // On calcule la distance
+                const dx = mouseX - currentX;
+                const dy = mouseY - currentY;
 
-                    currentX += dx * speed;
-                    currentY += dy * speed;
+                // On applique la fluidité (Lerp)
+                currentX += dx * speed;
+                currentY += dy * speed;
 
-                    // On applique le mouvement.
-                    // Note : on enlève les offsets (ex: -150px) pour que le coin soit collé.
-                    const tilt = dx * 0.02;
-                    img.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotate(${tilt}deg)`;
-                }
+                // Centrage de la miniature (280/2 = 140, et ~200/2 = 100)
+                const xOffset = currentX - 140;
+                const yOffset = currentY - 100;
+
+                img.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0)`;
+
                 requestAnimationFrame(animate);
             };
-
             animate();
         });
     };
 
+    /**
+     * 4. MOBILE ACTIVE STATE (Intersection au scroll)
+     */
     const setupMobileScrollActive = () => {
         const projectRows = document.querySelectorAll(".project-row");
-        let observer: IntersectionObserver | null = null;
-        const initObserver = () => {
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile && !observer) {
-                observer = new IntersectionObserver(
-                    (entries) => {
-                        entries.forEach((entry) => {
-                            entry.target.classList.toggle(
-                                "is-active",
-                                entry.isIntersecting,
-                            );
-                        });
-                    },
-                    { rootMargin: "-45% 0% -45% 0%", threshold: 0 },
-                );
-                projectRows.forEach((row) => observer?.observe(row));
-            }
-        };
-        initObserver();
-        window.addEventListener("resize", initObserver);
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-active");
+                    } else {
+                        entry.target.classList.remove("is-active");
+                    }
+                });
+            },
+            {
+                rootMargin: "-40% 0% -40% 0%",
+                threshold: 0.1,
+            },
+        );
+
+        projectRows.forEach((row) => observer.observe(row));
     };
 
+    /**
+     * INITIALISATION UNIQUE
+     */
     document.addEventListener("astro:page-load", () => {
+        // On lance les sons et le mobile partout
         setupProjectSounds();
         setupMobileScrollActive();
-        if (window.innerWidth > 768) setupMouseFollow();
+
+        // On lance le follow souris UNIQUEMENT sur desktop
+        if (window.innerWidth > 768) {
+            setupMouseFollow();
+        }
     });
 </script>

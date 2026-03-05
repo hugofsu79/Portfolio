@@ -54,7 +54,7 @@ import LogoHero from "../ui/Logohero.astro";
         <LogoHero />
     </div>
     <div class="definiton">
-        <p id="hero-job" data-i18n-key="job" class="cipher-text">
+        <p id="hero-job" data-i18n-key="job">
             {heroContent.fr.job}
         </p>
         <div class="linerDefinition">
@@ -83,9 +83,7 @@ import LogoHero from "../ui/Logohero.astro";
     </div>
     <div class="bottom-hero">
         <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
-        <div class="scroll-wrapper">
-            <p id="scroll-text">↓↓↓ Scroll ↓↓↓</p>
-        </div>
+
         <p id="hero-city" class="cipher-text">Paris</p>
     </div>
 </section>
@@ -100,7 +98,7 @@ import LogoHero from "../ui/Logohero.astro";
     }
     .definitionList li,
     #hero-description {
-        color: var(--text-initial);
+        color: var(--text-tertiary);
     }
 
     h1,
@@ -125,12 +123,19 @@ import LogoHero from "../ui/Logohero.astro";
         filter: url(#hero-intro-filter);
         transition: filter 1.2s cubic-bezier(0.22, 1, 0.36, 1);
         will-change: filter, opacity;
+
+        backface-visibility: hidden;
+        perspective: 1000px;
+        transform-style: preserve-3d;
     }
 
+    #intro-red,
+    #intro-blue {
+        will-change: transform;
+    }
     .hero.is-visible {
         visibility: visible;
     }
-    
 
     .is-clear {
         filter: none !important;
@@ -162,8 +167,7 @@ import LogoHero from "../ui/Logohero.astro";
     }
 
     .cipher-text,
-    .clock,
-    .scroll-wrapper {
+    .clock {
         transition: transform 0.2s ease-out;
     }
     .top-hero {
@@ -211,13 +215,6 @@ import LogoHero from "../ui/Logohero.astro";
         filter: blur(0);
     }
 
-    .scroll-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 50px;
-        overflow: hidden;
-    }
     #scroll-text {
         display: flex;
         font-family: monospace;
@@ -259,16 +256,14 @@ import LogoHero from "../ui/Logohero.astro";
         display: flex;
         flex-direction: row;
         margin: 2px 0px 2px 0px;
+        opacity: 0.6;
     }
-
+    .definitionText {
+        opacity: 0.6;
+    }
     .definitionList {
-        color: var(--text-secondary);
         padding-left: 18px;
         margin-bottom: 0;
-    }
-
-    .linerDefinition {
-        will-change: transform;
     }
     .logo-hero {
         display: flex;
@@ -282,17 +277,18 @@ import LogoHero from "../ui/Logohero.astro";
     }
 </style>
 <script>
+    // @ts-ignore
     import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
 
-    // --- CONFIGURATION ---
     const GLYPHS = "0123456789@#$%&*";
     const AUDIO_PATH = "/sounds/hero_song.mp3";
 
-    let heroSound = (window as any)._heroSound || null;
-    let isHeroAnimating = false;
-    let hasRun = false;
-
-    // --- 1. FONCTIONS UTILITAIRES ---
+    const getHeroState = () => {
+        if (!(window as any)._heroState) {
+            (window as any)._heroState = { hasRun: false, sound: null };
+        }
+        return (window as any)._heroState;
+    };
 
     function updateClock() {
         const clockDigits = document.querySelectorAll(".digit");
@@ -311,8 +307,7 @@ import LogoHero from "../ui/Logohero.astro";
         const targetText =
             el.getAttribute("data-target-text") || el.textContent?.trim() || "";
         if (!targetText) return;
-        el.setAttribute("data-target-text", targetText);
-
+        el.style.visibility = "visible";
         const chars = targetText.split("").map((char) => {
             const span = document.createElement("span");
             span.className = "char shuffling";
@@ -322,17 +317,14 @@ import LogoHero from "../ui/Logohero.astro";
                     : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
             return { span, final: char };
         });
-
         el.textContent = "";
         chars.forEach((c) => el.appendChild(c.span));
-
         setTimeout(() => {
             let iteration = 0;
-            const step = 8;
-            (el as any)._cipherInterval = setInterval(() => {
+            const interval = setInterval(() => {
                 let countFixed = 0;
                 chars.forEach((obj, index) => {
-                    if (iteration > index * step) {
+                    if (iteration > index * 4) {
                         if (obj.span.classList.contains("shuffling")) {
                             obj.span.textContent =
                                 obj.final === " " ? "\u00A0" : obj.final;
@@ -344,134 +336,156 @@ import LogoHero from "../ui/Logohero.astro";
                             GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
                     }
                 });
-                if (countFixed >= chars.length)
-                    clearInterval((el as any)._cipherInterval);
+                if (countFixed >= chars.length) clearInterval(interval);
                 iteration++;
-            }, 40);
+            }, 30);
         }, delay);
     }
 
-    function initHeroSound() {
-        const soundChoice = sessionStorage.getItem("soundPreference");
-        if (soundChoice !== "enabled") return null;
-        if (heroSound) return heroSound;
-
-        heroSound = new Audio(AUDIO_PATH);
-        heroSound.volume = 0;
-        (window as any)._heroSound = heroSound;
-        return heroSound;
+    // --- LA FONCTION DE SECOURS POUR LE PREMIER LANCEMENT ---
+    async function ensureLogoIsReady(
+        paths: NodeListOf<SVGPathElement>,
+    ): Promise<boolean> {
+        return new Promise((resolve) => {
+            let attempts = 0;
+            const check = () => {
+                attempts++;
+                // On vérifie si le premier path a une longueur calculable
+                const firstPath = paths[0] as any;
+                if (firstPath && firstPath.getTotalLength() > 0) {
+                    resolve(true);
+                } else if (attempts > 50) {
+                    // Sécurité après 1sec
+                    resolve(false);
+                } else {
+                    requestAnimationFrame(check);
+                }
+            };
+            check();
+        });
     }
 
-    // --- 2. CŒUR DE L'ANIMATION ---
+    async function startGlobalHeroAnimation() {
+        const state = getHeroState();
+        const hero = document.getElementById("/") as HTMLElement;
+        const liner = document.querySelector(".linerDefinition") as HTMLElement;
+        const logoPaths = document.querySelectorAll(
+            ".logo-hero svg path, .logo-hero svg polyline, .logo-hero svg line",
+        ) as NodeListOf<SVGPathElement>;
 
-    function startGlobalHeroAnimation() {
-        const hero = document.getElementById("/");
-        if (hasRun || !hero) return;
+        if (!hero || state.hasRun) return;
 
-        hasRun = true;
-        isHeroAnimating = true;
+        // Attente cruciale pour le premier chargement npm run dev
+        await ensureLogoIsReady(logoPaths);
 
-        // On rend le hero "calculable" par le navigateur mais encore invisible (via CSS initial)
-        hero.classList.add("is-visible");
+        state.hasRun = true;
+
+        // Configuration initiale
+        hero.style.visibility = "visible";
+        hero.style.opacity = "0";
+        hero.style.filter = "url(#hero-rgb-filter)";
+        hero.style.transform = "translateZ(0)";
+
+        // On prépare les tracés proprement
+        logoPaths.forEach((path: any) => {
+            const length = path.getTotalLength();
+            path.style.strokeDasharray = length;
+            path.style.strokeDashoffset = length;
+        });
 
         updateClock();
-        const sound = initHeroSound();
-
-        hero.style.filter = "url(#hero-rgb-filter)";
+        const soundChoice = sessionStorage.getItem("soundPreference");
 
         const tl = anime.timeline({
+            easing: "easeOutExpo",
             begin: () => {
-                if (sound) {
-                    sound.currentTime = 0;
-                    sound
+                if (soundChoice === "enabled") {
+                    const audio = new Audio(AUDIO_PATH);
+                    audio
                         .play()
                         .then(() => {
                             anime({
-                                targets: sound,
+                                targets: audio,
                                 volume: 0.4,
                                 duration: 2000,
-                                easing: "linear",
                             });
                         })
-                        .catch(() => {
-                            const unlock = () => {
-                                if (sound) sound.play();
-                                anime({
-                                    targets: sound,
-                                    volume: 0.4,
-                                    duration: 1000,
-                                    easing: "linear",
-                                });
-                                window.removeEventListener("click", unlock);
-                            };
-                            window.addEventListener("click", unlock);
-                        });
+                        .catch(() => {});
                 }
             },
             complete: () => {
                 hero.style.filter = "none";
-                isHeroAnimating = false;
+                hero.style.transform = "none";
             },
         });
 
         tl.add(
             {
-                targets: ["#intro-red", "#intro-blue"],
-                dx: (el: HTMLElement) =>
-                    el.id === "intro-blue" ? [-60, 0] : [150, 0],
-                duration: 3500,
-                easing: "easeOutExpo",
+                targets: hero,
+                opacity: [0, 1],
+                duration: 1200,
             },
             0,
         )
             .add(
                 {
-                    targets: hero,
-                    scale: [1.05, 1],
-                    opacity: [0, 1],
-                    duration: 2000,
-                    easing: "easeOutExpo",
+                    targets: logoPaths,
+                    // Utilisation d'une fonction pour forcer la lecture finale de la valeur
+                    strokeDashoffset: (el: any) => [el.getTotalLength(), 0],
+                    easing: "easeInOutSine",
+                    duration: 1500,
+                    delay: anime.stagger(100),
                 },
-                0,
+                200,
             )
             .add(
                 {
-                    targets: ".linerDefinition",
-                    opacity: [0, 1],
-                    translateY: [10, 0],
+                    targets: "#intro-red",
+                    dx: [-60, 0],
                     duration: 2000,
-                    easing: "easeOutCubic",
                 },
-                "-=2200",
+                100,
+            )
+            .add(
+                {
+                    targets: "#intro-blue",
+                    dx: [60, 0],
+                    duration: 2000,
+                },
+                100,
             );
 
+        if (liner) {
+            tl.add(
+                {
+                    targets: liner,
+                    opacity: [0, 1],
+                    translateY: [15, 0],
+                    duration: 1000,
+                },
+                "-=1500",
+            );
+        }
+
         document.querySelectorAll(".cipher-text").forEach((text, i) => {
-            animateCipher(text as HTMLElement, 800 + i * 300);
+            animateCipher(text as HTMLElement, 500 + i * 200);
         });
     }
 
-    // --- 3. GESTION DU CYCLE DE VIE (ASTRO) ---
-
     document.addEventListener("astro:page-load", () => {
-        hasRun = false;
+        getHeroState().hasRun = false;
 
-        const checkSasAndStart = () => {
-            const sas = document.getElementById("sound-sas");
-
-            // Si le SAS est présent et n'est pas encore masqué (display none ou opacity 0)
-            if (
-                sas &&
-                window.getComputedStyle(sas).display !== "none" &&
-                window.getComputedStyle(sas).opacity !== "0"
-            ) {
-                requestAnimationFrame(checkSasAndStart);
-                return;
-            }
-
-            // Dès que le SAS est invisible ou absent, on lance le Hero
-            startGlobalHeroAnimation();
+        const handleSasEnd = () => {
+            // On attend que le SAS ait commencé à s'effacer
+            setTimeout(startGlobalHeroAnimation, 300);
         };
 
-        checkSasAndStart();
+        if (sessionStorage.getItem("soundPreference")) {
+            startGlobalHeroAnimation();
+        } else {
+            window.addEventListener("sas-finished", handleSasEnd, {
+                once: true,
+            });
+        }
     });
 </script>

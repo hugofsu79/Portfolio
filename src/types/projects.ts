@@ -1,6 +1,5 @@
 export type Lang = "fr" | "en";
 
-// Type utilitaire pour les objets traduisibles
 export type I18nContent<T> = Record<Lang, T>;
 
 export interface ProjectDetail {
@@ -18,18 +17,17 @@ export interface ProjectSectionContent {
 
 export interface Project {
     slug: string;
-    // Données techniques/statiques
     entreprise: string;
     year: number;
     cover: string;
     logo: string;
     tags: string[];
 
-    // TOUT le contenu traduisible est ici
     content: I18nContent<{
         title: string;
         skills: string[];
         context: {
+            title: string;
             description: string;
             details: ProjectDetail[];
         };
@@ -41,7 +39,6 @@ export interface Project {
         resultat?: ProjectSectionContent;
     }>;
 
-    // TOUS les médias sont ici
     media: {
         objectifs?: string | null;
         role?: string | null;

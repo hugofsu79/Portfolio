@@ -89,8 +89,8 @@ const logoPaths = [
                     svg.setAttribute("height", h.replace(",", "."));
             });
 
-            // @ts-ignore
             const animeModule = (await import(
+                // @ts-ignore
                 /* @vite-ignore */ "https://esm.sh/animejs@3.2.1"
             )) as any;
             const anime = animeModule.default;

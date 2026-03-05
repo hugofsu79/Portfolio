@@ -28,6 +28,27 @@ const { title = "Portfolio" } = Astro.props;
 
 	<body class="app-root">
 		<Sas />
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			version="1.1"
+			style="position: absolute; width: 0; height: 0;"
+		>
+			<defs>
+				<filter id="goo-text">
+					<feGaussianBlur
+						in="SourceGraphic"
+						stdDeviation="8"
+						id="blur-element"></feGaussianBlur>
+					<feColorMatrix
+						in="blur-element"
+						mode="matrix"
+						values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -12"
+					></feColorMatrix>
+					<feComposite in="SourceGraphic" operator="atop"
+					></feComposite>
+				</filter>
+			</defs>
+		</svg>
 
 		<header class="app-header">
 			<nav class="navbar">
@@ -134,14 +155,11 @@ const { title = "Portfolio" } = Astro.props;
 			target.addEventListener("click", () => {
 				if (isSoundEnabled && clickSound) {
 					clickSound.currentTime = 0;
-					clickSound.play().catch(() => {
-					});
+					clickSound.play().catch(() => {});
 				}
 			});
 		});
 	}
 
 	setupProjectSounds();
-
 </script>
-

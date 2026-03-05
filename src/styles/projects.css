@@ -642,20 +642,6 @@ td span {
         padding-right: 24px;
     }
 
-    /* Chevron */
-    .grid-mini h4::after {
-        content: "＋";
-        position: absolute;
-        right: 0;
-        top: 0;
-        font-size: 18px;
-        transition: transform 0.25s ease;
-    }
-
-    .grid-mini.is-open h4::after {
-        content: "－";
-    }
-
     /* Contenu masqué par défaut */
     .grid-mini .section-content {
         max-height: 0;

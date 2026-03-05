@@ -4,7 +4,10 @@ import Software from "../ui/Software.astro";
 import { navLabels } from "../../data/navigation";
 const about = aboutData;
 ---
-<h2 data-i18n-key="about" class="section-title">{navLabels.fr.about}</h2>
+
+<h2 class="reveal-title" data-i18n-key="about" class="section-title">
+    {navLabels.fr.about}
+</h2>
 
 <section id="about" class="about-grid">
     <article class="about-block a">
@@ -57,12 +60,9 @@ const about = aboutData;
                         cy="10.908"
                         r="5.5"
                         transform="rotate(90 5.938 10.908)"></circle>
-                    <circle
-                        class="bottom-circule-feed"
-                        cx="2.392"
-                        cy="19.362"
-                        r="1.954"
-                        transform="rotate(90 2.392 19.362)"></circle>
+                    <circle class="bottom-circule-feed" cx="2.392" cy="19.362">
+                        r="1.954" transform="rotate(90 2.392 19.362)"></circle
+                    >
                 </g>
                 <defs
                     ><clipPath id="a"
@@ -177,7 +177,6 @@ const about = aboutData;
             transform 0.5s ease;
     }
 
-    /* Force l'affichage si la classe is-visible est là ou si on est sur la page */
     .split-texte.is-visible,
     :global(.is-home) .split-texte {
         opacity: 1 !important;
@@ -186,6 +185,10 @@ const about = aboutData;
     }
 
     @media (max-width: 768px) {
+        .about-grid {
+            display: flex;
+            flex-direction: column;
+        }
         .about {
             display: flex;
             flex-direction: column;

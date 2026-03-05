@@ -263,8 +263,8 @@ import ContactMiniat from "../ui/ContactMiniat.astro";
                     }
                 });
             },
-            { threshold: 0.9 },
-        ); // Déclenche quand presque tout le texte est là
+            { threshold: 1 },
+        );
 
         observer.observe(target);
     };

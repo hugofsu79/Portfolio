@@ -38,8 +38,6 @@ const { detailsFr, detailsEn } = Astro.props;
                                     {detail.value}
                                 </a>
                             ) : Array.isArray(detail.value) ? (
-                                /* Pour les tableaux (collaborateurs), le script langEngine gérera 
-                                   le .join(', ') automatiquement grâce à la modif de getDeepValue */
                                 <span
                                     class="detail-item i18n-anim"
                                     data-i18n-project={`context.details.${index}.value`}

@@ -7,7 +7,7 @@ footer {
 }
 
 footer p {
-    color: var(--text-primary);
+    color: var(--text-primary-negat);
     text-transform: none;
     font-size: var(--p-footer-font-size);
 }
@@ -94,7 +94,7 @@ footer .baseline-footer:last-of-type {
 }
 
 .link {
-    color: var(--text-secondary);
+    color: var(--text-primary-negat);
     width: 100%;
     display: flex;
     align-items: center;
@@ -110,7 +110,7 @@ footer .baseline-footer:last-of-type {
 }
 
 .border_link {
-    color: var(stroke-primary);
+    color: var(--stroke-secondary);
     opacity: 0.2;
 }
 
@@ -181,11 +181,12 @@ p .muted {
 .right-tableau {
     font-weight: var(--font-weight-regular);
     text-transform: none;
-    color: var(--text-primary);
+    color: var(--text-primary-negat);
 }
 
 .rectangle {
-    background-color: var(--static-opacit-1);
+    background-color: var(--stroke-primary);
+    opacity: 0.2;
     width: 1px;
     height: 4vh;
     overflow: hidden;
@@ -220,10 +221,13 @@ textarea {
     padding: 12px 16px;
     border-radius: var(--radius-S);
     border: 1px solid var(--stroke-primary);
-    color: var(--core-red-700);
+    color: var(--core-purple-dark);
     font-weight: 200;
 }
-
+.btn--secondary {
+    border: 1px solid var(--stroke-primary) !important;
+    color: var(--text-primary-negat) !important;
+}
 input {
     border-radius: var(--radius-basic);
 }
@@ -231,7 +235,7 @@ input {
 textarea {
     border-radius: var(--radius-basic);
     min-height: 120px;
-    color: var(--core-red-700);
+    color: var(--core-purple-dark);
 }
 
 #contact-form {
@@ -240,7 +244,7 @@ textarea {
 
 /* HOVER — feedback élégant */
 .sendButton:hover {
-    color: var(--color-primary);
+    color: var(--text-primary-negat);
     background-color: var(--color-bg-secondary);
     border-color: var(--color-text-muted-bg-light);
 }
@@ -257,8 +261,7 @@ textarea {
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    background: #111;
-    color: var(--color-primary);
+    color: var(--text-primary-negat);
     padding: 12px 20px;
     border-radius: var(--radius-S);
     opacity: 0;
@@ -290,12 +293,12 @@ textarea {
 }
 
 .ctaLabel {
-    color: var(--color-text-primary) !important;
+    color: var(--text-primary-negat) !important;
 }
 
 /* texte */
 .text-secondary {
-    color: var(--color-text-primary);
+    color: var(--text-primary-negat);
 }
 
 .text-muted {
@@ -304,7 +307,8 @@ textarea {
 
 .all-form input::placeholder,
 .all-form textarea::placeholder {
-    color: var(--text-footer-form);
+    color: var(--text-primary-negat);
+    opacity: 0.6;
     font-weight: var(--font-weight-light);
     font-family: var(--font-family-accent);
 }
@@ -314,12 +318,6 @@ textarea {
     color: transparent;
 
     transition: color 0.3s ease;
-}
-
-body {
-    margin: 0;
-    background-color: #f0f0f0;
-    /* Couleur de fond du site */
 }
 
 #main-content {

@@ -98,7 +98,7 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
             </li>
         </ul>
 
-        {/* Hamburger : caché au labo pour éviter un menu vide sur mobile */}
+        {/* Hamburger */}
         {
             !isLabo && (
                 <button class="hamburger" aria-label="Menu" id="hamburger-btn">
@@ -139,10 +139,10 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
 
     const GLYPHS = "0123456789@#$%&*";
 
-    // SINGLETON AUDIO
+    // --- UTILS : AUDIO ---
     const getNavSound = () => {
         const soundChoice = sessionStorage.getItem("soundPreference");
-        if (soundChoice !== "enabled") return null; // Retourne null si pas de son
+        if (soundChoice !== "enabled") return null;
 
         if (!(window as any)._navSound) {
             const audio = new Audio("/sounds/bouton_cta_nav.mp3");
@@ -153,12 +153,12 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         return (window as any)._navSound;
     };
 
+    // --- UTILS : EFFET MATRIX (CIPHER) ---
     const runCipher = (anchor: HTMLElement) => {
         const targetText =
             anchor.getAttribute("data-original-text") ||
             anchor.innerText.trim();
 
-        // Initialisation des spans si besoin
         if (!anchor.querySelector(".char")) {
             anchor.innerHTML = "";
             [...targetText].forEach((char) => {
@@ -176,9 +176,7 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         if ((anchor as any)._intervalId)
             clearInterval((anchor as any)._intervalId);
 
-        spans.forEach((s) => {
-            s.classList.replace("fixed", "shuffling");
-        });
+        spans.forEach((s) => s.classList.replace("fixed", "shuffling"));
 
         let iterations = 0;
         const timer = setInterval(() => {
@@ -202,6 +200,37 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         (anchor as any)._intervalId = timer;
     };
 
+    // --- LOGIQUE DE FERMETURE DU MENU ---
+    const closeMobileMenu = (
+        direction: "up" | "down" | "normal" = "normal",
+    ) => {
+        const menu = document.getElementById("mobile-menu");
+        const btn = document.getElementById("hamburger-btn");
+
+        if (!menu || !btn) return;
+
+        if (direction === "up") menu.classList.add("closing-up");
+        if (direction === "down") menu.classList.add("closing-down");
+
+        // 2. On ferme visuellement
+        menu.classList.remove("active");
+        btn.classList.remove("is-active");
+
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
+
+        setTimeout(() => {
+            menu.classList.add("no-transition");
+
+            menu.classList.remove("closing-up", "closing-down");
+
+            void menu.offsetHeight;
+
+            menu.classList.remove("no-transition");
+        }, 650);
+    };
+
+    // --- INITIALISATION NAVIGATION ---
     const initNavigation = () => {
         const desktopUl = document.getElementById("main-nav-links");
         const mobileContainer = document.getElementById(
@@ -210,9 +239,9 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         const btn = document.getElementById("hamburger-btn");
         const menu = document.getElementById("mobile-menu");
 
-        if (!desktopUl) return;
+        if (!desktopUl || !menu || !btn) return;
 
-        // 1. GESTION DES CLASSES DE PAGE (CSS contextuel)
+        // 1. Classes de contexte de page
         const path = window.location.pathname.replace(/\/$/, "") || "/";
         document.body.classList.toggle(
             "is-home",
@@ -223,77 +252,105 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
             path.includes("/projects/"),
         );
 
-        // 2. SETUP HOVER DESKTOP (Son + Cipher)
+        // 2. Hover Desktop (Son + Matrix)
         const links = desktopUl.querySelectorAll("a:not(.logo-link)");
         links.forEach((a) => {
             const anchor = a as HTMLElement;
             if (!(anchor as any)._hasCipher) {
-                // On stocke le texte original pour l'effet Matrix
                 anchor.setAttribute(
                     "data-original-text",
                     anchor.innerText.trim(),
                 );
-
                 anchor.addEventListener("mouseenter", () => {
-                    // TENTATIVE AUDIO SÉCURISÉE
                     const sound = getNavSound();
                     if (sound) {
                         sound.currentTime = 0;
-                        sound.play().catch(() => {
-                            /* Empêche l'erreur si le navigateur bloque l'autoplay */
-                        });
+                        sound.play().catch(() => {});
                     }
-
-                    // L'EFFET VISUEL (Lui, il tourne toujours)
                     runCipher(anchor);
                 });
                 (anchor as any)._hasCipher = true;
             }
         });
 
-        // 3. CLONAGE MOBILE INTELLIGENT
-        // On vide et on reclone pour que les liens mobiles soient à jour (langue, etc.)
-        if (mobileContainer && desktopUl) {
+        // 3. Setup Menu Mobile & Clics Directionnels
+        if (mobileContainer) {
             mobileContainer.innerHTML = "";
             const items = Array.from(desktopUl.querySelectorAll("li"));
             let visibleIdx = 0;
 
             items.forEach((li) => {
-                const isVisible =
-                    window.getComputedStyle(li).display !== "none";
-                if (isVisible) {
-                    const clone = li.cloneNode(true) as HTMLElement;
+                if (window.getComputedStyle(li).display === "none") return;
 
-                    // Nettoyage des IDs pour éviter les conflits dans le DOM
-                    clone.removeAttribute("id");
-                    clone
-                        .querySelectorAll("[id]")
-                        .forEach((el) => el.removeAttribute("id"));
+                const clone = li.cloneNode(true) as HTMLElement;
+                clone.removeAttribute("id");
+                clone.style.setProperty("--index", visibleIdx.toString());
 
-                    // Variable CSS pour décaler l'animation d'entrée du menu mobile
-                    clone.style.setProperty("--index", visibleIdx.toString());
-                    mobileContainer.appendChild(clone);
-                    visibleIdx++;
-                }
+                const cloneLinks = clone.querySelectorAll("a");
+                cloneLinks.forEach((link) => {
+                    link.addEventListener("click", (e) => {
+                        const href = link.getAttribute("href");
+
+                        // Si c'est une ancre interne
+                        if (
+                            href &&
+                            (href.startsWith("#") || href.includes("/#"))
+                        ) {
+                            e.preventDefault();
+                            const targetId = href.split("#")[1];
+                            const targetEl = document.getElementById(targetId);
+
+                            if (targetEl) {
+                                const currentY = window.scrollY;
+                                const targetY =
+                                    targetEl.getBoundingClientRect().top +
+                                    window.pageYOffset;
+
+                                // Calcul de la direction du mouvement pour l'effet de fermeture
+                                const direction =
+                                    targetY > currentY ? "up" : "down";
+                                closeMobileMenu(direction);
+
+                                // Scroll fluide après un mini délai pour laisser le menu bouger
+                                setTimeout(() => {
+                                    window.scrollTo({
+                                        top: targetY,
+                                        behavior: "smooth",
+                                    });
+                                }, 50);
+                            }
+                        } else {
+                            closeMobileMenu();
+                        }
+                    });
+                });
+
+                mobileContainer.appendChild(clone);
+                visibleIdx++;
             });
         }
 
-        // 4. HAMBURGER & MENU MOBILE
-        if (btn && menu && !(btn as any)._hasClick) {
-            btn.onclick = () => {
-                const open = menu.classList.toggle("active");
-                btn.classList.toggle("is-active");
-                // Empêche le scroll de la page quand le menu est ouvert
-                document.body.style.overflow = open ? "hidden" : "";
-            };
-            (btn as any)._hasClick = true;
-        }
+        // 4. Hamburger Toggle
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            const isOpen = menu.classList.toggle("active");
+            btn.classList.toggle("is-active");
+
+            if (isOpen) {
+                document.body.style.overflow = "hidden";
+                document.documentElement.style.overflow = "hidden";
+                document.body.style.touchAction = "none";
+            } else {
+                closeMobileMenu();
+            }
+        };
     };
 
+    // --- EVENTS ASTRO ---
     document.addEventListener("astro:page-load", () => {
         initNavigation();
+        closeMobileMenu(); // Sécurité au changement de page
 
-        // Barre de progression scroll
         const nav = document.querySelector(".navbar") as HTMLElement;
         const updateScroll = () => {
             const s =
@@ -303,7 +360,12 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
                 100;
             nav?.style.setProperty("--scroll-width", `${s}%`);
         };
-        window.addEventListener("scroll", updateScroll, { passive: true });
+
+        window.removeEventListener("scroll", (window as any)._scrollListener);
+        (window as any)._scrollListener = updateScroll;
+        window.addEventListener("scroll", (window as any)._scrollListener, {
+            passive: true,
+        });
     });
 
     langStore.subscribe(() => setTimeout(initNavigation, 100));

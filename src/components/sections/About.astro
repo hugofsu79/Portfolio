@@ -240,21 +240,6 @@ const about = aboutData;
             loop: true,
         });
 
-        // 3. Animation FEED
-        const orbitCommon = { duration: 8100, easing: "inOutSine", loop: true };
-        animate(".bottom-circule-feed", {
-            ...orbitCommon,
-            translateY: [0, -4, 0],
-        });
-        animate(".medium-circule-feed", {
-            ...orbitCommon,
-            translateY: [1, -4.5, 1],
-        });
-        animate(".top-circule-feed", {
-            ...orbitCommon,
-            translateY: [0, 12, 0],
-        });
-
         // 4. Animation APPROCHE (Strokes)
         const strokes = document.querySelectorAll<SVGGeometryElement>(
             ".stroke-circle-approche",

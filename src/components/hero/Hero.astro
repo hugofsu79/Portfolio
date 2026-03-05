@@ -42,6 +42,13 @@ import LogoHero from "../ui/Logohero.astro";
                 mode="screen"
                 result="rg-blend"></feBlend>
             <feBlend in="rgb-blend" in2="blue-layer" mode="screen"></feBlend>
+
+            <feBlend
+                in="red-layer"
+                in2="green-layer"
+                mode="screen"
+                result="rg-blend"></feBlend>
+            <feBlend in="rg-blend" in2="blue-layer" mode="screen"></feBlend>
         </filter>
     </svg>
     <div class="top-hero">
@@ -88,6 +95,11 @@ import LogoHero from "../ui/Logohero.astro";
     </div>
 </section>
 
+<script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+></script>
+
 <style>
     #hero-job {
         margin: 0;
@@ -120,7 +132,7 @@ import LogoHero from "../ui/Logohero.astro";
         flex-direction: column;
         justify-content: space-between;
 
-        filter: url(#hero-intro-filter);
+        filter: url(#hero-rgb-filter);
         transition: filter 1.2s cubic-bezier(0.22, 1, 0.36, 1);
         will-change: filter, opacity;
 
@@ -277,36 +289,23 @@ import LogoHero from "../ui/Logohero.astro";
     }
 </style>
 <script>
-    // @ts-ignore
-    import anime from "https://cdn.jsdelivr.net/npm/animejs@3.2.1/+esm";
+    const anime = (window as any).anime;
 
     const GLYPHS = "0123456789@#$%&*";
     const AUDIO_PATH = "/sounds/hero_song.mp3";
 
     const getHeroState = () => {
         if (!(window as any)._heroState) {
-            (window as any)._heroState = { hasRun: false, sound: null };
+            (window as any)._heroState = { hasRun: false };
         }
         return (window as any)._heroState;
     };
-
-    function updateClock() {
-        const clockDigits = document.querySelectorAll(".digit");
-        if (!clockDigits.length) return;
-        const now = new Date();
-        const timeStr =
-            String(now.getHours()).padStart(2, "0") +
-            String(now.getMinutes()).padStart(2, "0");
-        clockDigits.forEach((d, i) => {
-            d.textContent = timeStr[i];
-            d.classList.add("fixed");
-        });
-    }
 
     function animateCipher(el: HTMLElement, delay = 0) {
         const targetText =
             el.getAttribute("data-target-text") || el.textContent?.trim() || "";
         if (!targetText) return;
+
         el.style.visibility = "visible";
         const chars = targetText.split("").map((char) => {
             const span = document.createElement("span");
@@ -317,8 +316,10 @@ import LogoHero from "../ui/Logohero.astro";
                     : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
             return { span, final: char };
         });
+
         el.textContent = "";
         chars.forEach((c) => el.appendChild(c.span));
+
         setTimeout(() => {
             let iteration = 0;
             const interval = setInterval(() => {
@@ -342,65 +343,33 @@ import LogoHero from "../ui/Logohero.astro";
         }, delay);
     }
 
-    // --- LA FONCTION DE SECOURS POUR LE PREMIER LANCEMENT ---
-    async function ensureLogoIsReady(
-        paths: NodeListOf<SVGPathElement>,
-    ): Promise<boolean> {
-        return new Promise((resolve) => {
-            let attempts = 0;
-            const check = () => {
-                attempts++;
-                // On vérifie si le premier path a une longueur calculable
-                const firstPath = paths[0] as any;
-                if (firstPath && firstPath.getTotalLength() > 0) {
-                    resolve(true);
-                } else if (attempts > 50) {
-                    // Sécurité après 1sec
-                    resolve(false);
-                } else {
-                    requestAnimationFrame(check);
-                }
-            };
-            check();
-        });
-    }
-
     async function startGlobalHeroAnimation() {
         const state = getHeroState();
-        const hero = document.getElementById("/") as HTMLElement;
-        const liner = document.querySelector(".linerDefinition") as HTMLElement;
-        const logoPaths = document.querySelectorAll(
-            ".logo-hero svg path, .logo-hero svg polyline, .logo-hero svg line",
-        ) as NodeListOf<SVGPathElement>;
+        if (state.hasRun) return;
 
-        if (!hero || state.hasRun) return;
-
-        // Attente cruciale pour le premier chargement npm run dev
-        await ensureLogoIsReady(logoPaths);
+        const hero = document.querySelector(".hero") as HTMLElement;
+        if (!hero) return;
 
         state.hasRun = true;
 
-        // Configuration initiale
+        // VISIBILITÉ IMMÉDIATE (Si ça reste noir, c'est le filtre SVG qui bloque)
         hero.style.visibility = "visible";
-        hero.style.opacity = "0";
+        hero.style.opacity = "1";
         hero.style.filter = "url(#hero-rgb-filter)";
-        hero.style.transform = "translateZ(0)";
 
-        // On prépare les tracés proprement
-        logoPaths.forEach((path: any) => {
-            const length = path.getTotalLength();
-            path.style.strokeDasharray = length;
-            path.style.strokeDashoffset = length;
-        });
-
-        updateClock();
-        const soundChoice = sessionStorage.getItem("soundPreference");
+        // Sécurité maximale
+        if (!anime) {
+            console.error("AnimeJS n'a pas pu charger via le CDN.");
+            return;
+        }
 
         const tl = anime.timeline({
             easing: "easeOutExpo",
             begin: () => {
+                const soundChoice = sessionStorage.getItem("soundPreference");
                 if (soundChoice === "enabled") {
                     const audio = new Audio(AUDIO_PATH);
+                    audio.volume = 0;
                     audio
                         .play()
                         .then(() => {
@@ -413,57 +382,50 @@ import LogoHero from "../ui/Logohero.astro";
                         .catch(() => {});
                 }
             },
-            complete: () => {
-                hero.style.filter = "none";
-                hero.style.transform = "none";
-            },
         });
 
         tl.add(
             {
-                targets: hero,
-                opacity: [0, 1],
-                duration: 1200,
+                targets: "#intro-red",
+                dx: [-80, 0],
+                duration: 1500,
             },
             0,
-        )
-            .add(
+        ).add(
+            {
+                targets: "#intro-blue",
+                dx: [80, 0],
+                duration: 1500,
+            },
+            0,
+        );
+
+        const logoPaths = document.querySelectorAll(
+            ".logo-hero svg path, .logo-hero svg polyline, .logo-hero svg line",
+        );
+        if (logoPaths.length > 0) {
+            tl.add(
                 {
                     targets: logoPaths,
-                    // Utilisation d'une fonction pour forcer la lecture finale de la valeur
-                    strokeDashoffset: (el: any) => [el.getTotalLength(), 0],
+                    strokeDashoffset: [anime.setDashoffset, 0],
                     easing: "easeInOutSine",
-                    duration: 1500,
-                    delay: anime.stagger(100),
+                    duration: 1200,
+                    delay: anime.stagger(80),
                 },
                 200,
-            )
-            .add(
-                {
-                    targets: "#intro-red",
-                    dx: [-60, 0],
-                    duration: 2000,
-                },
-                100,
-            )
-            .add(
-                {
-                    targets: "#intro-blue",
-                    dx: [60, 0],
-                    duration: 2000,
-                },
-                100,
             );
+        }
 
+        const liner = document.querySelector(".linerDefinition") as HTMLElement;
         if (liner) {
             tl.add(
                 {
                     targets: liner,
                     opacity: [0, 1],
                     translateY: [15, 0],
-                    duration: 1000,
+                    duration: 800,
                 },
-                "-=1500",
+                "-=1000",
             );
         }
 
@@ -474,18 +436,18 @@ import LogoHero from "../ui/Logohero.astro";
 
     document.addEventListener("astro:page-load", () => {
         getHeroState().hasRun = false;
-
-        const handleSasEnd = () => {
-            // On attend que le SAS ait commencé à s'effacer
-            setTimeout(startGlobalHeroAnimation, 300);
-        };
+        const run = () => startGlobalHeroAnimation();
 
         if (sessionStorage.getItem("soundPreference")) {
-            startGlobalHeroAnimation();
+            run();
         } else {
-            window.addEventListener("sas-finished", handleSasEnd, {
-                once: true,
-            });
+            window.addEventListener("sas-finished", run, { once: true });
         }
+
+        // Sécurité si SAS ne répond pas : on force au bout de 2s
+        setTimeout(() => {
+            const hero = document.querySelector(".hero") as HTMLElement;
+            if (hero && hero.style.opacity !== "1") run();
+        }, 2000);
     });
 </script>

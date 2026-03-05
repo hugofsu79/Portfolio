@@ -12,9 +12,6 @@ interface Props {
 const { title = "Portfolio" } = Astro.props;
 ---
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
-></script>
-
 <html lang="fr">
 	<head>
 		<meta charset="utf-8" />
@@ -72,94 +69,58 @@ const { title = "Portfolio" } = Astro.props;
 </html>
 <script>
 	import { initI18n } from "../scripts/langEngine";
+	import "../scripts/app";
 
-	// Initialise au premier chargement
-	initI18n();
-
-	// Ré-initialise à chaque changement de page (Astro ViewTransitions)
-	document.addEventListener("astro:page-load", () => {
+	const initAll = () => {
+		const savedLang = localStorage.getItem("lang") || "fr";
+		document.documentElement.dataset.lang = savedLang;
 		initI18n();
-	});
 
-	const initHeroParallax = () => {
+		// 2. Parallaxe du Hero
 		const jobTitle = document.querySelector(
-			".definiton,.logo-hero, .about-block",
+			".definiton, .logo-hero, .about-block",
 		);
 		const liner = document.querySelector(".linerDefinition");
 
-		if (!jobTitle || !liner) return;
+		if (jobTitle || liner) {
+			window.onscroll = () => {
+				const scrolled = window.scrollY;
+				requestAnimationFrame(() => {
+					if (jobTitle)
+						(jobTitle as HTMLElement).style.transform =
+							`translateY(${scrolled * 0.15}px)`;
+					if (liner)
+						(liner as HTMLElement).style.transform =
+							`translateY(${scrolled * 0.08}px)`;
+				});
+			};
+		}
 
-		window.addEventListener("scroll", () => {
-			const scrolled = window.scrollY;
-
-			requestAnimationFrame(() => {
-				(jobTitle as HTMLElement).style.transform =
-					`translateY(${scrolled * 0.15}px)`;
-				(liner as HTMLElement).style.transform =
-					`translateY(${scrolled * 0.08}px)`;
-			});
-		});
-	};
-
-	// Initialisation au chargement Astro
-	document.addEventListener("astro:page-load", initHeroParallax);
-
-	const setupDynamicTitle = () => {
-		// On ne fait l'alternance que sur la Home Page
+		// 3. Titre Dynamique
 		const isHome =
 			window.location.pathname === "/" ||
 			window.location.pathname === "/index.html";
-		if (!isHome) return;
-
-		let titles = ["Portfolio - 2026"];
-		let index = 0;
-
-		// Change le titre toutes les 3 secondes
-		setInterval(() => {
-			index = (index + 1) % titles.length;
-			document.title = titles[index];
-		}, 3000);
-	};
-
-	// Initialisation globale
-	const init = () => {
-		initI18n();
-		setupDynamicTitle();
-	};
-
-	// Premier chargement
-	init();
-
-	// Ré-initialise à chaque navigation Astro (ViewTransitions)
-	document.addEventListener("astro:page-load", () => {
-		init();
-	});
-
-	function setupProjectSounds() {
-		const soundChoice = sessionStorage.getItem("soundPreference");
-		const isSoundEnabled = soundChoice === "enabled";
-
-		let clickSound: HTMLAudioElement | null = null;
-
-		if (isSoundEnabled) {
-			clickSound = new Audio("/sounds/slider.mp3");
-			clickSound.preload = "auto";
-			clickSound.volume = 0.5;
+		if (isHome) {
+			document.title = "Portfolio - 2026";
 		}
 
-		const targets = document.querySelectorAll(
-			"nav a, .project-row-link, .dropdown-item",
-		);
+		const soundChoice = sessionStorage.getItem("soundPreference");
+		if (soundChoice === "enabled") {
+			const clickSound = new Audio("/sounds/slider.mp3");
+			clickSound.preload = "auto";
+			clickSound.volume = 0.5;
 
-		targets.forEach((target) => {
-			target.addEventListener("click", () => {
-				if (isSoundEnabled && clickSound) {
+			const targets = document.querySelectorAll(
+				"nav a, .project-row-link, .dropdown-item",
+			);
+			targets.forEach((target) => {
+				(target as HTMLElement).onclick = () => {
 					clickSound.currentTime = 0;
 					clickSound.play().catch(() => {});
-				}
+				};
 			});
-		});
-	}
+		}
+	};
 
-	setupProjectSounds();
+	document.addEventListener("astro:page-load", initAll);
 </script>

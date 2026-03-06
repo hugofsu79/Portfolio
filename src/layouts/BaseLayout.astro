@@ -1,4 +1,6 @@
 ---
+import SpeedInsights from "@vercel/speed-insights/astro";
+
 import "../styles/globals.css";
 
 import Navbar from "../components/navigation/Navbar.astro";
@@ -55,6 +57,7 @@ const { title = "Portfolio" } = Astro.props;
 
 		<main class="app-main">
 			<slot />
+			<SpeedInsights />
 		</main>
 
 		<script>

@@ -22,6 +22,7 @@ const { title = "Portfolio" } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
 		<title>{title}</title>
+
 		<ClientRouter />
 	</head>
 
@@ -78,27 +79,7 @@ const { title = "Portfolio" } = Astro.props;
 		const savedLang = localStorage.getItem("lang") || "fr";
 		document.documentElement.dataset.lang = savedLang;
 		initI18n();
-
-		// 2. Parallaxe du Hero
-		const jobTitle = document.querySelector(
-			".definiton, .logo-hero, .about-block",
-		);
-		const liner = document.querySelector(".linerDefinition");
-
-		if (jobTitle || liner) {
-			window.onscroll = () => {
-				const scrolled = window.scrollY;
-				requestAnimationFrame(() => {
-					if (jobTitle)
-						(jobTitle as HTMLElement).style.transform =
-							`translateY(${scrolled * 0.15}px)`;
-					if (liner)
-						(liner as HTMLElement).style.transform =
-							`translateY(${scrolled * 0.08}px)`;
-				});
-			};
-		}
-
+		
 		// 3. Titre Dynamique
 		const isHome =
 			window.location.pathname === "/" ||

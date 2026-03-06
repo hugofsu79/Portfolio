@@ -29,7 +29,12 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
 
 <Layout title={`Portfolio - ${project.entreprise}`}>
     <header class="project-hero">
-        <img src={project.cover} alt={project.entreprise} />
+        <img
+            src={project.cover}
+            alt={project.entreprise}
+            loading="lazy"
+            decoding="async"
+        />
     </header>
 
     <section class="projetAll" data-project-slug={project.slug}>
@@ -58,7 +63,13 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
             <div class="leftCorridor">
                 <section class="context">
                     <div class="project-title-sticky">
-                        <img class="logo" src={project.logo} alt={fr.title} />
+                        <img
+                            class="logo"
+                            src={project.logo}
+                            alt={fr.title}
+                            loading="lazy"
+                            decoding="async"
+                        />
                         <h4
                             class="i18n-anim"
                             data-i18n-project="title"
@@ -150,7 +161,12 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
 
                 {
                     project.media.role && (
-                        <img src={project.media.role} alt="Illustration rôle" />
+                        <img
+                            src={project.media.role}
+                            alt="Illustration rôle"
+                            loading="lazy"
+                            decoding="async"
+                        />
                     )
                 }
                 <div class="grid-mini">

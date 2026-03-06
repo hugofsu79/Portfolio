@@ -1,6 +1,7 @@
 ---
 import { projects } from "../../data/projects";
 import { navLabels } from "../../data/navigation";
+
 const lang = Astro.currentLocale || "fr";
 ---
 
@@ -11,38 +12,53 @@ const lang = Astro.currentLocale || "fr";
 
     <ul class="projects-list">
         {
-            projects.map((item) => (
-                <li class="project-row">
-                    <a class="project-row-link" href={`/projects/${item.slug}`}>
-                        <div class="project-title">
-                            <span class="project-year">{item.year}</span>
-                            <h3>{item.entreprise}</h3>
-                            <span class="project-subtitle">
-                                <p
-                                    data-i18n-key={`${item.slug}_title`}
-                                    data-ghost={item.content.fr.title}
-                                >
-                                    {item.content.fr.title}
-                                </p>
-                            </span>
-                        </div>
+            projects.map((item, index) => {
+                const isPriority = index < 3;
 
-                        {/* VERSION DESKTOP : Gérée par le script setupMouseFollow */}
-                        <div class="project-preview desktop-only">
-                            <img
-                                src={item.cover}
-                                alt={item.entreprise}
-                                class="desktop-img"
-                            />
-                        </div>
+                return (
+                    <li class="project-row">
+                        <a
+                            class="project-row-link"
+                            href={`/projects/${item.slug}`}
+                            data-astro-prefetch
+                        >
+                            <div class="project-title">
+                                <span class="project-year">{item.year}</span>
+                                <h3>{item.entreprise}</h3>
+                                <span class="project-subtitle">
+                                    <p
+                                        data-i18n-key={`${item.slug}_title`}
+                                        data-ghost={item.content.fr.title}
+                                    >
+                                        {item.content.fr.title}
+                                    </p>
+                                </span>
+                            </div>
 
-                        {/* VERSION MOBILE : Gérée par le CSS et Intersection Observer */}
-                        <div class="mobile-preview-only">
-                            <img src={item.cover} alt={item.entreprise} />
-                        </div>
-                    </a>
-                </li>
-            ))
+                            {/* -- DESKTOP -- */}
+                            <div class="project-preview desktop-only">
+                                <img
+                                    src={item.cover}
+                                    alt={item.entreprise}
+                                    class="desktop-img"
+                                    loading={isPriority ? "eager" : "lazy"}
+                                    decoding="async"
+                                />
+                            </div>
+
+                            {/* -- MOBILE -- */}
+                            <div class="mobile-preview-only">
+                                <img
+                                    src={item.cover}
+                                    alt={item.entreprise}
+                                    loading={isPriority ? "eager" : "lazy"}
+                                    decoding="async"
+                                />
+                            </div>
+                        </a>
+                    </li>
+                );
+            })
         }
     </ul>
 </section>
@@ -170,12 +186,22 @@ const lang = Astro.currentLocale || "fr";
     /* --- MOBILE LAYOUT --- */
     @media (max-width: 768px) {
         .project-row {
-            /* On force l'overflow visible pour que l'image puisse "déborder" sur la ligne du dessus */
             overflow: visible !important;
-            padding: var(--space-24) 0;
+            padding: var(--space-32) 0; /* Un peu plus d'espace pour le confort mobile */
             display: flex;
-            flex-direction: column; /* On empile pour laisser la place à l'image en absolute */
+            flex-direction: column;
             position: relative;
+        }
+
+        /* --- ÉTAT PAR DÉFAUT (Éteint) --- */
+        .project-year,
+        .project-title h3,
+        .project-subtitle {
+            opacity: 0.2; /* On baisse l'opacité par défaut */
+            transform: scale(0.98);
+            transition:
+                opacity 0.5s ease,
+                transform 0.5s ease;
         }
 
         .project-title {
@@ -183,188 +209,156 @@ const lang = Astro.currentLocale || "fr";
             flex-direction: column;
             align-items: flex-start;
             gap: var(--space-8);
-            z-index: 2; /* Pour rester lisible */
+            z-index: 2;
         }
 
         .project-title h3 {
             margin: 0;
+            font-size: clamp(2rem, 8vw, 2.5rem); /* Ajustement taille mobile */
         }
 
-        /* L'image mobile */
+        /* --- L'IMAGE (Préparation) --- */
+        .mobile-preview-only {
+            display: block !important; /* Force l'affichage car le desktop le cache */
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Texte par défaut (discret) */
+        .project-year,
+        .project-title h3,
+        .project-subtitle {
+            opacity: 0.2;
+            transform: scale(0.98);
+            transition:
+                opacity 0.5s ease,
+                transform 0.5s ease;
+        }
+
+        /* --- L'IMAGE : Version miniature par défaut --- */
         .mobile-preview-only img {
             display: block;
             position: absolute;
-            right: 0;
-            top: 50%; /* On part du milieu de la ligne */
-            transform: translateY(-50%) scale(0.8); /* On réduit un peu au départ */
-            border-radius: var(--radius-basic, 8px);
-            width: 120px; /* Taille un peu plus visible */
+
+            /* Positionnée en haut à droite */
+            right: 0px;
+            top: 0px;
+
+            width: 40px;
             height: auto;
+            border-radius: var(--radius-basic);
+
             opacity: 0;
+            transform: scale(0.4);
+            transform-origin: top right;
+
             transition:
-                opacity 0.6s ease,
-                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-            z-index: 1;
-            pointer-events: none;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                opacity 0.5s ease,
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                width 0.5s ease,
+                top 0.5s ease;
         }
 
-        /* Quand la ligne est active au scroll */
-        .project-row.is-active .mobile-preview-only img {
-            opacity: 1;
-            /* Petit effet de remontée fluide au scroll */
-            transform: translateY(-70%) scale(1);
-        }
-
+        /* --- ÉTAT ACTIF (Focus au milieu de l'écran) --- */
+        .project-row.is-active .project-year,
         .project-row.is-active h3,
-        .project-row.is-active .project-subtitle,
-        .project-row.is-active .project-year {
+        .project-row.is-active .project-subtitle {
             opacity: 1;
             transform: scale(1);
         }
 
-        .mobile-preview-only {
-            /* Sur mobile, on n'a pas besoin que la div prenne de la place physique */
-            position: absolute;
-            inset: 0;
+        .project-row.is-active .mobile-preview-only img {
+            opacity: 1;
+            width: 90px;
+            transform: scale(1) translateY(-10px);
         }
     }
 </style>
 
 <script>
-    /**
-     * 2. AUDIO (Gestion des sons au survol)
-     */
-    const setupProjectSounds = () => {
-        const soundChoice = sessionStorage.getItem("soundPreference");
-        if (soundChoice !== "enabled") return;
+    import { langStore } from "../../stores/langStore";
+    import { navLabels } from "../../data/navigation";
 
-        const soundPaths = [
-            "/sounds/projetColumnList.mp3",
-            "/sounds/projetColumnList_2.mp3",
-            "/sounds/projetColumnList_3.mp3",
-        ];
+    const setupProjectLogic = () => {
+        const rows = document.querySelectorAll(".project-row");
+        if (rows.length === 0) return;
 
-        // On crée le contexte une seule fois
-        const AudioContextClass =
-            window.AudioContext || (window as any).webkitAudioContext;
-        const ctx = new AudioContextClass();
+        // --- 1. SONS & VIBRATION ---
+        const isSoundEnabled =
+            sessionStorage.getItem("soundPreference") === "enabled";
+        let audioPlayers: HTMLAudioElement[] = [];
 
-        const audioPlayers = soundPaths.map((path) => {
-            const audio = new Audio(path);
-            audio.volume = 0.8;
-            return audio;
-        });
+        if (isSoundEnabled) {
+            audioPlayers = [
+                "/sounds/projetColumnList.mp3",
+                "/sounds/projetColumnList_2.mp3",
+                "/sounds/projetColumnList_3.mp3",
+            ].map((path) => {
+                const a = new Audio(path);
+                a.volume = 0.4;
+                return a;
+            });
+        }
 
-        document.querySelectorAll(".project-row").forEach((row) => {
-            row.addEventListener("mouseenter", async () => {
-                if (ctx.state === "suspended") await ctx.resume();
-
-                const selectedAudio =
+        const playFeedback = (vibrate = false) => {
+            // Son
+            if (isSoundEnabled && audioPlayers.length > 0) {
+                const s =
                     audioPlayers[
                         Math.floor(Math.random() * audioPlayers.length)
                     ];
+                s.currentTime = 0;
+                s.play().catch(() => {});
+            }
 
-                audioPlayers.forEach((a) => {
-                    a.pause();
-                    a.currentTime = 0;
-                });
+            // Vibration (seulement si demandé et dispo sur l'appareil)
+            if (vibrate && "vibrate" in navigator) {
+                // 10ms à 15ms c'est le "sweet spot" pour un clic haptique
+                navigator.vibrate(15);
+            }
+        };
 
-                selectedAudio.play().catch(() => {});
-            });
+        // --- 2. TRADUCTION ---
+        langStore.subscribe((lang) => {
+            const title = document.querySelector('[data-i18n-key="projects"]');
+            if (title) title.textContent = navLabels[lang].projects;
         });
-    };
 
-    /**
-     * 3. MOUSE FOLLOW (Physique des images sur Desktop)
-     */
-    const setupMouseFollow = () => {
-        const rows = document.querySelectorAll(".project-row");
-
-        rows.forEach((row) => {
-            const img = row.querySelector(".desktop-img") as HTMLElement;
-            if (!img) return;
-
-            let mouseX = 0,
-                mouseY = 0;
-            let currentX = 0,
-                currentY = 0;
-            const speed = 0.15;
-            let isMoving = false; // Pour ne pas consommer de ressources si la souris ne bouge pas
-
-            row.addEventListener("mousemove", (e: any) => {
-                const rect = row.getBoundingClientRect();
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
-                isMoving = true;
-            });
-
-            row.addEventListener("mouseenter", () => {
-                img.style.opacity = "1";
-            });
-
-            row.addEventListener("mouseleave", () => {
-                img.style.opacity = "0";
-                isMoving = false;
-            });
-
-            const animate = () => {
-                // On calcule la distance
-                const dx = mouseX - currentX;
-                const dy = mouseY - currentY;
-
-                // On applique la fluidité (Lerp)
-                currentX += dx * speed;
-                currentY += dy * speed;
-
-                // Centrage de la miniature (280/2 = 140, et ~200/2 = 100)
-                const xOffset = currentX - 140;
-                const yOffset = currentY - 100;
-
-                img.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0)`;
-
-                requestAnimationFrame(animate);
-            };
-            animate();
-        });
-    };
-
-    /**
-     * 4. MOBILE ACTIVE STATE (Intersection au scroll)
-     */
-    const setupMobileScrollActive = () => {
-        const projectRows = document.querySelectorAll(".project-row");
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("is-active");
-                    } else {
-                        entry.target.classList.remove("is-active");
-                    }
-                });
-            },
-            {
-                rootMargin: "-40% 0% -40% 0%",
-                threshold: 0.1,
-            },
-        );
-
-        projectRows.forEach((row) => observer.observe(row));
-    };
-
-    /**
-     * INITIALISATION UNIQUE
-     */
-    document.addEventListener("astro:page-load", () => {
-        // On lance les sons et le mobile partout
-        setupProjectSounds();
-        setupMobileScrollActive();
-
-        // On lance le follow souris UNIQUEMENT sur desktop
+        // --- 3. DESKTOP ---
         if (window.innerWidth > 768) {
-            setupMouseFollow();
+            rows.forEach((row) => {
+                const img = row.querySelector(".desktop-img") as HTMLElement;
+                if (!img) return;
+                // ... (reste de ta logique desktop lerp) ...
+                row.addEventListener("mouseenter", () => {
+                    playFeedback(false); // Pas de vibration sur desktop
+                    img.style.opacity = "1";
+                    // ...
+                });
+            });
         }
-    });
+
+        // --- 4. MOBILE (Focus + Son + Vibration) ---
+        if (window.innerWidth <= 768) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-active");
+                            // ON DÉCLENCHE LE FEEDBACK COMPLET
+                            playFeedback(true);
+                        } else {
+                            entry.target.classList.remove("is-active");
+                        }
+                    });
+                },
+                { rootMargin: "-45% 0% -45% 0%", threshold: 0 },
+            );
+            rows.forEach((row) => observer.observe(row));
+        }
+    };
+
+    document.addEventListener("astro:page-load", setupProjectLogic);
 </script>

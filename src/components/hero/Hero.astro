@@ -4,101 +4,63 @@ import LogoHero from "../ui/Logohero.astro";
 ---
 
 <section id="/" class="hero">
-    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
-        <filter id="hero-rgb-filter" filterUnits="userSpaceOnUse">
-            <feOffset
-                in="SourceGraphic"
-                dx="-80"
-                dy="0"
-                result="red-ptr"
-                id="intro-red"></feOffset>
-            <feColorMatrix
-                in="red-ptr"
-                type="matrix"
-                values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
-                result="red-layer"></feColorMatrix>
+    <div class="hero-layers">
+        <div class="layer red" aria-hidden="true"></div>
 
-            <feColorMatrix
-                in="SourceGraphic"
-                type="matrix"
-                values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
-                result="green-layer"></feColorMatrix>
+        <div class="layer green">
+            <div class="top-hero">
+                <p id="real-time-clock" class="clock cipher-text">
+                    <span class="digit">0</span><span class="digit">0</span
+                    >:<span class="digit">0</span><span class="digit">0</span>
+                </p>
+            </div>
 
-            <feOffset
-                in="SourceGraphic"
-                dx="80"
-                dy="0"
-                result="blue-ptr"
-                id="intro-blue"></feOffset>
-            <feColorMatrix
-                in="blue-ptr"
-                type="matrix"
-                values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
-                result="blue-layer"></feColorMatrix>
+            <div class="logo-hero">
+                <LogoHero />
+            </div>
 
-            <feBlend
-                in="red-layer"
-                in2="green-layer"
-                mode="screen"
-                result="rg-blend"></feBlend>
-            <feBlend in="rgb-blend" in2="blue-layer" mode="screen"></feBlend>
+            <div class="definiton">
+                <p id="hero-job" data-i18n-key="job">
+                    {heroContent.fr.job}
+                </p>
+                <div class="linerDefinition">
+                    <p>
+                        <span id="hero-label" data-i18n-key="context.label">
+                            {heroContent.fr["context.label"]}
+                        </span>
+                        <span
+                            id="hero-description"
+                            data-i18n-key="context.description"
+                        >
+                            {heroContent.fr["context.description"]}
+                        </span>
+                    </p>
+                    <div class="definitionText">
+                        <ol class="definitionList">
+                            <li id="hero-def1" data-i18n-key="definition_1">
+                                {heroContent.fr.definition_1}
+                            </li>
+                            <li id="hero-def2" data-i18n-key="definition_2">
+                                {heroContent.fr.definition_2}
+                            </li>
+                            <li id="hero-def3" data-i18n-key="definition_3">
+                                {heroContent.fr.definition_3}
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
 
-            <feBlend
-                in="red-layer"
-                in2="green-layer"
-                mode="screen"
-                result="rg-blend"></feBlend>
-            <feBlend in="rg-blend" in2="blue-layer" mode="screen"></feBlend>
-        </filter>
-    </svg>
-    <div class="top-hero">
-        <p id="real-time-clock" class="clock">
-            <span class="digit">0</span><span class="digit">0</span>:<span
-                class="digit">0</span
-            ><span class="digit">0</span>
-        </p>
-    </div><div class="logo-hero">
-        <LogoHero />
-    </div>
-    <div class="definiton">
-        <p id="hero-job" data-i18n-key="job">
-            {heroContent.fr.job}
-        </p>
-        <div class="linerDefinition">
-            <p>
-                <span id="hero-label" data-i18n-key="context.label">
-                    {heroContent.fr["context.label"]}
-                </span>
-                <span id="hero-description" data-i18n-key="context.description">
-                    {heroContent.fr["context.description"]}
-                </span>
-            </p>
-            <div class="definitionText">
-                <ol class="definitionList">
-                    <li id="hero-def1" data-i18n-key="definition_1">
-                        {heroContent.fr.definition_1}
-                    </li>
-                    <li id="hero-def2" data-i18n-key="definition_2">
-                        {heroContent.fr.definition_2}
-                    </li>
-                    <li id="hero-def3" data-i18n-key="definition_3">
-                        {heroContent.fr.definition_3}
-                    </li>
-                </ol>
+            <div class="bottom-hero">
+                <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
+                <p id="hero-city" class="cipher-text">Paris</p>
             </div>
         </div>
-    </div>
-    <div class="bottom-hero">
-        <p id="hero-name" class="cipher-text">Hugo Foisseau</p>
 
-        <p id="hero-city" class="cipher-text">Paris</p>
+        <div class="layer blue" aria-hidden="true"></div>
+        <div class="layer purple" aria-hidden="true"></div>
     </div>
 </section>
-
-<script
-    is:inline
-    src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
-></script>
 
 <style>
     #hero-job {
@@ -113,32 +75,72 @@ import LogoHero from "../ui/Logohero.astro";
         color: var(--text-tertiary);
     }
 
-    h1,
-    h2 {
-        margin: 0;
-    }
     .hero {
+        padding-left: var(--space-24);
+        padding-right: var(--space-24);
+        background-color: var(--layer-background-hero);
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
         opacity: 0;
         visibility: hidden;
+    }
+    .hero-layers {
         position: relative;
-        background-color: var(--layer-background-hero);
-        overflow: hidden;
-        padding: var(--space-14);
-        scroll-snap-align: start;
-        height: 100vh;
-        padding-block: var(--space-48);
-
+        width: 100%;
+        height: 100%;
+    }
+    .layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: var(--space-48) var(--space-14);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+    }
 
-        filter: url(#hero-rgb-filter);
-        transition: filter 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-        will-change: filter, opacity;
+    /* LA BASE PROPRE */
+    .layer.green {
+        position: relative;
+        color: #ffffff; /* FORCE LE BLANC ICI */
+        z-index: 2;
+        pointer-events: auto;
+    }
 
-        backface-visibility: hidden;
-        perspective: 1000px;
-        transform-style: preserve-3d;
+    /* LES COUCHES D'EFFET */
+    .layer.red,
+    .layer.blue,
+    .layer.purple {
+        mix-blend-mode: screen;
+        pointer-events: none;
+        opacity: 0; /* CACHÉES PAR DÉFAUT */
+        will-change: transform, opacity;
+    }
+
+    .layer.red {
+        color: #ff0000;
+        z-index: 1;
+    }
+    .layer.blue {
+        color: #0000ff;
+        z-index: 3;
+    }
+    .layer.purple {
+        color: #ff00ff;
+        z-index: 4;
+    }
+
+    /* Empêche les logos SVGs de garder leur couleur d'origine dans les couches */
+    .layer svg {
+        fill: currentColor;
+        stroke: currentColor;
+    }
+
+    .hero svg[aria-hidden="true"] {
+        pointer-events: none;
     }
 
     #intro-red,
@@ -247,12 +249,13 @@ import LogoHero from "../ui/Logohero.astro";
         display: inline-block;
     }
     .definiton {
-        position: fixed;
+        position: absolute;
         right: var(--space-24);
         top: 10%;
         display: flex;
         flex-direction: column;
         gap: var(--space-4);
+        z-index: 10;
     }
     .linerDefinition {
         opacity: 0;
@@ -288,166 +291,7 @@ import LogoHero from "../ui/Logohero.astro";
         }
     }
 </style>
-<script>
-    const anime = (window as any).anime;
-
-    const GLYPHS = "0123456789@#$%&*";
-    const AUDIO_PATH = "/sounds/hero_song.mp3";
-
-    const getHeroState = () => {
-        if (!(window as any)._heroState) {
-            (window as any)._heroState = { hasRun: false };
-        }
-        return (window as any)._heroState;
-    };
-
-    function animateCipher(el: HTMLElement, delay = 0) {
-        const targetText =
-            el.getAttribute("data-target-text") || el.textContent?.trim() || "";
-        if (!targetText) return;
-
-        el.style.visibility = "visible";
-        const chars = targetText.split("").map((char) => {
-            const span = document.createElement("span");
-            span.className = "char shuffling";
-            span.textContent =
-                char === " "
-                    ? "\u00A0"
-                    : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-            return { span, final: char };
-        });
-
-        el.textContent = "";
-        chars.forEach((c) => el.appendChild(c.span));
-
-        setTimeout(() => {
-            let iteration = 0;
-            const interval = setInterval(() => {
-                let countFixed = 0;
-                chars.forEach((obj, index) => {
-                    if (iteration > index * 4) {
-                        if (obj.span.classList.contains("shuffling")) {
-                            obj.span.textContent =
-                                obj.final === " " ? "\u00A0" : obj.final;
-                            obj.span.classList.replace("shuffling", "fixed");
-                        }
-                        countFixed++;
-                    } else if (obj.final !== " ") {
-                        obj.span.textContent =
-                            GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-                    }
-                });
-                if (countFixed >= chars.length) clearInterval(interval);
-                iteration++;
-            }, 30);
-        }, delay);
-    }
-
-    async function startGlobalHeroAnimation() {
-        const state = getHeroState();
-        if (state.hasRun) return;
-
-        const hero = document.querySelector(".hero") as HTMLElement;
-        if (!hero) return;
-
-        state.hasRun = true;
-
-        // VISIBILITÉ IMMÉDIATE (Si ça reste noir, c'est le filtre SVG qui bloque)
-        hero.style.visibility = "visible";
-        hero.style.opacity = "1";
-        hero.style.filter = "url(#hero-rgb-filter)";
-
-        // Sécurité maximale
-        if (!anime) {
-            console.error("AnimeJS n'a pas pu charger via le CDN.");
-            return;
-        }
-
-        const tl = anime.timeline({
-            easing: "easeOutExpo",
-            begin: () => {
-                const soundChoice = sessionStorage.getItem("soundPreference");
-                if (soundChoice === "enabled") {
-                    const audio = new Audio(AUDIO_PATH);
-                    audio.volume = 0;
-                    audio
-                        .play()
-                        .then(() => {
-                            anime({
-                                targets: audio,
-                                volume: 0.4,
-                                duration: 2000,
-                            });
-                        })
-                        .catch(() => {});
-                }
-            },
-        });
-
-        tl.add(
-            {
-                targets: "#intro-red",
-                dx: [-80, 0],
-                duration: 1500,
-            },
-            0,
-        ).add(
-            {
-                targets: "#intro-blue",
-                dx: [80, 0],
-                duration: 1500,
-            },
-            0,
-        );
-
-        const logoPaths = document.querySelectorAll(
-            ".logo-hero svg path, .logo-hero svg polyline, .logo-hero svg line",
-        );
-        if (logoPaths.length > 0) {
-            tl.add(
-                {
-                    targets: logoPaths,
-                    strokeDashoffset: [anime.setDashoffset, 0],
-                    easing: "easeInOutSine",
-                    duration: 1200,
-                    delay: anime.stagger(80),
-                },
-                200,
-            );
-        }
-
-        const liner = document.querySelector(".linerDefinition") as HTMLElement;
-        if (liner) {
-            tl.add(
-                {
-                    targets: liner,
-                    opacity: [0, 1],
-                    translateY: [15, 0],
-                    duration: 800,
-                },
-                "-=1000",
-            );
-        }
-
-        document.querySelectorAll(".cipher-text").forEach((text, i) => {
-            animateCipher(text as HTMLElement, 500 + i * 200);
-        });
-    }
-
-    document.addEventListener("astro:page-load", () => {
-        getHeroState().hasRun = false;
-        const run = () => startGlobalHeroAnimation();
-
-        if (sessionStorage.getItem("soundPreference")) {
-            run();
-        } else {
-            window.addEventListener("sas-finished", run, { once: true });
-        }
-
-        // Sécurité si SAS ne répond pas : on force au bout de 2s
-        setTimeout(() => {
-            const hero = document.querySelector(".hero") as HTMLElement;
-            if (hero && hero.style.opacity !== "1") run();
-        }, 2000);
-    });
-</script>
+<script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+></script>

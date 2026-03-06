@@ -11,26 +11,6 @@
 
     --radius-2: 2px;
     --radius-8: 8px;
-
-    /* --- Axe Vertical (Bottom / Top) --- */
-    --space-4-bt: clamp(3px, 0.35vw + 2px, 4px);
-    --space-8-bt: clamp(6px, 0.5vw + 4px, 8px);
-    --space-12-bt: clamp(9px, 0.75vw + 6px, 12px);
-    --space-14-bt: clamp(11px, 0.8vw + 8px, 14px);
-    --space-16-bt: clamp(12px, 1vw + 8px, 16px);
-    --space-24-bt: clamp(18px, 1.5vw + 12px, 24px);
-    --space-32-bt: clamp(24px, 2vw + 16px, 32px);
-    --space-64-bt: clamp(40px, 4vw + 32px, 64px);
-
-    /* --- Axe Horizontal (Right / Left) --- */
-    --space-4-rl: clamp(3px, 0.35vw + 2px, 4px);
-    --space-8-rl: clamp(6px, 0.5vw + 4px, 8px);
-    --space-12-rl: clamp(9px, 0.75vw + 6px, 12px);
-    --space-14-rl: clamp(11px, 0.8vw + 8px, 14px);
-    --space-16-rl: clamp(12px, 1vw + 8px, 16px);
-    --space-24-rl: clamp(18px, 1.5vw + 12px, 24px);
-    --space-32-rl: clamp(24px, 2vw + 16px, 32px);
-    --space-64-rl: clamp(40px, 4vw + 32px, 64px);
 }
 
 :root {

@@ -7,9 +7,13 @@ export default defineConfig({
         webAnalytics: { enabled: true }
     }),
 
+    // --- OPTIMISATIONS AJOUTÉES ---
+    compressHTML: true,
     build: {
-        format: 'directory'
+        format: 'directory',
+        inlineStylesheets: 'always',
     },
+    // ------------------------------
 
     i18n: {
         defaultLocale: 'fr',

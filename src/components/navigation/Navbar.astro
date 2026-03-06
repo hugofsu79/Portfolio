@@ -11,7 +11,7 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
 <nav class="navbar">
     <div class="nav-container">
         <div class="left-nav">
-            <a href="/" class="logo-link">
+            <a href="/" class="logo-link" data-astro-prefetch>
                 <LogoNav />
             </a>
 
@@ -37,6 +37,7 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
                                     <a
                                         href={`/projects/${project.slug}`}
                                         class="dropdown-item"
+                                        data-astro-prefetch
                                     >
                                         {project.entreprise}
                                     </a>
@@ -69,7 +70,10 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
                         {projects.map((project) => (
                             <>
                                 <li class="project-only">
-                                    <a href={`/projects/${project.slug}`}>
+                                    <a
+                                        href={`/projects/${project.slug}`}
+                                        data-astro-prefetch
+                                    >
                                         {project.entreprise}
                                     </a>
                                 </li>
@@ -134,6 +138,404 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
     <ul id="mobile-links-container" class="mobile-links"></ul>
 </div>
 
+<style>
+    /* --- 1. VARIABLES & RESET --- */
+    :root {
+        --nav-height: 80px;
+        --nav-max-width: 1200px;
+        --bezier-curtain: cubic-bezier(0.77, 0, 0.175, 1);
+        --bezier-reveal: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* --- 2. STRUCTURE DE LA NAVBAR --- */
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: var(--layer-background);
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        border-bottom: none;
+        will-change: transform;
+        animation: slideDownNav 1.2s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
+    }
+
+    .hamburger svg {
+        color: var(--fill-brand);
+    }
+
+    .nav-container {
+        width: 100%;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .left-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .navbar::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 1px;
+        background-color: var(--stroke-section);
+        width: var(--scroll-width, 0%);
+        z-index: 3001;
+        pointer-events: none;
+        transition: width 0.1s ease-out;
+    }
+
+    /* --- 3. LIENS DESKTOP & LOGIQUE D'AFFICHAGE --- */
+    .nav-links {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 2.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links li {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+    }
+
+    .nav-links a,
+    .mobile-links a {
+        font-size: var(--p-nav-font-size);
+        font-family: ui-monospace, "Cascadia Code", monospace;
+        text-decoration: none;
+        color: inherit;
+        white-space: nowrap;
+    }
+    svg.rectangle {
+        width: 0.5px;
+    }
+    /* Filtrage dynamique Desktop */
+    .home-only,
+    .project-only,
+    svg.rectangle {
+        display: none !important;
+    }
+
+    body.is-home .home-only {
+        display: flex !important;
+    }
+
+    body.is-home svg.rectangle.home-only {
+        display: inline-block !important;
+    }
+
+    body.is-project-page .project-only {
+        display: flex !important;
+    }
+
+    body.is-project-page svg.rectangle.project-only {
+        display: inline-block !important;
+    }
+
+    /* --- 4. LE DROPDOWN LIQUID GLASS --- */
+    .projects-dropdown-container {
+        position: relative;
+        padding-bottom: 20px;
+        margin-bottom: -20px;
+        cursor: pointer;
+    }
+
+    .dropdown-liquid-glass {
+        position: absolute;
+        top: 80%;
+        left: 50%;
+        transform: translateX(-50%) translateY(5px) scale(0.9);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        padding: 6px;
+        border-radius: 16px;
+        min-width: 160px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1000;
+        transition:
+            opacity 0.25s ease,
+            transform 0.3s var(--bezier-reveal);
+    }
+
+    .projects-dropdown-container::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 50px;
+
+        display: none;
+    }
+
+    .projects-dropdown-container:hover::before {
+        display: block;
+    }
+
+    .projects-dropdown-container:hover .dropdown-liquid-glass {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(15px) scale(1);
+    }
+
+    .dropdown-item {
+        padding: 10px 14px;
+        border-radius: 10px;
+        color: var(--static-opacit-5);
+        transition: all 0.4s ease;
+    }
+
+    .dropdown-item:hover {
+        border: solid 0.25px var(--static-opacit-2);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* --- 5. EFFET RIDEAU & MENU MOBILE --- */
+    /* --- 5. MENU MOBILE (TA BASE MODIFIÉE) --- */
+    .hamburger {
+        display: none;
+        background: none;
+        border: none;
+        z-index: 3100;
+        cursor: pointer;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--layer-background);
+        z-index: 2000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        /* État initial : en haut et caché */
+        transform: translateY(-100%);
+        visibility: hidden;
+        transition:
+            transform 0.6s cubic-bezier(0.77, 0, 0.175, 1),
+            visibility 0.6s;
+    }
+
+    .mobile-menu.active {
+        transform: translateY(0%) !important;
+        visibility: visible;
+    }
+
+    .mobile-menu.closing-up {
+        transform: translateY(-100%) !important;
+        visibility: hidden;
+    }
+
+    .mobile-menu.closing-down {
+        transform: translateY(100%) !important;
+        visibility: hidden;
+    }
+
+    .mobile-menu.no-transition {
+        transition: none !important;
+    }
+
+    .mobile-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* CORRECTIF : On utilise l'ID pour être sûr de passer par-dessus les .home-only desktop */
+    #mobile-menu .mobile-links li {
+        display: flex !important;
+        visibility: visible !important;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+            opacity 0.6s ease,
+            transform 0.6s var(--bezier-reveal);
+        transition-delay: calc(var(--index, 0) * 0.1s + 0.3s);
+    }
+
+    /* Animation d'apparition quand le rideau est actif */
+    #mobile-menu.active .mobile-links li {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    #mobile-menu .mobile-links li a {
+        display: block !important;
+        font-size: 32px;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #ffffff !important;
+        /* Force le blanc */
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Nettoyage des éléments parasites clonés */
+    #mobile-menu .dropdown-liquid-glass,
+    #mobile-menu .rectangle {
+        display: none !important;
+    }
+
+    #mobile-menu .mobile-links li a,
+    #mobile-menu .mobile-links li a :global(.char),
+    #mobile-menu .mobile-links li a span {
+        display: block;
+        font-size: 32px;
+        font-weight: 500;
+        filter: blur(0) !important;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #ffffff !important;
+        /* Force le blanc sur le lien et les lettres */
+        -webkit-text-fill-color: #ffffff !important;
+        opacity: 1 !important;
+        /* Force l'opacité si le cipher est resté bloqué */
+    }
+
+    #mobile-menu .dropdown-liquid-glass,
+    #mobile-menu .rectangle {
+        display: none !important;
+    }
+
+    /* On cache les rectangles SVG qui n'ont rien à faire dans le menu mobile */
+    #mobile-menu .rectangle {
+        display: none !important;
+    }
+
+    /* --- 6. EFFET CIPHER (Restauration Complète) --- */
+    :global(.char) {
+        display: inline-block !important;
+        min-width: 1ch;
+        text-align: center;
+        will-change: transform, opacity, filter;
+        transition:
+            opacity 0.5s var(--bezier-reveal),
+            transform 0.5s var(--bezier-reveal),
+            filter 0.4s ease;
+    }
+
+    :global(.char.shuffling) {
+        opacity: 0.3 !important;
+        transform: scale(0.85) translateY(-2px) !important;
+        filter: blur(1.5px) !important;
+    }
+
+    :global(.char.fixed) {
+        opacity: 1 !important;
+        transform: scale(1) translateY(0) !important;
+        filter: blur(0) !important;
+    }
+
+    #mobile-menu .mobile-links :global(.char.shuffling) {
+        filter: blur(0) !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    /* --- 7. RESPONSIVE --- */
+    @media (max-width: 973px) {
+        .desktop-only {
+            display: none !important;
+        }
+
+        .hamburger {
+            display: flex;
+            filter: none !important;
+        }
+
+        /* Animation des LI quand le menu s'ouvre */
+        #mobile-menu .mobile-links li {
+            transform: translateY(40px) skewY(4deg) !important;
+            opacity: 0 !important;
+            transition:
+                transform 0.8s var(--bezier-reveal),
+                opacity 0.8s ease;
+            transition-delay: calc(var(--index, 0) * 0.1s + 0.3s);
+        }
+
+        #mobile-menu.active .mobile-links li {
+            transform: translateY(0) skewY(0deg) !important;
+            opacity: 1 !important;
+        }
+
+        /* Tes correctifs de netteté (importants !) */
+        #mobile-menu .mobile-links li a {
+            filter: none !important;
+            -webkit-filter: blur(0px) !important;
+        }
+
+        #mobile-menu .mobile-links li a :global(.char),
+        #mobile-menu .mobile-links li a span {
+            filter: none !important;
+            opacity: 1 !important;
+        }
+
+        /* --- ANIMATION HAMBURGER EN CROIX --- */
+
+        .hamburger svg g rect {
+            transform-origin: center;
+            /* Style Gentle animation */
+            transition:
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                y 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.3s ease;
+        }
+
+        .hamburger.is-active #rect-1 {
+            y: 22;
+            transform: rotate(45deg);
+        }
+
+        .hamburger.is-active #rect-2 {
+            y: 22;
+            transform: rotate(-45deg);
+        }
+
+        .hamburger.is-active {
+            color: var(--fill-brand);
+        }
+    }
+
+    @keyframes slideDownNav {
+        0% {
+            transform: translate3d(0, -150%, 0);
+        }
+
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
 <script>
     import { langStore } from "../../stores/langStore";
 

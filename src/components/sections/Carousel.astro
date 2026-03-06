@@ -26,6 +26,7 @@ const { images } = Astro.props;
                                 src={img.src.replace("/public", "")}
                                 alt={img.alt}
                                 loading={index === 0 ? "eager" : "lazy"}
+                                decoding="async"
                             />
                         </li>
                     ))}

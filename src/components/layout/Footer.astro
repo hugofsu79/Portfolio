@@ -1,14 +1,18 @@
 ---
+import { Image } from "astro:assets";
+
 import Button from "../ui/Button.astro";
 import ContactForm from "../ui/ContactForm.astro";
 import ContactMiniat from "../ui/ContactMiniat.astro";
 ---
 
 <footer class="reveal-wrapper">
-    <img
+    <Image
+        alt="signature Hugo"
         class="signature_logo"
-        src="/public/svg/logo/rightSplitLogo.svg"
-        alt="signature"
+        src="/svg/logo/rightSplitLogo.svg"
+        width={12}
+        height={25}
     />
     <div class="footer-content">
         <section id="contact">
@@ -198,10 +202,12 @@ import ContactMiniat from "../ui/ContactMiniat.astro";
             <p class="baseline-footer">All Rights reserved · © 2026</p>
         </section>
     </div>
-    <img
+    <Image
         class="signature_logo"
         src="/public/svg/logo/leftSplitLogo.svg"
         alt="signature"
+        width={12}
+        height={25}
     />
 </footer>
 

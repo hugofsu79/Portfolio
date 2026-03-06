@@ -66,6 +66,10 @@
   --p-footer-letter-spacing: -0.006em;
 }
 
+h1 {
+  margin: 0;
+}
+
 h2 {
   margin: 0;
   font-size: var(--h2-font-size);

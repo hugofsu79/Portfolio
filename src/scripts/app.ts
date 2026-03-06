@@ -1,3 +1,5 @@
+import { initSas } from "./sas";
+import { initHero } from "./hero";
 import { textAnimations } from "./textAnimations";
 import { paralaxe } from "./paralaxe";
 import { titreProjet } from "./titreProjet";
@@ -5,7 +7,11 @@ import { useProjectScrollActive } from "./useProjectScrollActive";
 import { initSmoothScroll, initAnchorScroll } from "./smoothScroll";
 import { reveal } from "./reveal";
 
+
 function initApp() {
+    initSas();
+    initHero();
+
     initSmoothScroll();
     initAnchorScroll();
 

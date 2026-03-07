@@ -295,6 +295,10 @@
         flex-wrap: wrap;
         gap: 15px;
         padding: 20px;
+        justify-content: center;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     /* Le conteneur de chaque icône */
@@ -303,11 +307,16 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 63px;
+        height: 63px;
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        will-change: transform;
     }
 
     .software-item svg {
-        color: var(--text-primary-negat); /* Couleur neutre de base */
+        width: 100%;
+        height: 100%;
+        color: var(--text-primary-negat);
         transition:
             color 0.4s ease,
             filter 0.4s ease;
@@ -317,64 +326,34 @@
     .software-item::after {
         content: attr(data-name);
         position: absolute;
-        /* On le place juste au-dessus du logo */
-        top: -15px;
+        top: -10px;
         left: 50%;
-        /* On part d'un peu plus bas (translateY(5px)) pour un effet de montée courte */
-        transform: translateX(-50%) translateY(5px) scale(0.9);
+        transform: translateX(-50%) translateY(0) scale(0.8);
 
-        /* --- Look Liquid Glass --- */
         background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(10px) saturate(160%);
-        -webkit-backdrop-filter: blur(10px) saturate(160%);
-
         color: var(--text-primary);
-        padding: 3px 12px; /* Plus fin pour être plus discret */
+        padding: 4px 12px;
         border-radius: 12px;
         font-size: 10px;
         font-weight: 600;
         white-space: nowrap;
         pointer-events: none;
         opacity: 0;
-
-        /* Bordure fine "éclat de verre" */
         border: 0.5px solid rgba(255, 255, 255, 0.2);
-        box-shadow:
-            0 4px 15px rgba(0, 0, 0, 0.02),
-            inset 0 0 5px rgba(255, 255, 255, 0.1);
-
-        /* Reflet liquide */
-        background-image: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.2) 0%,
-            transparent 50%
-        );
-
-        /* Transition courte et percutante */
         transition:
             opacity 0.25s ease,
             transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        z-index: 10;
     }
 
-    /* État Hover : La bulle se "colle" quasiment au logo */
+    .software-item:hover {
+        transform: scale(1.1);
+    }
     .software-item:hover::after {
         opacity: 1;
-        transform: translateX(-50%) translateY(-5px) scale(1);
+        transform: translateX(-50%) translateY(-25px) scale(1);
     }
 
-    .software-item:hover::after {
-        opacity: 1;
-        transform: translateX(-50%) translateY(-10px); /* La bulle monte fluidement */
-    }
-
-    .software-item:hover svg path,
-    .software-item:hover svg circle,
-    .software-item:hover svg rect {
-        fill: currentColor !important;
-        transition:
-            fill 0.4s ease,
-            stroke 0.4s ease;
-    }
 
     /* On s'assure que même les éléments avec un trait (stroke) soient fluides */
     .software-item svg path {

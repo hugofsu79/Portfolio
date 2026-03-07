@@ -5,7 +5,7 @@ import { navLabels } from "../../data/navigation";
 const about = aboutData;
 ---
 
-<h2 class="reveal-title" data-i18n-key="about" class="section-title">
+<h2 class="reveal-title" data-i18n-key="about">
     {navLabels.fr.about}
 </h2>
 
@@ -47,29 +47,23 @@ const about = aboutData;
                 height="22"
                 fill="none"
             >
-                <g fill="#FDFCFB" stroke="currentColor" clip-path="url(#a)">
+                <g stroke="currentColor">
                     <circle
-                        class="top-circule-feed"
+                        class="dot-feed top"
                         cx="17.608"
                         cy="2.454"
-                        r="1.954"
-                        transform="rotate(90 17.608 2.454)"></circle>
+                        r="1.954"></circle>
                     <circle
-                        class="medium-circule-feed"
+                        class="dot-feed medium"
                         cx="5.938"
                         cy="10.908"
-                        r="5.5"
-                        transform="rotate(90 5.938 10.908)"></circle>
-                    <circle class="bottom-circule-feed" cx="2.392" cy="19.362">
-                        r="1.954" transform="rotate(90 2.392 19.362)"></circle
-                    >
+                        r="5.5"></circle>
+                    <circle
+                        class="dot-feed bottom"
+                        cx="2.392"
+                        cy="19.362"
+                        r="1.954"></circle>
                 </g>
-                <defs
-                    ><clipPath id="a"
-                        ><path fill="currentColor" d="M0 0h22v22H0z"
-                        ></path></clipPath
-                    ></defs
-                >
             </svg>
         </div>
         <p class="split-texte" data-i18n-key={`${about[1].id}_texte`}>
@@ -89,30 +83,19 @@ const about = aboutData;
                 height="22"
                 fill="none"
             >
-                <g clip-path="url(#a)">
-                    <circle
-                        class="circle-left"
-                        cx="5.906"
-                        cy="5.031"
-                        r="4.531"
-                        fill="none"
-                        stroke="currentColor"
-                        transform="rotate(90 5.906 5.031)"></circle>
-                    <path fill="currentColor" d="M21 11.062H.875v-1H21z"></path>
-                    <circle
-                        class="circle-right"
-                        cx="16.969"
-                        cy="16.094"
-                        r="4.531"
-                        fill="none"
-                        stroke="currentColor"
-                        transform="rotate(90 16.969 16.094)"></circle>
-                </g>
-                <defs
-                    ><clipPath id="a"
-                        ><path fill="" d="M0 0h22v22H0z"></path></clipPath
-                    ></defs
-                >
+                <circle
+                    class="circle-left"
+                    cx="5.906"
+                    cy="5.031"
+                    r="4.531"
+                    stroke="currentColor"></circle>
+                <path fill="currentColor" d="M21 11.062H.875v-1H21z"></path>
+                <circle
+                    class="circle-right"
+                    cx="16.969"
+                    cy="16.094"
+                    r="4.531"
+                    stroke="currentColor"></circle>
             </svg>
         </div>
         <p class="split-texte" data-i18n-key={`${about[2].id}_texte`}>
@@ -120,7 +103,7 @@ const about = aboutData;
         </p>
     </article>
 
-    <article class="about-block c">
+    <article class="about-block d">
         <div class="software">
             <h4 data-i18n-key={`${about[3].id}_titre`}>{about[3].fr.titre}</h4>
             <Software />
@@ -171,16 +154,169 @@ const about = aboutData;
     /* --- GESTION DE LA VISIBILITÉ --- */
     .split-texte {
         opacity: 0;
-        transform: translateY(10px);
-        transition:
-            opacity 0.5s ease,
-            transform 0.5s ease;
+        transform: translateY(20px);
+        transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .split-texte.is-visible,
     :global(.is-home) .split-texte {
         opacity: 1 !important;
-        visibility: visible !important;
+        filter: blur(0) !important;
+        transform: translateY(0) !important;
+    }
+    [data-ghost]::after {
+        content: attr(data-ghost);
+        display: block;
+        height: 0;
+        visibility: hidden;
+        overflow: hidden;
+    }
+    .title-about svg {
+        overflow: visible;
+    }
+
+    /* ------ */
+    /* --- Animation SVG --- */
+    /* ------ */
+    .stroke-circle-approche,
+    .dot-feed,
+    .circle-left,
+    .circle-right {
+        will-change: transform, stroke-dashoffset;
+    }
+    /* --- 1. APPROCHE (Cercles qui swappent) --- */
+    .stroke-circle-approche {
+        /* On force l'unité px pour que le navigateur comprenne */
+        stroke-dasharray: calc(var(--path-len) * 1px)
+            calc(var(--path-len) * 1px);
+        stroke-dashoffset: calc(var(--path-len) * 1px);
+
+        animation: drawInfinite 4s linear infinite;
+        transform-origin: center;
+        transform-box: fill-box;
+        stroke-linecap: round;
+    }
+
+    /* Correction du sélecteur : nth-of-type est plus fiable que nth-child ici */
+    circle.stroke-circle-approche:nth-of-type(2) {
+        animation-delay: -2s;
+    }
+
+    @keyframes drawInfinite {
+        0% {
+            /* On anime de 2 longueurs à 0 pour l'effet de poursuite */
+            stroke-dashoffset: calc(var(--path-len) * 2px);
+            transform: rotate(0deg);
+        }
+        100% {
+            stroke-dashoffset: 0px;
+            transform: rotate(360deg);
+        }
+    }
+
+    /* --- 2. What feeds my practice --- */
+    .dot-feed {
+        transform-origin: center;
+        transform-box: fill-box;
+        will-change: transform;
+    }
+
+    .dot-feed.top {
+        animation:
+            driftX 3.7s ease-in-out infinite,
+            driftY 4.3s ease-in-out infinite,
+            pulse 5s ease-in-out infinite;
+    }
+
+    .dot-feed.medium {
+        animation:
+            driftX 5.1s ease-in-out infinite reverse,
+            driftY 3.9s ease-in-out infinite,
+            pulse 4s ease-in-out infinite;
+        animation-delay: -1s;
+    }
+
+    .dot-feed.bottom {
+        animation:
+            driftX 4.7s ease-in-out infinite,
+            driftY 5.9s ease-in-out infinite reverse,
+            pulse 6s ease-in-out infinite;
+        animation-delay: -2.5s;
+    }
+
+    /* Mouvement Horizontal */
+    @keyframes driftX {
+        0%,
+        100% {
+            transform: translateX(-3px);
+        }
+        50% {
+            transform: translateX(3px);
+        }
+    }
+
+    /* Mouvement Vertical (indépendant) */
+    @keyframes driftY {
+        0%,
+        100% {
+            transform: translateY(-2px);
+        }
+        50% {
+            transform: translateY(2px);
+        }
+    }
+
+    /* Légère respiration d'échelle et d'opacité */
+    @keyframes pulse {
+        0%,
+        100% {
+            opacity: 1;
+            scale: 1;
+        }
+        50% {
+            opacity: 0.6;
+            scale: 1.1;
+        }
+    }
+    /* --- 3. EQUILIBRE (Cercles qui swappent) --- */
+    .circle-left {
+        animation: swapLeft 2.1s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+    .circle-right {
+        animation: swapRight 2.1s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+
+    @keyframes swapLeft {
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+        50% {
+            transform: translateX(11.063px);
+        }
+    }
+    @keyframes swapRight {
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+        50% {
+            transform: translateX(-11.063px);
+        }
+    }
+
+    /* --- 4. REVEAL TEXTE (Apparition au scroll) --- */
+    .split-texte {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+            opacity 0.8s ease-out,
+            transform 0.8s ease-out;
+        will-change: transform, opacity;
+    }
+
+    .split-texte.is-visible {
+        opacity: 1 !important;
         transform: translateY(0) !important;
     }
 
@@ -205,75 +341,37 @@ const about = aboutData;
 </style>
 
 <script>
-    import { animate, stagger } from "animejs";
-
-    const runAboutAnimations = () => {
-        // 1. Animation du texte (Correction du sélecteur .split-texte)
-        const textElements = document.querySelectorAll(".split-texte");
-        if (textElements.length > 0) {
-            animate(textElements, {
-                opacity: [0, 1],
-                translateY: [20, 0],
-                duration: 1000,
-                easing: "outExpo",
-                delay: stagger(150),
-                complete: () => {
-                    textElements.forEach((el) =>
-                        el.classList.add("is-visible"),
-                    );
-                },
-            });
-        }
-
-        // 2. Animation EQUILIBRE
-        const deltaX = 11.063;
-        animate(".circle-left", {
-            translateX: [0, deltaX, 0],
-            duration: 2100,
-            easing: "inOutExpo",
-            loop: true,
-        });
-        animate(".circle-right", {
-            translateX: [0, -deltaX, 0],
-            duration: 2100,
-            easing: "inOutExpo",
-            loop: true,
-        });
-
-        // 4. Animation APPROCHE (Strokes)
-        const strokes = document.querySelectorAll<SVGGeometryElement>(
+    const initAbout = () => {
+        // 1. Calcul des longueurs SVG (Approche)
+        const strokes = document.querySelectorAll<SVGCircleElement>(
             ".stroke-circle-approche",
         );
-        strokes.forEach((el) => {
-            const length = el.getTotalLength();
-            el.style.strokeDasharray = `${length}`;
-            el.style.strokeDashoffset = `${length}`;
-            animate(el, {
-                strokeDashoffset: 0,
-                duration: 4000,
-                easing: "inOutExpo",
-                direction: "alternate",
-                loop: true,
-            });
+        strokes.forEach((s) => {
+            const len = s.getTotalLength();
+            s.style.setProperty("--path-len", len.toString());
         });
+
+        // 2. Reveal au Scroll (Intersection Observer)
+        // C'est beaucoup plus performant que de surveiller l'événement 'scroll'
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        (entry.target as HTMLElement).classList.add(
+                            "is-visible",
+                        );
+                        observer.unobserve(entry.target); // On arrête de surveiller une fois visible
+                    }
+                });
+            },
+            { threshold: 0.15 },
+        );
+
+        document
+            .querySelectorAll(".split-texte")
+            .forEach((el) => observer.observe(el));
     };
 
-    // Initialisation Astro
-    document.addEventListener("astro:page-load", runAboutAnimations);
-
-    // Sécurité Changement de Langue
-    window.addEventListener("click", (e) => {
-        const target = e.target as HTMLElement;
-        if (
-            target.closest(".language-toggle") ||
-            target.closest("[data-lang]")
-        ) {
-            setTimeout(() => {
-                document.querySelectorAll(".split-texte").forEach((el) => {
-                    el.classList.add("is-visible");
-                    (el as HTMLElement).style.opacity = "1";
-                });
-            }, 100);
-        }
-    });
+    // Gestion du cycle de vie Astro
+    document.addEventListener("astro:page-load", initAbout);
 </script>

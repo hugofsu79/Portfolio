@@ -110,18 +110,18 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
                         <g>
                             <rect
                                 id="rect-1"
-                                x="0"
-                                y="16"
-                                width="48"
+                                x="8"
+                                y="22"
+                                width="32"
                                 height="4"
                                 rx="0.6"
                                 fill="currentColor"
                             />
                             <rect
                                 id="rect-2"
-                                x="0"
-                                y="28"
-                                width="48"
+                                x="8"
+                                y="22"
+                                width="32"
                                 height="4"
                                 rx="0.6"
                                 fill="currentColor"
@@ -191,7 +191,32 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         pointer-events: none;
         transition: width 0.1s ease-out;
     }
+    #hamburger-btn svg {
+        overflow: visible;
+    }
 
+    #rect-1,
+    #rect-2 {
+        /* On centre les barres verticalement au repos dans le SVG (48 / 2 - hauteur/2 = 22) */
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        transform-origin: center;
+    }
+
+    /* --- ÉTAT FERMÉ (Parallèles) --- */
+    #rect-1 {
+        transform: translateY(-6px);
+    }
+    #rect-2 {
+        transform: translateY(6px);
+    }
+
+    .is-open #rect-1 {
+        transform: translateY(0px) rotate(45deg);
+    }
+
+    .is-open #rect-2 {
+        transform: translateY(0px) rotate(-45deg);
+    }
     /* --- 3. LIENS DESKTOP & LOGIQUE D'AFFICHAGE --- */
     .nav-links {
         display: flex;

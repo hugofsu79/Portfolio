@@ -263,13 +263,10 @@ import ContactMiniat from "../ui/ContactMiniat.astro";
         /* AJOUTS ESSENTIELS */
         display: flex;
         align-items: center;
-        /* Aligne tout le monde sur le centre vertical */
         white-space: nowrap;
         width: max-content;
-        /* Force le conteneur à prendre la largeur de son contenu */
     }
 
-    /* Gestion de tes deux baselines (top et bottom) */
     footer .baseline-footer:first-of-type {
         top: 5px;
         bottom: auto;
@@ -281,9 +278,7 @@ import ContactMiniat from "../ui/ContactMiniat.astro";
 
     .muted {
         display: inline-flex;
-        /* Changé de inline-block à inline-flex */
         align-items: center;
-        /* Aligne le contenu du span au centre aussi */
         max-width: 0;
         overflow: hidden;
         will-change: max-width, opacity;
@@ -295,7 +290,6 @@ import ContactMiniat from "../ui/ContactMiniat.astro";
 
     .baseline-footer.is-visible .muted {
         max-width: 20rem;
-        /* Augmenté pour être sûr de ne pas couper le nom */
         margin: 0 0.3em;
     }
 
@@ -400,7 +394,7 @@ import ContactMiniat from "../ui/ContactMiniat.astro";
 
     .rectangle {
         background-color: var(--stroke-primary);
-        opacity: 0.2;
+        opacity: 0.8;
         width: 1px;
         height: 4vh;
         overflow: hidden;
@@ -439,9 +433,13 @@ import ContactMiniat from "../ui/ContactMiniat.astro";
         font-weight: 200;
     }
     .btn--secondary {
-        border: 1px solid var(--stroke-primary) !important;
+        opacity: 0.3;
         color: var(--text-primary-negat) !important;
     }
+    .btn--secondary {
+        opacity: 1;
+    }
+
     input {
         border-radius: var(--radius-basic);
     }

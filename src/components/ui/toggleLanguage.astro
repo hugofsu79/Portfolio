@@ -99,6 +99,7 @@ export const toggleLang = () => {
     }
 
     .toggle-langue .option {
+        color: var(--text-tertiary);
         width: var(--opt-width);
         text-align: center;
     }
@@ -107,7 +108,6 @@ export const toggleLang = () => {
         width: var(--world-width);
         height: var(--world-width);
         border: solid 0.5px var(--stroke-primary);
-        background-color: var(--layer-background);
         border-radius: 50%;
         overflow: hidden;
         position: relative;
@@ -150,6 +150,9 @@ export const toggleLang = () => {
         .home-only a {
             font-size: 12px !important;
         }
+    }
+    :global(.dark) .toggle-langue .world {
+        background-color: var(--layer-background);
     }
 </style>
 

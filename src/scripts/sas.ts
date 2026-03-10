@@ -1,5 +1,3 @@
-// src/scripts/sas.ts
-
 interface Ball {
     el: HTMLDivElement;
     x: number;
@@ -17,6 +15,7 @@ interface Ball {
     opacity: number;
 }
 
+const AUDIO_PATH = "/sounds/hero_song.mp3";
 let sasAnimationId: number | null = null;
 let isTerminated = false;
 
@@ -83,6 +82,26 @@ function initLiquidLoader() {
     }
     animate();
 }
+function playHeroMusic() {
+    const audio = new Audio(AUDIO_PATH);
+    audio.volume = 0;
+
+    // Stockage global pour contrôle ultérieur si besoin
+    (window as any).mainHeroAudio = audio;
+
+    audio.play().then(() => {
+        // Fade in : passe de 0 à 0.5 en 2 secondes
+        let vol = 0;
+        const interval = setInterval(() => {
+            if (vol < 0.5) {
+                vol += 0.05;
+                audio.volume = Math.min(vol, 0.5);
+            } else {
+                clearInterval(interval);
+            }
+        }, 200);
+    }).catch(err => console.warn("Audio playback failed:", err));
+}
 
 export function initSas() {
     const hasMadeChoice = sessionStorage.getItem("soundPreference");
@@ -90,13 +109,11 @@ export function initSas() {
 
     if (!sasOverlay) return;
 
-    // Si le choix est déjà fait, on cache direct et on s'arrête là
     if (hasMadeChoice) {
         sasOverlay.style.display = "none";
         return;
     }
 
-    // Sinon, on lance le loader et la logique des boutons
     initLiquidLoader();
 
     const btnSound = document.getElementById("trigger-sound");
@@ -104,8 +121,13 @@ export function initSas() {
 
     if (!btnSound || !btnNoSound) return;
 
-    const handleChoice = (sound: boolean) => {
-        sessionStorage.setItem("soundPreference", sound ? "enabled" : "disabled");
+    const handleChoice = (withSound: boolean) => {
+        sessionStorage.setItem("soundPreference", withSound ? "enabled" : "disabled");
+
+        if (withSound) {
+            playHeroMusic();
+        }
+
         sasOverlay.classList.add("is-hidden");
 
         isTerminated = true;
@@ -116,7 +138,7 @@ export function initSas() {
         setTimeout(() => {
             sasOverlay.style.display = "none";
             sasOverlay.innerHTML = "";
-        }, 850);
+        }, 1000);
     };
 
     btnSound.addEventListener("click", () => handleChoice(true));

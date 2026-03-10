@@ -100,7 +100,7 @@ import Button from "../components/ui/Button.astro";
     #sound-sas {
         height: 100vh;
 
-        background-color: var(--layer-background);
+        background-color: var(--layer-background-hero);
     }
     .text-block h3 {
         margin: 0;
@@ -114,6 +114,7 @@ import Button from "../components/ui/Button.astro";
         align-items: left;
         font-size: var(--h4-font-size);
         font-weight: var(--font-weight-regular);
+        opacity: 0.6;
     }
     .context-folio p {
         margin: 0;
@@ -121,6 +122,7 @@ import Button from "../components/ui/Button.astro";
 
     .context-folio p:nth-child(2) {
         font-style: italic;
+        opacity: 0.6;
         align-items: left;
         color: var(--text-secondary);
     }
@@ -139,6 +141,7 @@ import Button from "../components/ui/Button.astro";
         width: 100%;
         height: 100%;
         filter: url("#goo");
+
         position: relative;
 
         pointer-events: none;
@@ -158,8 +161,13 @@ import Button from "../components/ui/Button.astro";
         width: 0;
         height: 0;
     }
+    .sas-overlay p,
+    .text-block h4 {
+        color: var(--text-primary-negat) !important;
+    }
 
     .sas-overlay {
+        color: var(--text-primary-negat);
         position: fixed;
         inset: 0;
         z-index: 9999;
@@ -213,7 +221,8 @@ import Button from "../components/ui/Button.astro";
         display: flex;
         flex-direction: row;
         justify-content: center;
-
+        align-items: center;
+        
         width: 100%;
         gap: var(--space-12);
 

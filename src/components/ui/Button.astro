@@ -11,22 +11,42 @@ interface Props extends HTMLAttributes<"button"> {
 
     type?: "button" | "submit" | "reset";
     disabled?: boolean;
+
+    variation?: number;
+    pixelRatioProp?: number;
+    roundness?: number; // Conservé par principe, mais écrasé par le CSS
+    borderSize?: number;
+    circleSize?: number;
+    circleEdge?: number;
 }
 
 const {
     variant = "primary",
     size = "md",
-
     href,
     target,
     rel,
-
     type = "button",
     disabled = false,
+    variation = 0,
+    pixelRatioProp = 2,
+    roundness = 0.4,
+    borderSize = 0.05,
+    circleSize = 0.3,
+    circleEdge = 0.5,
     ...rest
 } = Astro.props;
 
 const Tag = href ? "a" : "button";
+
+const cfg = JSON.stringify({
+    variation,
+    pixelRatioProp,
+    roundness,
+    borderSize,
+    circleSize,
+    circleEdge,
+});
 ---
 
 <Tag
@@ -38,107 +58,361 @@ const Tag = href ? "a" : "button";
         : undefined}
     type={!href ? type : undefined}
     disabled={!href ? disabled : undefined}
-    class={["btn", `btn--${variant}`, `btn--${size}`].join(" ")}
+    class:list={["btn", `btn--${variant}`, `btn--${size}`]}
 >
+    <div class="btn__blur" data-shape-blur={cfg}></div>
     <slot />
 </Tag>
 
 <style>
-    /* =========================
-     Base
-     ========================= */
     .btn {
-        overflow: hidden;
-
+        position: relative;
+        /* SUPPRESSION DE overflow: hidden POUR LAISSER L'EFFET RESPIRER */
         gap: var(--space-4);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-
         font: inherit;
         font-weight: 500;
         text-decoration: none;
         white-space: nowrap;
-
-        border: none;
-
         cursor: pointer;
         user-select: none;
-
         transition:
             background-color 150ms ease,
             color 150ms ease,
             border-color 150ms ease,
-            transform 120ms ease;
+            transform 120ms ease,
+            opacity 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+        border: none;
     }
 
-    /* =========================
-     Sizes
-     ========================= */
+    .btn__blur {
+        position: absolute;
+        inset: -20px;
+        pointer-events: none;
+        z-index: 0;
+        border: none;
+    }
 
+    .btn > :not(.btn__blur) {
+        position: relative;
+        z-index: 1;
+        border: none;
+    }
+
+    .btn--sm {
+        padding: var(--space-6) var(--space-10);
+        font-size: 0.875rem;
+        border: none;
+
+        border-radius: var(--radius-basic);
+    }
+    .btn--md {
+        padding: var(--space-10) var(--space-12);
+        font-size: 1rem;
+        border: none;
+
+        border-radius: var(--radius-basic);
+    }
     .btn--lg {
-        overflow: hidden;
-
         padding: var(--space-14);
         font-size: 1rem;
+        border: none;
+
         border-radius: var(--radius-basic);
     }
 
-    /* =========================
-     Variants
-     ========================= */
-
-    /* Primary */
     .btn--primary {
-        overflow: hidden;
-
         opacity: 0.6;
-        font-weight: var(--font-weight-medium);
         background-color: transparent;
-        border: solid 1px var(--stroke-tertiary);
         color: var(--text-tertiary);
-        transition: opacity 360ms ease;
-    }
+        border: none;
 
+        --btn-shader-color: #ffffff;
+    }
     .btn--primary:hover {
         opacity: 1;
     }
-    .btn--primary:hover:not(:disabled) {
-        /* background-color: var(--fill-hover); */
-        background-color: transparent;
-    }
 
-    /* Secondary */
     .btn--secondary {
-        overflow: hidden;
-
-        background-color: transparent;
-        color: var(--text-primary);
-        font-weight: var(--font-weight-medium);
-        border: 1px solid var(--stroke-primary);
-        transition: opacity 360ms ease;
         opacity: 1;
+        background-color: transparent;
+        border: none;
+        color: var(--text-primary);
+        --btn-shader-color: #ffffff;
     }
-
     .btn--secondary:hover:not(:disabled) {
-        border: 1px solid var(--stroke-primary);
         opacity: 0.6;
     }
 
-    /* =========================
-     States
-     ========================= */
     .btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
-
     .btn:active:not(:disabled) {
         transform: translateY(1px);
     }
-
-    .btn:focus-visible {
-        outline: 2px solid var(--fill-accent);
-        outline-offset: 2px;
-    }
 </style>
+
+<script>
+    import * as THREE from "three";
+
+    const vertexShader = /* glsl */ `
+varying vec2 v_texcoord;
+void main() {
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    v_texcoord = uv;
+}
+`;
+
+    const fragmentShader = /* glsl */ `
+varying vec2 v_texcoord;
+
+uniform vec2 u_mouse;
+uniform vec2 u_resolution;
+uniform float u_pixelRatio;
+uniform vec3 u_color;
+uniform float u_intensity; 
+
+uniform vec2 u_shapeSize;
+uniform float u_roundness;
+uniform float u_borderSize;
+uniform float u_circleSize;
+uniform float u_circleEdge;
+
+#ifndef PI
+#define PI 3.1415926535897932384626433832795
+#endif
+#ifndef TWO_PI
+#define TWO_PI 6.2831853071795864769252867665590
+#endif
+
+#ifndef VAR
+#define VAR 0
+#endif
+
+vec2 coord(in vec2 p) {
+    p = p / u_resolution.xy;
+    if (u_resolution.x > u_resolution.y) {
+        p.x *= u_resolution.x / u_resolution.y;
+        p.x += (u_resolution.y - u_resolution.x) / u_resolution.y / 2.0;
+    } else {
+        p.y *= u_resolution.y / u_resolution.x;
+        p.y += (u_resolution.x - u_resolution.y) / u_resolution.x / 2.0;
+    }
+    p -= 0.5;
+    p *= vec2(-1.0, 1.0);
+    return p;
+}
+
+#define st0 coord(gl_FragCoord.xy)
+#define mx coord(u_mouse * u_pixelRatio)
+
+float sdRoundRect(vec2 p, vec2 b, float r) {
+    vec2 d = abs(p - 0.5) * 4.2 - b + vec2(r);
+    return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - r;
+}
+float sdCircle(in vec2 st, in vec2 center) {
+    return length(st - center) * 2.0;
+}
+
+float fill(float x, float size, float edge) {
+    return 1.0 - smoothstep(size - edge, size + edge, x);
+}
+
+float strokeAA(float x, float size, float w, float edge) {
+    float afwidth = length(vec2(dFdx(x), dFdy(x))) * 0.70710678;
+    float d = smoothstep(size - edge - afwidth, size + edge + afwidth, x + w * 0.5)
+            - smoothstep(size - edge - afwidth, size + edge + afwidth, x - w * 0.5);
+    return clamp(d, 0.0, 1.0);
+}
+
+void main() {
+    vec2 st = st0 + 0.5;
+    vec2 posMouse = mx * vec2(1., -1.) + 0.5;
+
+    float sdfCircle = fill(sdCircle(st, posMouse), u_circleSize, u_circleEdge);
+
+    float sdf = sdRoundRect(st, u_shapeSize, u_roundness);
+    sdf = strokeAA(sdf, 0.0, u_borderSize, sdfCircle) * 4.0;
+
+    gl_FragColor = vec4(u_color, sdf * u_intensity);
+}
+`;
+
+    function mount(mountEl: HTMLDivElement, cfg: any): () => void {
+        let animationFrameId: number;
+        let lastTime = 0;
+
+        const vMouse = new THREE.Vector2(
+            mountEl.clientWidth / 2,
+            mountEl.clientHeight / 2,
+        );
+        const vMouseDamp = new THREE.Vector2(
+            mountEl.clientWidth / 2,
+            mountEl.clientHeight / 2,
+        );
+        const vResolution = new THREE.Vector2();
+
+        const baseEdge = 0.02;
+        const targetEdge = { value: baseEdge };
+        let baseIntensity = 0.3;
+        let targetIntensity = baseIntensity;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera();
+        camera.position.z = 1;
+
+        const renderer = new THREE.WebGLRenderer({
+            alpha: true,
+            antialias: true,
+        });
+        renderer.setClearColor(0x000000, 0);
+        mountEl.appendChild(renderer.domElement);
+
+        const geo = new THREE.PlaneGeometry(1, 1);
+        const material = new THREE.ShaderMaterial({
+            vertexShader,
+            fragmentShader,
+            transparent: true,
+            uniforms: {
+                u_mouse: { value: vMouseDamp },
+                u_resolution: { value: vResolution },
+                u_pixelRatio: { value: cfg.pixelRatioProp },
+                u_shapeSize: { value: new THREE.Vector2() },
+                u_roundness: { value: cfg.roundness },
+                u_borderSize: { value: cfg.borderSize },
+                u_circleSize: { value: cfg.circleSize },
+                u_circleEdge: { value: baseEdge },
+                u_color: { value: new THREE.Color(0xffffff) },
+                u_intensity: { value: baseIntensity },
+            },
+        });
+
+        const quad = new THREE.Mesh(geo, material);
+        scene.add(quad);
+
+        const onPointerMove = (e: PointerEvent | MouseEvent) => {
+            const rect = mountEl.getBoundingClientRect();
+            vMouse.set(e.clientX - rect.left, e.clientY - rect.top);
+            targetIntensity = 1.0;
+            targetEdge.value = 0.6;
+        };
+
+        const onPointerLeave = () => {
+            const w = mountEl.clientWidth;
+            const h = mountEl.clientHeight;
+            vMouse.set(w / 2, h / 2);
+
+            targetIntensity = baseIntensity;
+            targetEdge.value = baseEdge;
+        };
+
+        mountEl.parentElement?.addEventListener("mousemove", onPointerMove);
+        mountEl.parentElement?.addEventListener("mouseleave", onPointerLeave);
+
+        const resize = () => {
+            const w = mountEl.clientWidth;
+            const h = mountEl.clientHeight;
+            const dpr = Math.min(window.devicePixelRatio, 2);
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(dpr);
+            camera.left = -w / 2;
+            camera.right = w / 2;
+            camera.top = h / 2;
+            camera.bottom = -h / 2;
+            camera.updateProjectionMatrix();
+            quad.scale.set(w, h, 1);
+            vResolution.set(w, h).multiplyScalar(dpr);
+            material.uniforms.u_pixelRatio.value = dpr;
+
+            const btnEl = mountEl.parentElement;
+            if (btnEl) {
+                const style = window.getComputedStyle(btnEl);
+                const vmin = Math.min(w, h);
+                material.uniforms.u_shapeSize.value.set(
+                    (btnEl.offsetWidth / vmin) * 2.1,
+                    (btnEl.offsetHeight / vmin) * 2.1,
+                );
+                material.uniforms.u_roundness.value =
+                    (parseFloat(style.borderRadius) / vmin) * 2.1;
+
+                let colorStr = style
+                    .getPropertyValue("--btn-shader-color")
+                    .trim();
+                if (!colorStr || colorStr.startsWith("var"))
+                    colorStr = style.color;
+                material.uniforms.u_color.value.setStyle(colorStr);
+            }
+        };
+
+        resize();
+        window.addEventListener("resize", resize);
+
+        const update = (t: number) => {
+            const dt = (t - lastTime) / 1000;
+            lastTime = t;
+
+            vMouseDamp.x = THREE.MathUtils.damp(
+                vMouseDamp.x,
+                vMouse.x,
+                8,
+                dt || 0.016,
+            );
+            vMouseDamp.y = THREE.MathUtils.damp(
+                vMouseDamp.y,
+                vMouse.y,
+                8,
+                dt || 0.016,
+            );
+
+            // Intensité plus lente (passée de 4 à 2) pour plus de délicatesse
+            material.uniforms.u_intensity.value = THREE.MathUtils.damp(
+                material.uniforms.u_intensity.value,
+                targetIntensity,
+                2,
+                dt || 0.016,
+            );
+
+            // Résorption du trait plus douce (passée de 6 à 3)
+            material.uniforms.u_circleEdge.value = THREE.MathUtils.damp(
+                material.uniforms.u_circleEdge.value,
+                targetEdge.value,
+                3,
+                dt || 0.016,
+            );
+
+            renderer.render(scene, camera);
+            animationFrameId = requestAnimationFrame(update);
+        };
+        animationFrameId = requestAnimationFrame(update);
+
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener("resize", resize);
+            mountEl.parentElement?.removeEventListener(
+                "mousemove",
+                onPointerMove,
+            );
+            mountEl.parentElement?.removeEventListener(
+                "mouseleave",
+                onPointerLeave,
+            );
+            renderer.dispose();
+        };
+    }
+
+    function init() {
+        document
+            .querySelectorAll<HTMLDivElement>("[data-shape-blur]")
+            .forEach((el) => {
+                if (el.dataset.init) return;
+                el.dataset.init = "1";
+                mount(el, JSON.parse(el.dataset.shapeBlur!));
+            });
+    }
+    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("astro:page-load", init);
+</script>

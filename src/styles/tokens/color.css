@@ -28,22 +28,25 @@
     --core-brown-900: #2b0900;
 
     /* =========================
-        Core — Blue
-     ========================= */
-    --core-blue-100: #aac6f3;
-    --core-blue-200: #8ab2f1;
-    --core-blue-300: #518be7;
-    --core-blue-500: #1a57b7;
-    --core-blue-600: #0f336a;
-    --core-blue-700: #0b1f3e;
-
+            Core — Orange
+         ========================= */
+    --core-orange-50: #FFF8F0;
+    --core-orange-100: #ffe4cc;
+    --core-orange-200: #FFC085;
+    --core-orange-300: #F88000;
+    --core-orange-400: #D96A00;
+    --core-orange-500: #B35400;
+    --core-orange-600: #8C4000;
+    --core-orange-700: #662E00;
+    --core-orange-800: #401D00;
+    --core-orange-900: #1A0C00;
     /* =========================
-        Core — Green
+        Core — blue
      ========================= */
-    --core-green-100: #cdfac7;
-    --core-green-300: #7bf06b;
-    --core-green-500: #2fde17;
-    --core-green-700: #1b810d;
+    --core-blue-100: #d0f4ff;
+    --core-blue-300: #70dfff;
+    --core-blue-500: #0099ff;
+    --core-blue-700: #0059b3;
 
     /* =========================
         Core — Mono
@@ -74,23 +77,27 @@
     --core-beige-800: #574228;
     --core-beige-900: #342818;
 
+
+
     /* =========================
         Semantic — Layer
      ========================= */
-    --layer-background: var(--core-neutral-700);
-    --layer-background-hero: var(--core-neutral-800);
+    --layer-background: var(--core-orange-50);
+    --layer-card-background: var(--core-orange-100);
+    --layer-background-hero: var(--core-orange-400);
+    --layer-background-nav: var(--core-orange-100);
     --layer-background-negat: var(--core-beige-900);
     --layer-surface: var(--core-neutral-50);
 
     /* =========================
                     Semantic — Text
                  ========================= */
-    --text-primary: var(--core-neutral-100);
-    --text-primary-negat: var(--core-neutral-50);
-    --text-secondary: var(--core-neutral-200);
-    --text-tertiary: var(--core-beige-50);
-    --text-on-accent: var(--core-blue-500);
-    --text-initial: var(--core-neutral-400);
+    --text-primary: var(--core-orange-400);
+    --text-primary-negat: var(--core-orange-200);
+    --text-secondary: var(--core-orange-300);
+    --text-tertiary: var(--core-orange-50);
+    --text-on-accent: var(--core-blue-700);
+    --text-initial: var(--core-orange-50);
 
     --text-footer: var(--core-beige-700);
     --text-footer-form: var(--static-opacit-2);
@@ -98,19 +105,19 @@
     /* =========================
                     Semantic — Fill
                  ========================= */
-    --fill-brand: var(--core-neutral-50);
-    --fill-accent: var(--core-beige-100);
-    --fill-hover: var(--core-neutral-500);
+    --fill-brand: var(--core-orange-400);
+    --fill-accent: var(--core-orange-100);
+    --fill-hover: var(--core-orange-500);
     --fill-success: var(--core-green-500);
     --fill-error: var(--core-red-500);
     --fill-hero: var(--core-beige-100);
     /* =========================
                     Semantic — Stroke
                      ========================= */
-    --stroke-primary: var(--core-neutral-200);
-    --stroke-secondary: var(--core-neutral-700);
-    --stroke-tertiary: var(--core-neutral-600);
-    --stroke-section: var(--core-neutral-100);
+    --stroke-primary: var(--core-orange-200);
+    --stroke-secondary: var(--core-orange-700);
+    --stroke-tertiary: var(--core-orange-600);
+    --stroke-section: var(--core-orange-100);
 
 
     /* =========================
@@ -124,15 +131,17 @@
 
     --static-black: black;
     --static-transparent: transparent;
-    --static-gradient-to: var(--core-neutral-600);
-    --static-gradient-end: var(--core-neutral-700);
+    --static-gradient-to: var(--core-orange-400);
+    --static-gradient-end: var(--core-orange-400);
 }
 
 
 @media (prefers-color-scheme: dark) {
     :root {
         --layer-background: var(--core-neutral-700);
+        --layer-card-background: var(--static-opacit-50);
         --layer-background-hero: var(--core-neutral-800);
+        --layer-background-nav: var(--core-neutral-700);
         --layer-background-negat: var(--core-beige-900);
         --layer-surface: var(--core-neutral-50);
 

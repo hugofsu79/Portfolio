@@ -37,6 +37,96 @@ const { images } = Astro.props;
         </div>
     )
 }
+<style>
+    .carouselAll {
+        position: relative;
+        width: 100%;
+        margin: var(--space-32) 0;
+    }
+
+    .carousel__viewport {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: var(--radius-basic);
+        cursor: crosshair;
+    }
+
+    .carousel__track {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .carousel__slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.8s ease;
+    }
+
+    .carousel__slide.is-active {
+        opacity: 1;
+        visibility: visible;
+        z-index: 1;
+    }
+
+    /* Animation de transition Clip-Path (Next/Prev) */
+    .carousel__slide.is-entering {
+        opacity: 1;
+        visibility: visible;
+        z-index: 2;
+        animation: slideInNext 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+    }
+
+    [data-direction="prev"] .carousel__slide.is-entering {
+        animation: slideInPrev 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+    }
+
+    @keyframes slideInNext {
+        from {
+            clip-path: inset(0 0 0 100%);
+        }
+        to {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    @keyframes slideInPrev {
+        from {
+            clip-path: inset(0 100% 0 0);
+        }
+        to {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    .carousel__slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Loupe (Magnifier) */
+    :global(.magnifier-lens) {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10;
+        background-repeat: no-repeat;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        transform: translate(-50%, -50%);
+    }
+</style>
+
 <script>
     function initCarousel(carousel: HTMLElement) {
         // 1. Sécurité anti-double exécution

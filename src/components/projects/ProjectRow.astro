@@ -64,74 +64,59 @@ const lang = Astro.currentLocale || "fr";
 </section>
 
 <style>
+    .projects-list {
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
     .project-row {
         position: relative;
-        overflow: hidden;
+        overflow: hidden; /* Important pour Desktop */
         border-bottom: 0.5px solid var(--stroke-primary);
-        cursor: pointer;
         min-height: 140px;
-    }
-    .project-preview {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 5;
-
-        top: 0;
-        left: 0;
-    }
-
-    .project-preview img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 280px;
-        height: auto;
-        opacity: 0;
-        will-change: transform;
-        /* AUCUNE transition sur le transform pour la physique JS, sinon ça lag */
-        transition: opacity 0.3s ease-out;
-    }
-
-    .project-preview img.desktop-img {
-        position: absolute;
-        width: 280px;
-        height: auto;
-        display: block;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-
-        top: 0;
-        left: 0;
+        cursor: pointer;
+        transition: background 0.3s ease;
     }
 
     .project-row:last-child {
         border-bottom: none;
     }
 
+    .project-row-link {
+        position: relative;
+        z-index: 12;
+        display: block;
+        text-decoration: none;
+    }
+
     .project-title {
         display: flex;
         align-items: center;
-        gap: var(--space-12);
+        gap: var(--space-24);
+        padding: var(--space-32) 0;
         transition: padding 420ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .project-title h3 {
-        margin: 20px;
+        margin: 0;
         font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: var(--font-weight-bold);
         line-height: 1.05;
-        transition:
-            transform 400ms ease,
-            color 400ms ease;
     }
 
+    /* --- EFFET FOCUS (Opacité) --- */
     .project-year,
     .project-title h3,
     .project-subtitle {
         color: var(--text-primary);
         opacity: 0.2;
         transform: scale(0.98);
+        transition:
+            opacity 0.4s ease,
+            transform 0.4s ease;
     }
 
     .project-row:hover h3,
@@ -141,127 +126,78 @@ const lang = Astro.currentLocale || "fr";
         transform: scale(1);
     }
 
-    /* --- LE FIX POUR DESKTOP --- */
-    #global-preview {
-        position: fixed;
+    /* --- DESKTOP PREVIEW (Suivi de souris) --- */
+    .project-preview {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
         top: 0;
         left: 0;
-        pointer-events: none !important;
-        z-index: 9999;
-        display: none;
-        will-change: transform;
-
-        transition: none;
     }
 
-    #global-preview img {
-        width: 320px;
+    .project-preview img.desktop-img {
+        position: absolute;
+        width: 280px;
         height: auto;
         display: block;
         opacity: 0;
-
+        will-change: transform;
+        /* AUCUNE transition sur transform pour éviter le lag avec le JS Lerp */
         transition: opacity 0.3s ease-out;
-
-        transform: rotate(-1deg);
+        top: 0;
+        left: 0;
     }
 
-    .project-row-link {
-        position: relative;
-        z-index: 12;
-        display: block;
+    .project-row:hover .desktop-img {
+        opacity: 1;
     }
 
-    /* CACHER LES PREVIEWS INDIVIDUELLES SUR DESKTOP */
+    /* --- MOBILE LOGIC (Intersection Observer) --- */
     .mobile-preview-only {
         display: none;
     }
-    @media (min-width: 769px) {
-        .project-row {
-            overflow: hidden;
-        }
-        .mobile-preview-only {
-            display: none;
-        }
-    }
-    /* --- MOBILE LAYOUT --- */
+
     @media (max-width: 768px) {
         .project-row {
             overflow: visible !important;
-            padding: var(--space-32) 0; /* Un peu plus d'espace pour le confort mobile */
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* --- ÉTAT PAR DÉFAUT (Éteint) --- */
-        .project-year,
-        .project-title h3,
-        .project-subtitle {
-            opacity: 0.2; /* On baisse l'opacité par défaut */
-            transform: scale(0.98);
-            transition:
-                opacity 0.5s ease,
-                transform 0.5s ease;
+            padding: var(--space-12) 0;
         }
 
         .project-title {
-            display: flex;
             flex-direction: column;
             align-items: flex-start;
             gap: var(--space-8);
-            z-index: 2;
+            padding: var(--space-24) 0;
         }
 
         .project-title h3 {
-            margin: 0;
-            font-size: clamp(2rem, 8vw, 2.5rem); /* Ajustement taille mobile */
+            font-size: clamp(2rem, 8vw, 2.5rem);
         }
 
-        /* --- L'IMAGE (Préparation) --- */
         .mobile-preview-only {
-            display: block !important; /* Force l'affichage car le desktop le cache */
+            display: block !important;
             position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        /* Texte par défaut (discret) */
-        .project-year,
-        .project-title h3,
-        .project-subtitle {
-            opacity: 0.2;
-            transform: scale(0.98);
-            transition:
-                opacity 0.5s ease,
-                transform 0.5s ease;
-        }
-
-        /* --- L'IMAGE : Version miniature par défaut --- */
-        .mobile-preview-only img {
-            display: block;
-            position: absolute;
-
-            /* Positionnée en haut à droite */
             right: 0px;
-            top: 0px;
+            top: 20px;
+            z-index: 10;
+            pointer-events: none;
+        }
 
+        .mobile-preview-only img {
             width: 40px;
             height: auto;
             border-radius: var(--radius-basic);
-
             opacity: 0;
             transform: scale(0.4);
             transform-origin: top right;
-
             transition:
                 opacity 0.5s ease,
                 transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-                width 0.5s ease,
-                top 0.5s ease;
+                width 0.5s ease;
         }
 
-        /* --- ÉTAT ACTIF (Focus au milieu de l'écran) --- */
+        /* État quand l'Intersection Observer ajoute la classe */
         .project-row.is-active .project-year,
         .project-row.is-active h3,
         .project-row.is-active .project-subtitle {

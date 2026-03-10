@@ -66,6 +66,7 @@ import LogoHero from "../ui/Logohero.astro";
     #hero-job {
         margin: 0;
 
+        color: var(--text-tertiary);
         font-family: var(--font-family-base);
         font-weight: var(--font-weight-bold);
         font-size: clamp(16px, 1.2vw, 18px);
@@ -82,8 +83,7 @@ import LogoHero from "../ui/Logohero.astro";
         height: 100vh;
         overflow: hidden;
         position: relative;
-        opacity: 0;
-        visibility: hidden;
+        
     }
     .hero-layers {
         position: relative;
@@ -155,6 +155,7 @@ import LogoHero from "../ui/Logohero.astro";
         filter: none !important;
     }
     #hero-label {
+        color: var(--text-initial);
         width: fit-content;
     }
     .top-hero,
@@ -262,7 +263,7 @@ import LogoHero from "../ui/Logohero.astro";
         transform: translateY(
             10px
         ); /* Décalage vers le bas pour l'effet de montée */
-        border-left: solid 1px var(--stroke-tertiary);
+        border-left: solid 1px var(--stroke-primary);
         margin-left: var(--space-8);
         padding-left: var(--space-4);
         will-change: opacity, transform; /* Optimisation performance */

@@ -80,7 +80,9 @@ const lang = Astro.currentLocale || "fr";
         cursor: pointer;
         transition: background 0.3s ease;
     }
-
+    .desktop-only {
+        display: block;
+    }
     .project-row:last-child {
         border-bottom: none;
     }
@@ -163,7 +165,10 @@ const lang = Astro.currentLocale || "fr";
             overflow: visible !important;
             padding: var(--space-12) 0;
         }
-
+        .project-preview,
+        .desktop-only {
+            display: none !important;
+        }
         .project-title {
             flex-direction: column;
             align-items: flex-start;

@@ -1,0 +1,31 @@
+---
+interface Props {
+    logoPath: string;
+    className?: string;
+}
+
+const { logoPath, className } = Astro.props;
+
+const allLogos = import.meta.glob("/public/**/*.svg", {
+    query: "?raw",
+    eager: true,
+});
+
+const rawContent = allLogos[logoPath]
+    ? (allLogos[logoPath] as any).default
+    : "";
+---
+
+<div class={`logo-wrapper ${className}`} set:html={rawContent} />
+
+<style is:global>
+    .logo-wrapper svg {
+        width: 70%;
+        height: auto;
+        display: block;
+    }
+
+    .logo-wrapper svg path {
+        fill: var(--text-secondary);
+    }
+</style>

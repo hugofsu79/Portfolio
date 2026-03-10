@@ -67,7 +67,7 @@ ol {
     font-size: var(--p-font-size);
     font-weight: var(--font-weight-regular);
     text-transform: none;
-    color: var(--text-secondary);
+    color: #663500;
 }
 
 body {

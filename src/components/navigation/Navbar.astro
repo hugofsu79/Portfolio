@@ -250,7 +250,6 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
         margin-bottom: -20px;
         cursor: pointer;
     }
-
     .dropdown-liquid-glass {
         position: absolute;
         top: 80%;
@@ -274,7 +273,11 @@ const isLabo = pathname === "/laboratoire" || pathname === "/laboratoire/";
             opacity 0.25s ease,
             transform 0.3s var(--bezier-reveal);
     }
-
+    @media (prefers-color-scheme: light) {
+        .dropdown-liquid-glass a {
+            filter: invert(1);
+        }
+    }
     .projects-dropdown-container::before {
         content: "";
         position: absolute;

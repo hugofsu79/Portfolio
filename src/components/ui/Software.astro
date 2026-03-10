@@ -326,11 +326,11 @@
     .software-item::after {
         content: attr(data-name);
         position: absolute;
-        top: -10px;
+        top: -8px;
         left: 50%;
         transform: translateX(-50%) translateY(0) scale(0.8);
 
-        background: rgba(255, 255, 255, 0.08);
+        background: var(--fill-hero);
         color: var(--text-primary);
         padding: 4px 12px;
         border-radius: 12px;
@@ -351,9 +351,8 @@
     }
     .software-item:hover::after {
         opacity: 1;
-        transform: translateX(-50%) translateY(-25px) scale(1);
+        transform: translateX(-50%) translateY(-12px) scale(1);
     }
-
 
     /* On s'assure que même les éléments avec un trait (stroke) soient fluides */
     .software-item svg path {

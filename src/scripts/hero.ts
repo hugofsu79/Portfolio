@@ -1,14 +1,13 @@
-// On récupère AnimeJS depuis le window (chargé via le script is:inline du Hero)
 const anime = (window as any).anime;
 
 const GLYPHS = "0123456789@#$%&*";
 const AUDIO_PATH = "/sounds/hero_song.mp3";
 
+// Le verrou pour éviter les lancements multiples
 let hasHeroRun = false;
 
 // 1. Logique du Logo
 const animateLogo = () => {
-    // On cible les éléments du logo dans toutes les couches pour l'effet RGB
     const lines = document.querySelectorAll<SVGLineElement>(".stroke-logo-purple line");
     const paths = document.querySelectorAll<SVGPathElement>(".stroke-logo-inside path");
 
@@ -47,23 +46,49 @@ function initClock() {
     update();
 }
 
-// 3. Logique du Cipher
+// 3. Logique de l'animation de décodage (Cipher) avec support du Gras (Bold)
 function animateCipher(el: HTMLElement, delay = 0) {
-    if (!el.dataset.original) {
-        el.dataset.original = el.textContent?.trim() || "";
-    }
-    const targetText = el.dataset.original;
-    if (!targetText) return;
+    if (!el) return;
 
+    // Force la visibilité pour que l'effet soit visible
     el.style.visibility = "visible";
-    const chars = targetText.split("").map((char) => {
-        const span = document.createElement("span");
-        span.className = "char shuffling";
-        span.textContent = char === " " ? "\u00A0" : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-        return { span, final: char };
+    el.style.opacity = "1";
+
+    if (!el.dataset.original) {
+        el.dataset.original = el.innerHTML.trim();
+    }
+    const targetHTML = el.dataset.original;
+    if (!targetHTML || targetHTML === "") return;
+
+    const temp = document.createElement('div');
+    temp.innerHTML = targetHTML;
+
+    const nodes = Array.from(temp.childNodes);
+    const chars: { span: HTMLElement, final: string }[] = [];
+
+    nodes.forEach(node => {
+        // Détecte correctement les balises B et STRONG
+        const isBold = node.nodeType === Node.ELEMENT_NODE &&
+            (node.nodeName === 'B' || node.nodeName === 'STRONG');
+
+        const text = node.textContent || "";
+
+        text.split("").forEach(char => {
+            const span = document.createElement("span");
+            span.className = "char shuffling";
+
+            // Héritage du style gras
+            if (isBold) {
+                span.style.fontWeight = "800";
+                span.classList.add("is-important");
+            }
+
+            span.textContent = char === " " ? "\u00A0" : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+            chars.push({ span, final: char });
+        });
     });
 
-    el.textContent = "";
+    el.innerHTML = "";
     chars.forEach((c) => el.appendChild(c.span));
 
     setTimeout(() => {
@@ -71,7 +96,7 @@ function animateCipher(el: HTMLElement, delay = 0) {
         const interval = setInterval(() => {
             let countFixed = 0;
             chars.forEach((obj, index) => {
-                if (iteration > index * 4) {
+                if (iteration > index * 3) { // Vitesse optimisée
                     if (obj.span.classList.contains("shuffling")) {
                         obj.span.textContent = obj.final === " " ? "\u00A0" : obj.final;
                         obj.span.classList.replace("shuffling", "fixed");
@@ -87,8 +112,7 @@ function animateCipher(el: HTMLElement, delay = 0) {
     }, delay);
 }
 
-// ... (Logo, Clock, Cipher restent identiques)
-
+// 4. Orchestration globale des animations
 export async function startGlobalHeroAnimation() {
     if (hasHeroRun) return;
 
@@ -100,14 +124,16 @@ export async function startGlobalHeroAnimation() {
         purple: document.querySelector(".layer.purple") as HTMLElement
     };
 
-    if (!hero || !layers.green || !layers.red || !layers.blue || !layers.purple) return;
+    if (!hero || !layers.green) return;
+
+    // Verrouillage une fois démarré
     hasHeroRun = true;
 
-    // 1. Synchronisation parfaite
+    // Synchronisation prudente : ne duplique que si les couches existent
     const content = layers.green.innerHTML;
-    layers.red.innerHTML = content;
-    layers.blue.innerHTML = content;
-    layers.purple.innerHTML = content;
+    if (layers.red) layers.red.innerHTML = content;
+    if (layers.blue) layers.blue.innerHTML = content;
+    if (layers.purple) layers.purple.innerHTML = content;
 
     hero.style.visibility = "visible";
     hero.style.opacity = "1";
@@ -116,9 +142,9 @@ export async function startGlobalHeroAnimation() {
 
     const tl = anime.timeline({ easing: "easeOutExpo" });
 
-    // 2. L'EXPLOSION RGB
+    // L'EXPLOSION RGB
     tl.add({
-        targets: [layers.red, layers.blue, layers.purple],
+        targets: [layers.red, layers.blue, layers.purple].filter(Boolean),
         translateX: (el: HTMLElement) => {
             if (el.classList.contains('red')) return [-100, 0];
             if (el.classList.contains('blue')) return [100, 0];
@@ -126,52 +152,75 @@ export async function startGlobalHeroAnimation() {
             return 0;
         },
         opacity: [
-            { value: 1, duration: 100 }, // Apparition flash
-            { value: 0, duration: 1200, delay: 500 } // Disparition totale
+            { value: 1, duration: 100 },
+            { value: 0, duration: 1200, delay: 500 }
         ],
         duration: 1800,
     }, 0);
 
-    // 3. Animation des liners (sur toutes les couches pour l'effet)
+    // Animation des liners et forçage de l'opacité
     tl.add({
         targets: ".linerDefinition",
         opacity: [0, 1],
         translateY: [20, 0],
-        duration: 800
+        duration: 800,
+        complete: () => {
+            const defText = document.querySelector('.definitionText') as HTMLElement;
+            if (defText) defText.style.opacity = "1";
+        }
     }, "-=1200");
 
-    // 4. Lancement du Cipher uniquement sur la couche Green (la seule qui reste à la fin)
-    requestAnimationFrame(() => {
-        layers.green.querySelectorAll(".cipher-text").forEach((text, i) => {
-            animateCipher(text as HTMLElement, 400 + i * 200);
+    // Lancement du Cipher après un léger délai pour s'assurer que le HTML est prêt
+    setTimeout(() => {
+        const elementsToAnimate = layers.green.querySelectorAll(".cipher-text");
+        elementsToAnimate.forEach((text, i) => {
+            animateCipher(text as HTMLElement, i * 150);
         });
-    });
+    }, 600);
 }
 
-// 5. INITIALISATION SÉCURISÉE
 export function initHero() {
-    if (hasHeroRun) return;
+    const heroEl = document.querySelector(".hero") as HTMLElement | null;
+
+    if (!heroEl) return;
+
+    // Reset du verrou au montage du composant
+    hasHeroRun = false;
+
+    // On s'assure que le contenu du Hero est caché au départ si le SAS est présent
+    const hasMadeChoice = sessionStorage.getItem("soundPreference");
+    if (!hasMadeChoice) {
+        heroEl.style.visibility = "hidden";
+        heroEl.style.opacity = "0";
+    }
 
     const runOnce = () => {
         if (hasHeroRun) return;
-        // On retire l'écouteur immédiatement pour éviter les doubles appels
+        // On nettoie l'écouteur au cas où
         window.removeEventListener("sas-finished", runOnce);
         startGlobalHeroAnimation();
     };
 
     initClock();
 
-    // Cas 1 : Le choix du son est déjà fait (on lance direct)
-    if (sessionStorage.getItem("soundPreference")) {
-        runOnce();
+    // Cas 1 : Le choix du son est déjà fait (on revient sur la page ou refresh)
+    if (hasMadeChoice) {
+        // On attend que le DOM soit stable pour lancer le Hero
+        requestAnimationFrame(() => {
+            runOnce();
+        });
     }
-    // Cas 2 : On attend le signal du splash screen
+    // Cas 2 : On attend impérativement le clic sur le SAS
     else {
+        // IMPORTANT : On écoute l'événement dispatché par sas.ts
         window.addEventListener("sas-finished", runOnce, { once: true });
-    }
 
-    // Sécurité anti-blocage : si rien ne se passe après 3s, on force l'affichage
-    setTimeout(() => {
-        if (!hasHeroRun) runOnce();
-    }, 3000);
+        // Sécurité : On ne force l'affichage QUE si le SAS n'est pas trouvé sur la page
+        // (évite que le hero apparaisse par dessus le SAS si l'utilisateur ne clique pas)
+        setTimeout(() => {
+            if (!document.getElementById("sound-sas") && !hasHeroRun) {
+                runOnce();
+            }
+        }, 500);
+    }
 }

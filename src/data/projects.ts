@@ -39,7 +39,7 @@ export const projects: Project[] = [
                 },
 
                 illustration: {
-                    picture: "/public/images/kiro/role_mockup.png",
+                    picture: "",
                     description: "",
                 },
                 demarche: {
@@ -87,13 +87,14 @@ export const projects: Project[] = [
         },
         // Images (Indépendantes de la langue mais avec ALT traduisible)
         media: {
-            role: "/icons/projets/Siko/role_svg.svg",
-            carousel: [{
-                src: "/public/images/siko-mobility/gallery/Dashboard.webp",
-                alt: { fr: "Dashboard", en: "Dashboard" }
-            }, {
-                src: "/public/images/siko-mobility/gallery/toolsDS.png", alt: { fr: "Dashboard", en: "Dashboard" }
-            }, { src: "/public/images/siko-mobility/gallery/portail.webp", alt: { fr: "portable utilisateur", en: "portable user" } }
+            role: "/public/images/siko-mobility/App_siko.webp",
+            carousel: [
+                { src: "/public/images/siko-mobility/gallery/portail.webp", alt: { fr: "portable utilisateur", en: "portable user" } }, {
+                    src: "/public/images/siko-mobility/gallery/Dashboard.webp",
+                    alt: { fr: "Dashboard", en: "Dashboard" }
+                }, {
+                    src: "/public/images/siko-mobility/gallery/toolsDS.png", alt: { fr: "Dashboard", en: "Dashboard" }
+                }
             ]
         }
     },

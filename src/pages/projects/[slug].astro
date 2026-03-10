@@ -160,93 +160,100 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                 </div>
 
                 {/* Section Rôle / Démarche / Résultat */}
-                {
-                    project.media.role && (
-                        <img
-                            src={project.media.role}
-                            alt="Illustration rôle"
-                            loading="lazy"
-                            decoding="async"
-                            class="illustration-role"
-                        />
-                    )
-                }
 
                 <div class="grid-mini">
-                    {/* Rôle */}
-                    {
-                        fr.role && (
-                            <div class="blocText expandable-container">
-                                <h4
-                                    class="i18n-anim"
-                                    data-i18n-project="role.title"
-                                    data-ghost={en.role?.title}
-                                >
-                                    {fr.role.title}
-                                </h4>
-                                <div class="expandable-content">
-                                    <p
-                                        class="split-texte i18n-anim"
-                                        data-i18n-project="role.description"
-                                        data-ghost={en.role?.description}
+                    <div class="roleStyle">
+                        {/* Rôle */}
+                        {
+                            fr.role && (
+                                <div class="blocText expandable-container">
+                                    <h4
+                                        class="i18n-anim"
+                                        data-i18n-project="role.title"
+                                        data-ghost={en.role?.title}
                                     >
-                                        {fr.role.description}
-                                    </p>
+                                        {fr.role.title}
+                                    </h4>
+                                    <div class="expandable-content">
+                                        <p
+                                            class="split-texte i18n-anim"
+                                            data-i18n-project="role.description"
+                                            data-ghost={en.role?.description}
+                                        >
+                                            {fr.role.description}
+                                        </p>
+                                    </div>
+                                    <button class="expand-btn">plus</button>
                                 </div>
-                                <button class="expand-btn">plus</button>
-                            </div>
-                        )
-                    }
+                            )
+                        }
+                        {
+                            project.media.role && (
+                                <img
+                                    src={project.media.role}
+                                    alt="Illustration rôle"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="illustration-role"
+                                />
+                            )
+                        }
+                    </div>
+                    <div class="roleStyle">
+                        {/* Démarche */}
+                        {
+                            fr.demarche && (
+                                <div class="blocText expandable-container">
+                                    <h4
+                                        class="i18n-anim"
+                                        data-i18n-project="demarche.title"
+                                        data-ghost={en.demarche?.title}
+                                    >
+                                        {fr.demarche.title}
+                                    </h4>
+                                    <div class="expandable-content">
+                                        <p
+                                            class="split-texte i18n-anim"
+                                            data-i18n-project="demarche.description"
+                                            data-ghost={
+                                                en.demarche?.description
+                                            }
+                                        >
+                                            {fr.demarche.description}
+                                        </p>
+                                    </div>
+                                    <button class="expand-btn">plus</button>
+                                </div>
+                            )
+                        }
 
-                    {/* Démarche */}
-                    {
-                        fr.demarche && (
-                            <div class="blocText expandable-container">
-                                <h4
-                                    class="i18n-anim"
-                                    data-i18n-project="demarche.title"
-                                    data-ghost={en.demarche?.title}
-                                >
-                                    {fr.demarche.title}
-                                </h4>
-                                <div class="expandable-content">
-                                    <p
-                                        class="split-texte i18n-anim"
-                                        data-i18n-project="demarche.description"
-                                        data-ghost={en.demarche?.description}
+                        {/* Résultat */}
+                        {
+                            fr.resultat && (
+                                <div class="blocText expandable-container">
+                                    <h4
+                                        class="i18n-anim"
+                                        data-i18n-project="resultat.title"
+                                        data-ghost={en.resultat?.title}
                                     >
-                                        {fr.demarche.description}
-                                    </p>
+                                        {fr.resultat.title}
+                                    </h4>
+                                    <div class="expandable-content">
+                                        <p
+                                            class="split-texte i18n-anim"
+                                            data-i18n-project="resultat.description"
+                                            data-ghost={
+                                                en.resultat?.description
+                                            }
+                                        >
+                                            {fr.resultat.description}
+                                        </p>
+                                    </div>
+                                    <button class="expand-btn">plus</button>
                                 </div>
-                                <button class="expand-btn">plus</button>
-                            </div>
-                        )
-                    }
-
-                    {/* Résultat */}
-                    {
-                        fr.resultat && (
-                            <div class="blocText expandable-container">
-                                <h4
-                                    class="i18n-anim"
-                                    data-i18n-project="resultat.title"
-                                    data-ghost={en.resultat?.title}
-                                >
-                                    {fr.resultat.title}
-                                </h4>
-                                <div class="expandable-content">
-                                    <p
-                                        class="split-texte i18n-anim"
-                                        data-i18n-project="resultat.description"
-                                        data-ghost={en.resultat?.description}
-                                    >
-                                        {fr.resultat.description}
-                                    </p>
-                                </div>
-                                <button class="expand-btn">plus</button>
-                            </div>
-                        )
-                    }
+                            )
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -268,8 +275,11 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
     }
 
     .projetAll {
+        position: relative;
+        z-index: 2;
+        background-color: var(--background-primary);
         padding: var(--space-8);
-        overflow: visible !important;
+        margin-top: 0;
     }
 
     /* Grille Principale */
@@ -318,15 +328,21 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
     /* Hero & Header */
     .project-hero {
         height: 60vh;
+        min-height: 400px;
+        width: 100%;
         overflow: hidden;
         position: relative;
+        z-index: 1;
+        background-color: var(--background-primary);
     }
     .project-hero img {
         width: 100%;
         height: 120%;
         object-fit: cover;
         position: absolute;
-        top: -10%;
+        top: 0;
+        left: 0;
+        will-change: transform;
     }
 
     .elementproject {
@@ -337,6 +353,21 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
     .elementproject p {
         position: relative;
         padding: 4px 8px;
+    }
+    .roleStyle:nth-child(1) {
+        display: grid;
+        grid-template-columns: minmax(150px, 2fr) minmax(100px, 1fr);
+        gap: var(--space-16);
+        height: 100%;
+    }
+    .roleStyle:nth-child(2) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-16);
+    }
+    .illustration-role {
+        width: 100%;
+        height: auto;
     }
 
     /* Décoration Coins (Corners) */
@@ -388,9 +419,18 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
         color: var(--tag-color);
         background: color-mix(in srgb, var(--tag-color) 15%, transparent);
     }
-
-    /* Mobile Expansion */
+    @media (max-width: 900px) {
+        .roleStyle:nth-child(1) {
+            grid-template-columns: 1fr;
+            gap: var(--space-4);
+        }
+    }
     @media (max-width: 768px) {
+        .roleStyle:nth-child(2) {
+            grid-template-columns: 1fr;
+            gap: var(--space-4);
+        }
+
         .grid-project {
             display: flex;
             flex-direction: column;
@@ -430,7 +470,25 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
 </style>
 
 <script>
-    // texte anim <p> et commentaire
+    document.addEventListener("astro:page-load", () => {
+        const heroImg = document.querySelector(".project-hero img");
+
+        if (!heroImg) return;
+
+        window.addEventListener(
+            "scroll",
+            () => {
+                const scroll = window.scrollY;
+                // On déplace l'image à 30% de la vitesse du scroll
+                if (scroll < window.innerHeight) {
+                    (heroImg as HTMLElement).style.transform =
+                        `translateY(${scroll * 0.3}px)`;
+                }
+            },
+            { passive: true },
+        );
+    });
+
     import { animate, stagger } from "animejs";
 
     const initProjectAnimations = () => {

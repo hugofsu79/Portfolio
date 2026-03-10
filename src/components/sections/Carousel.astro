@@ -117,11 +117,11 @@ const { images } = Astro.props;
         position: absolute;
         width: 180px;
         height: 180px;
+        
         border: 2px solid rgba(255, 255, 255, 0.2);
         border-radius: 50%;
         pointer-events: none;
-        z-index: 10;
-        background-repeat: no-repeat;
+        z-index: 100;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         transform: translate(-50%, -50%);
     }
@@ -129,9 +129,8 @@ const { images } = Astro.props;
 
 <script>
     function initCarousel(carousel: HTMLElement) {
-        // 1. Sécurité anti-double exécution
-        if (!carousel || (carousel as any).__carouselBound) return;
-        (carousel as any).__carouselBound = true;
+        if (!carousel || (carousel as any).__init) return;
+        (carousel as any).__init = true;
 
         const viewport = carousel.querySelector(
             ".carousel__viewport",
@@ -139,122 +138,116 @@ const { images } = Astro.props;
         const slides = Array.from(
             carousel.querySelectorAll(".carousel__slide"),
         ) as HTMLElement[];
+        const lens = carousel.querySelector("[data-lens]") as HTMLElement;
+
         const prevBtn = carousel.querySelector(
             ".sliderArrow.left",
-        ) as HTMLButtonElement;
+        ) as HTMLElement;
         const nextBtn = carousel.querySelector(
             ".sliderArrow.right",
-        ) as HTMLButtonElement;
+        ) as HTMLElement;
 
-        if (!slides.length || !viewport) return;
-
-        // 2. État initial
-        let currentIndex = slides.findIndex((s) =>
-            s.classList.contains("is-active"),
-        );
-        if (currentIndex === -1) currentIndex = 0;
-
+        let currentIndex = 0;
         let isAnimating = false;
-        const DURATION = 800;
+        const zoomLevel = 2.5;
 
-        // 3. Mise à jour des flèches (effet queue rétractable)
+        // 1. État des flèches
         const updateArrows = () => {
-            if (prevBtn)
-                prevBtn.classList.toggle("is-disabled", currentIndex === 0);
-            if (nextBtn)
-                nextBtn.classList.toggle(
-                    "is-disabled",
-                    currentIndex === slides.length - 1,
-                );
+            if (prevBtn) {
+                const isFirst = currentIndex === 0;
+                prevBtn.style.opacity = isFirst ? "0.2" : "1";
+                prevBtn.style.pointerEvents = isFirst ? "none" : "auto";
+            }
+            if (nextBtn) {
+                const isLast = currentIndex === slides.length - 1;
+                nextBtn.style.opacity = isLast ? "0.2" : "1";
+                nextBtn.style.pointerEvents = isLast ? "none" : "auto";
+            }
         };
 
-        // 4. Logique de navigation
-        const goTo = (nextIndex: number, direction: "next" | "prev") => {
-            if (isAnimating || nextIndex < 0 || nextIndex >= slides.length)
-                return;
+        // 2. Mise à jour de l'image de la loupe
+        const updateLensImage = () => {
+            const activeSlide = slides[currentIndex];
+            const activeImg = activeSlide?.querySelector("img");
+            if (activeImg && lens) {
+                lens.style.backgroundImage = `url('${activeImg.src}')`;
+            }
+        };
+
+        // 3. Navigation
+        const goTo = (index: number) => {
+            if (isAnimating || index < 0 || index >= slides.length) return;
             isAnimating = true;
 
-            const currentSlide = slides[currentIndex];
-            const nextSlide = slides[nextIndex];
-
+            const direction = index > currentIndex ? "next" : "prev";
             carousel.setAttribute("data-direction", direction);
 
+            const currentSlide = slides[currentIndex];
+            const nextSlide = slides[index];
+
             currentSlide.classList.remove("is-active");
-            currentSlide.classList.add("is-leaving");
             nextSlide.classList.add("is-entering");
 
-            void nextSlide.offsetWidth; // Force le rendu pour l'animation clip-path
+            currentIndex = index;
 
-            currentIndex = nextIndex;
             updateArrows();
+            updateLensImage();
 
             setTimeout(() => {
-                currentSlide.classList.remove("is-leaving");
                 nextSlide.classList.remove("is-entering");
                 nextSlide.classList.add("is-active");
                 isAnimating = false;
-            }, DURATION);
+            }, 800);
         };
 
-        // 5. Système de Loupe (Isolé pour éviter les crashs)
-        const initMagnifier = () => {
-            if (window.innerWidth < 992 || "ontouchstart" in window) return;
+        // 4. Mouvement de la loupe
+        const moveLens = (e: MouseEvent) => {
+            if (!lens || isAnimating) return;
 
-            let lens: HTMLElement | null = null;
+            const rect = viewport.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-            viewport.addEventListener("mouseenter", () => {
-                if (isAnimating) return;
-                const activeSlide = slides[currentIndex];
-                const img = activeSlide?.querySelector("img");
-                if (!img || lens) return;
+            // On vérifie que la souris est bien dans le cadre
+            if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+                lens.style.opacity = "0";
+                return;
+            }
 
-                lens = document.createElement("div");
-                lens.className = "magnifier-lens";
+            lens.style.opacity = "1";
 
-                // On s'assure que l'image est bien chargée sans le prefixe public
-                const cleanSrc = img.src.replace("/public", "");
-                lens.style.backgroundImage = `url('${cleanSrc}')`;
+            // On centre la loupe (220px / 2 = 110)
+            const lensOffset = 110;
+            lens.style.left = `${x}px`;
+            lens.style.top = `${y}px`;
+            lens.style.transform = `translate(-50%, -50%)`;
 
-                viewport.appendChild(lens);
-            });
+            // Calcul du background
+            const bgX = x * zoomLevel - lensOffset;
+            const bgY = y * zoomLevel - lensOffset;
 
-            viewport.addEventListener("mousemove", (e) => {
-                if (!lens) return;
-                const rect = viewport.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                lens.style.left = `${x}px`;
-                lens.style.top = `${y}px`;
-
-                const z = 2.5;
-                const lSize = 180; // Doit matcher la taille CSS
-                lens.style.backgroundSize = `${rect.width * z}px ${rect.height * z}px`;
-                lens.style.backgroundPosition = `${-(x * z - lSize / 2)}px ${-(y * z - lSize / 2)}px`;
-            });
-
-            viewport.addEventListener("mouseleave", () => {
-                if (lens) {
-                    lens.remove();
-                    lens = null;
-                }
-            });
+            lens.style.backgroundSize = `${rect.width * zoomLevel}px ${rect.height * zoomLevel}px`;
+            lens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
         };
 
-        // 6. Bindings
-        nextBtn?.addEventListener("click", () =>
-            goTo(currentIndex + 1, "next"),
-        );
-        prevBtn?.addEventListener("click", () =>
-            goTo(currentIndex - 1, "prev"),
-        );
+        // Listeners
+        viewport.addEventListener("mousemove", moveLens);
+        viewport.addEventListener("mouseenter", () => {
+            updateLensImage(); // On rafraîchit l'image au cas où
+            lens.style.opacity = "1";
+        });
+        viewport.addEventListener("mouseleave", () => {
+            lens.style.opacity = "0";
+        });
 
-        // 7. Launch
+        nextBtn?.addEventListener("click", () => goTo(currentIndex + 1));
+        prevBtn?.addEventListener("click", () => goTo(currentIndex - 1));
+
+        // Init
         updateArrows();
-        initMagnifier();
+        updateLensImage();
     }
 
-    // Initialisation au chargement Astro
     const setup = () => {
         document
             .querySelectorAll("[data-carousel]")

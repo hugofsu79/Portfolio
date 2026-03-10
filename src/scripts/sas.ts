@@ -31,6 +31,7 @@ function initLiquidLoader() {
     stage.innerHTML = "";
     isTerminated = false;
 
+    // Création des billes
     for (let i = 0; i < ballCount; i++) {
         const el = document.createElement("div");
         el.className = "ball";
@@ -50,11 +51,16 @@ function initLiquidLoader() {
     }
 
     function animate() {
-        if (isTerminated) return;
+        // Arrêt immédiat si le flag est levé ou si on a quitté la page (stage absent)
+        if (isTerminated || !document.getElementById("stage")) {
+            if (sasAnimationId) cancelAnimationFrame(sasAnimationId);
+            return;
+        }
 
         balls.forEach((ball) => {
             if (ball.currentRadius < ball.targetRadius)
                 ball.currentRadius += (ball.targetRadius - ball.currentRadius) * 0.02;
+
             ball.noiseOffset += 0.008;
             ball.angle += ball.baseSpeed + Math.sin(ball.noiseOffset) * 0.01;
 
@@ -80,17 +86,18 @@ function initLiquidLoader() {
 
         sasAnimationId = requestAnimationFrame(animate);
     }
+
     animate();
 }
+
 function playHeroMusic() {
+    if ((window as any).mainHeroAudio) return;
+
     const audio = new Audio(AUDIO_PATH);
     audio.volume = 0;
-
-    // Stockage global pour contrôle ultérieur si besoin
     (window as any).mainHeroAudio = audio;
 
     audio.play().then(() => {
-        // Fade in : passe de 0 à 0.5 en 2 secondes
         let vol = 0;
         const interval = setInterval(() => {
             if (vol < 0.5) {
@@ -100,17 +107,27 @@ function playHeroMusic() {
                 clearInterval(interval);
             }
         }, 200);
-    }).catch(err => console.warn("Audio playback failed:", err));
+    }).catch(err => {
+        console.warn("Audio playback failed:", err);
+        (window as any).mainHeroAudio = null;
+    });
 }
 
 export function initSas() {
-    const hasMadeChoice = sessionStorage.getItem("soundPreference");
     const sasOverlay = document.getElementById("sound-sas");
 
-    if (!sasOverlay) return;
+    if (!sasOverlay) {
+        isTerminated = true;
+        if (sasAnimationId) cancelAnimationFrame(sasAnimationId);
+        return;
+    }
+
+    const hasMadeChoice = sessionStorage.getItem("soundPreference");
 
     if (hasMadeChoice) {
         sasOverlay.style.display = "none";
+        isTerminated = true;
+        if (sasAnimationId) cancelAnimationFrame(sasAnimationId);
         return;
     }
 
@@ -133,14 +150,18 @@ export function initSas() {
         isTerminated = true;
         if (sasAnimationId) cancelAnimationFrame(sasAnimationId);
 
+        // Dispatch immédiat pour le Hero
+        console.log("SAS Finished - Dispatching event"); // Debug
         window.dispatchEvent(new CustomEvent("sas-finished"));
 
         setTimeout(() => {
-            sasOverlay.style.display = "none";
-            sasOverlay.innerHTML = "";
+            if (sasOverlay) {
+                sasOverlay.style.display = "none";
+                sasOverlay.innerHTML = "";
+            }
         }, 1000);
     };
 
-    btnSound.addEventListener("click", () => handleChoice(true));
-    btnNoSound.addEventListener("click", () => handleChoice(false));
+    btnSound.addEventListener("click", () => handleChoice(true), { once: true });
+    btnNoSound.addEventListener("click", () => handleChoice(false), { once: true });
 }

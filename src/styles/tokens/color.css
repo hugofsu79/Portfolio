@@ -37,7 +37,7 @@
     --core-orange-400: #D96A00;
     --core-orange-500: #B35400;
     --core-orange-600: #8C4000;
-    --core-orange-700: #662E00;
+    --core-orange-700: #663500;
     --core-orange-800: #401D00;
     --core-orange-900: #1A0C00;
     /* =========================
@@ -85,16 +85,16 @@
     --layer-background: var(--core-orange-50);
     --layer-card-background: var(--core-orange-100);
     --layer-background-hero: var(--core-orange-400);
-    --layer-background-nav: var(--core-orange-100);
+    --layer-background-nav: var(--core-orange-50);
     --layer-background-negat: var(--core-beige-900);
     --layer-surface: var(--core-neutral-50);
 
     /* =========================
                     Semantic — Text
                  ========================= */
-    --text-primary: var(--core-orange-400);
+    --text-primary: var(--core-orange-700);
     --text-primary-negat: var(--core-orange-200);
-    --text-secondary: var(--core-orange-300);
+    --text-secondary: var(--core-orange-400);
     --text-tertiary: var(--core-orange-50);
     --text-on-accent: var(--core-blue-700);
     --text-initial: var(--core-orange-50);

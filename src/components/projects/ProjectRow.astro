@@ -138,17 +138,17 @@ const lang = Astro.currentLocale || "fr";
 
     .project-preview img.desktop-img {
         position: absolute;
+        top: 0;
+        left: 0;
         width: 280px;
         height: auto;
         display: block;
         opacity: 0;
+        pointer-events: none;
         will-change: transform;
-        /* AUCUNE transition sur transform pour éviter le lag avec le JS Lerp */
+        transform-origin: top left;
         transition: opacity 0.3s ease-out;
-        top: 0;
-        left: 0;
     }
-
     .project-row:hover .desktop-img {
         opacity: 1;
     }
@@ -267,11 +267,42 @@ const lang = Astro.currentLocale || "fr";
             rows.forEach((row) => {
                 const img = row.querySelector(".desktop-img") as HTMLElement;
                 if (!img) return;
-                // ... (reste de ta logique desktop lerp) ...
-                row.addEventListener("mouseenter", () => {
-                    playFeedback(false); // Pas de vibration sur desktop
+
+                // Ajuste ces valeurs pour placer l'image par rapport à ta souris
+                const offsetX = 0; // 20px à droite de la souris
+                const offsetY = 0; // 20px en dessous de la souris
+
+                const moveImage = (e: MouseEvent) => {
+                    const rect = row.getBoundingClientRect();
+
+                    // Calcul de la position relative à la ligne
+                    const x = e.clientX - rect.left + offsetX;
+                    const y = e.clientY - rect.top + offsetY;
+
+                    requestAnimationFrame(() => {
+                        // Application directe sans centrage (-50%)
+                        img.style.transform = `translate(${x}px, ${y}px)`;
+                    });
+                };
+
+                row.addEventListener("mouseenter", (e) => {
+                    playFeedback(false);
+
+                    // Positionnement immédiat avant d'afficher
+                    const rect = row.getBoundingClientRect();
+                    const x = (e as MouseEvent).clientX - rect.left + offsetX;
+                    const y = (e as MouseEvent).clientY - rect.top + offsetY;
+                    img.style.transform = `translate(${x}px, ${y}px)`;
+
                     img.style.opacity = "1";
-                    // ...
+                });
+
+                row.addEventListener("mousemove", (e) => {
+                    moveImage(e as MouseEvent);
+                });
+
+                row.addEventListener("mouseleave", () => {
+                    img.style.opacity = "0";
                 });
             });
         }

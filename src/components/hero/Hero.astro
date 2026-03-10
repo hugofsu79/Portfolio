@@ -37,15 +37,21 @@ import LogoHero from "../ui/Logohero.astro";
                     </p>
                     <div class="definitionText">
                         <ol class="definitionList">
-                            <li id="hero-def1" data-i18n-key="definition_1">
-                                {heroContent.fr.definition_1}
-                            </li>
-                            <li id="hero-def2" data-i18n-key="definition_2">
-                                {heroContent.fr.definition_2}
-                            </li>
-                            <li id="hero-def3" data-i18n-key="definition_3">
-                                {heroContent.fr.definition_3}
-                            </li>
+                            <li
+                                id="hero-def1"
+                                data-i18n-key="definition_1"
+                                set:html={heroContent.fr.definition_1}
+                            />
+                            <li
+                                id="hero-def2"
+                                data-i18n-key="definition_2"
+                                set:html={heroContent.fr.definition_2}
+                            />
+                            <li
+                                id="hero-def3"
+                                data-i18n-key="definition_3"
+                                set:html={heroContent.fr.definition_3}
+                            />
                         </ol>
                     </div>
                 </div>
@@ -75,7 +81,10 @@ import LogoHero from "../ui/Logohero.astro";
     #hero-description {
         color: var(--text-tertiary);
     }
-
+    .definitionList b {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
     .hero {
         padding-left: var(--space-24);
         padding-right: var(--space-24);
@@ -83,7 +92,6 @@ import LogoHero from "../ui/Logohero.astro";
         height: 100vh;
         overflow: hidden;
         position: relative;
-        
     }
     .hero-layers {
         position: relative;
@@ -278,12 +286,21 @@ import LogoHero from "../ui/Logohero.astro";
         opacity: 0.6;
     }
     .definitionList {
-        padding-left: 18px;
+        counter-reset: def-counter;
+        list-style: none;
+        padding-left: 20px;
         margin-bottom: 0;
     }
     .logo-hero {
         display: flex;
         justify-content: center;
+    }
+    .definitionList li::before {
+        counter-increment: def-counter;
+        content: counter(def-counter) ". ";
+        font-weight: bold;
+        margin-right: 0.5rem;
+        opacity: 0.5;
     }
 
     @media (max-width: 720px) {

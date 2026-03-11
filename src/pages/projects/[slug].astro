@@ -166,6 +166,17 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                     <div class="roleStyle">
                         {/* Rôle */}
                         {
+                            project.media.role && (
+                                <img
+                                    src={project.media.role}
+                                    alt="Illustration rôle"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="illustration-role"
+                                />
+                            )
+                        }
+                        {
                             fr.role && (
                                 <div class="blocText expandable-container">
                                     <h4
@@ -186,17 +197,6 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
                                     </div>
                                     <button class="expand-btn">plus</button>
                                 </div>
-                            )
-                        }
-                        {
-                            project.media.role && (
-                                <img
-                                    src={project.media.role}
-                                    alt="Illustration rôle"
-                                    loading="lazy"
-                                    decoding="async"
-                                    class="illustration-role"
-                                />
                             )
                         }
                     </div>
@@ -325,7 +325,7 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
 
     .project-title-sticky.is-visible {
         opacity: 1;
-        display:flex;
+        display: flex;
         flex-direction: column;
         gap: var(--space-8);
         max-height: 200px;
@@ -364,7 +364,7 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
     }
     .roleStyle:nth-child(1) {
         display: grid;
-        grid-template-columns: minmax(150px, 2fr) minmax(100px, 1fr);
+        grid-template-columns: 1fr 1fr;
         gap: var(--space-16);
         height: 100%;
     }
@@ -374,8 +374,9 @@ const formattedCarouselImages = project.media.carousel.map((img) => ({
         gap: var(--space-16);
     }
     .illustration-role {
-        width: 100%;
+        border-radius: var(--radius-basi);
         height: auto;
+        width: 100%;
     }
 
     /* Décoration Coins (Corners) */

@@ -2,12 +2,13 @@
 interface Props {
     size?: "sm" | "md" | "lg";
     class?: string;
+    id?: string;
 }
 
-const { size = "sm", class: className } = Astro.props;
+const { size = "sm", class: className, id } = Astro.props;
 ---
 
-<section class={`section section--${size} ${className ?? ""}`}>
+<section id={id} class={`section section--${size} ${className ?? ""}`}>
     <slot />
 </section>
 
@@ -22,20 +23,19 @@ const { size = "sm", class: className } = Astro.props;
         margin-right: auto;
         overflow-x: hidden;
         word-wrap: break-word;
+        border-bottom: solid 1px var(--stroke-section);
+    }
+    .section:last-child {
+        border-bottom: none;
     }
 
     .section--sm {
         width: 100%;
     }
-
     .section--md {
         width: 100%;
     }
-
     .section--lg {
         width: 100%;
-    }
-
-    @media (max-width: 768px) {
     }
 </style>

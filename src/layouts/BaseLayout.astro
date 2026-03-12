@@ -11,7 +11,7 @@ interface Props {
 	title?: string;
 }
 
-const { title = "Portfolio" } = Astro.props;
+const { title = "Portfolio · Hugo Foisseau" } = Astro.props;
 ---
 
 <html lang="fr">
@@ -75,25 +75,56 @@ const { title = "Portfolio" } = Astro.props;
 	import { initI18n } from "../scripts/langEngine";
 	import "../scripts/app";
 
+	let titleInterval: number | null = null;
+	let defaultHomeTitle = "Portfolio · Hugo Foisseau";
+
+	const stopSliderAndRestore = () => {
+		if (titleInterval) {
+			clearInterval(titleInterval);
+			titleInterval = null;
+		}
+
+		if (
+			window.location.pathname === "/" ||
+			window.location.pathname === "/index.html"
+		) {
+			document.title = defaultHomeTitle;
+		}
+	};
+
 	const initAll = () => {
 		const savedLang = localStorage.getItem("lang") || "fr";
 		document.documentElement.dataset.lang = savedLang;
 		initI18n();
-		
-		// 3. Titre Dynamique
-		const isHome =
-			window.location.pathname === "/" ||
-			window.location.pathname === "/index.html";
-		if (isHome) {
-			document.title = "Portfolio - 2026";
+
+		if (titleInterval) clearInterval(titleInterval);
+
+		const pathname = window.location.pathname;
+		const isHome = pathname === "/" || pathname === "/index.html";
+
+		const sasDone = sessionStorage.getItem("soundPreference");
+
+		if (isHome && !sasDone) {
+			const phrases = ["Hugofolio", "Designer Interactif"];
+			const separator = "  ·  ";
+			let fullSequence = phrases.join(separator) + separator;
+			let displayString = fullSequence.repeat(3);
+
+			titleInterval = window.setInterval(() => {
+				displayString =
+					displayString.substring(1) + displayString.substring(0, 1);
+				document.title = displayString;
+			}, 150);
+		} else if (isHome && sasDone) {
+			document.title = defaultHomeTitle;
 		}
 
+		// --- GESTION DU SON ---
 		const soundChoice = sessionStorage.getItem("soundPreference");
 		if (soundChoice === "enabled") {
 			const clickSound = new Audio("/sounds/slider.mp3");
 			clickSound.preload = "auto";
 			clickSound.volume = 0.5;
-
 			const targets = document.querySelectorAll(
 				"nav a, .project-row-link, .dropdown-item",
 			);
@@ -105,6 +136,15 @@ const { title = "Portfolio" } = Astro.props;
 			});
 		}
 	};
+
+	document.addEventListener("sas-finished", () => {
+		sessionStorage.setItem("sas-done", "true");
+		stopSliderAndRestore();
+	});
+
+	document.addEventListener("astro:before-preparation", () => {
+		if (titleInterval) clearInterval(titleInterval);
+	});
 
 	document.addEventListener("astro:page-load", initAll);
 </script>

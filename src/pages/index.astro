@@ -17,28 +17,27 @@ import About from "../components/sections/About.astro";
 	<Hero />
 
 	<div class="page-with-rail">
-		<main class="page-content">
-			<Section>
+		<main class="page-content" id="main-content">
+			<Section id="projects">
 				<Container>
-					<section id="projects">
-						<ProjectRow />
-					</section>
+					<ProjectRow />
 				</Container>
+			</Section>
 
-				<Section>
-					<Container>
-						<LaboSection />
-					</Container>
-				</Section>
+			<Section id="labo">
+				<Container>
+					<LaboSection />
+				</Container>
+			</Section>
 
-				<Section>
-					<Container>
-						<About />
-					</Container>
-				</Section>
+			<Section id="about">
+				<Container>
+					<About />
+				</Container>
 			</Section>
 		</main>
 	</div>
+
 	<Footer />
 </BaseLayout>
 
@@ -46,8 +45,10 @@ import About from "../components/sections/About.astro";
 	.page-with-rail {
 		display: grid;
 		align-items: start;
+
 	}
 	.page-content {
+		margin: 0 !important;
 		gap: var(--space-32);
 		display: block;
 		width: 100%;

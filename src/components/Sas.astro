@@ -247,3 +247,64 @@ import Button from "../components/ui/Button.astro";
         }
     }
 </style>
+
+<script>
+    import "../scripts/app";
+
+    let titleInterval: any = null;
+
+    const startSlider = () => {
+        if (titleInterval) return; // Évite de doubler l'intervalle
+        const phrases = ["Hugofolio", "Designer Interactif"];
+        const separator = "  ·  ";
+        let displayString = (phrases.join(separator) + separator).repeat(3);
+
+        titleInterval = setInterval(() => {
+            displayString =
+                displayString.substring(1) + displayString.substring(0, 1);
+            document.title = displayString;
+        }, 150);
+    };
+
+    const stopSlider = (finalTitle: string) => {
+        if (titleInterval) {
+            clearInterval(titleInterval);
+            titleInterval = null;
+        }
+        document.title = finalTitle;
+    };
+
+    const handleLogic = () => {
+        const pathname = window.location.pathname;
+        const isHome = pathname === "/" || pathname === "/index.html";
+        const soundPref = sessionStorage.getItem("soundPreference");
+
+        const staticTitle =
+            document.querySelector("title")?.innerText ||
+            "Portfolio · Hugo Foisseau";
+
+        if (isHome && !soundPref) {
+            startSlider();
+        } else {
+            stopSlider(staticTitle);
+        }
+    };
+
+    document.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (
+            target.closest("#trigger-sound") ||
+            target.closest("#trigger-no-sound")
+        ) {
+            setTimeout(() => {
+                handleLogic();
+            }, 50);
+        }
+    });
+
+    document.addEventListener("astro:page-load", handleLogic);
+
+    document.addEventListener("astro:before-preparation", () => {
+        if (titleInterval) clearInterval(titleInterval);
+    });
+</script>

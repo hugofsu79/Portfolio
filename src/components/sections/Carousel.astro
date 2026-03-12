@@ -1,5 +1,5 @@
 ---
-import ArrowTransition from "../../components/ui/ArrowTransition.astro"; // Ajuste le chemin
+import ArrowTransition from "../../components/ui/ArrowTransition.astro";
 
 interface Props {
     images: {
@@ -8,13 +8,15 @@ interface Props {
     }[];
 }
 
-const { images } = Astro.props;
+const { images = [] } = Astro.props;
 ---
 
 {
     images && images.length > 0 && (
         <div class="carouselAll" data-carousel data-direction="next">
             <div class="carousel__viewport">
+                <div class="magnifier-lens" data-lens />
+
                 <ul class="carousel__track">
                     {images.map((img, index) => (
                         <li
@@ -37,6 +39,7 @@ const { images } = Astro.props;
         </div>
     )
 }
+
 <style>
     .carouselAll {
         position: relative;
@@ -50,7 +53,8 @@ const { images } = Astro.props;
         aspect-ratio: 16 / 9;
         overflow: hidden;
         border-radius: var(--radius-basic);
-        cursor: crosshair;
+        /* Cache le pointeur pour ne laisser que la loupe */
+        cursor: none;
     }
 
     .carousel__track {
@@ -76,7 +80,6 @@ const { images } = Astro.props;
         z-index: 1;
     }
 
-    /* Animation de transition Clip-Path (Next/Prev) */
     .carousel__slide.is-entering {
         opacity: 1;
         visibility: visible;
@@ -112,18 +115,21 @@ const { images } = Astro.props;
         object-fit: cover;
     }
 
-    /* Loupe (Magnifier) */
-    :global(.magnifier-lens) {
+    .magnifier-lens {
         position: absolute;
-        width: 180px;
-        height: 180px;
-        
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        width: 220px;
+        height: 220px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
         pointer-events: none;
         z-index: 100;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        /* Important pour centrer la loupe sur le curseur */
         transform: translate(-50%, -50%);
+        will-change: left, top, background-position;
     }
 </style>
 
@@ -139,7 +145,6 @@ const { images } = Astro.props;
             carousel.querySelectorAll(".carousel__slide"),
         ) as HTMLElement[];
         const lens = carousel.querySelector("[data-lens]") as HTMLElement;
-
         const prevBtn = carousel.querySelector(
             ".sliderArrow.left",
         ) as HTMLElement;
@@ -151,7 +156,20 @@ const { images } = Astro.props;
         let isAnimating = false;
         const zoomLevel = 2.5;
 
-        // 1. État des flèches
+        // Variables pour l'amorti
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        const friction = 0.12; // Entre 0.01 (très lent) et 1 (instantané)
+
+        const updateLensImage = () => {
+            const activeImg = slides[currentIndex]?.querySelector("img");
+            if (activeImg && lens) {
+                lens.style.backgroundImage = `url('${activeImg.src}')`;
+            }
+        };
+
         const updateArrows = () => {
             if (prevBtn) {
                 const isFirst = currentIndex === 0;
@@ -165,87 +183,110 @@ const { images } = Astro.props;
             }
         };
 
-        // 2. Mise à jour de l'image de la loupe
-        const updateLensImage = () => {
-            const activeSlide = slides[currentIndex];
-            const activeImg = activeSlide?.querySelector("img");
-            if (activeImg && lens) {
-                lens.style.backgroundImage = `url('${activeImg.src}')`;
-            }
-        };
-
-        // 3. Navigation
         const goTo = (index: number) => {
             if (isAnimating || index < 0 || index >= slides.length) return;
             isAnimating = true;
-
             const direction = index > currentIndex ? "next" : "prev";
             carousel.setAttribute("data-direction", direction);
 
-            const currentSlide = slides[currentIndex];
-            const nextSlide = slides[index];
-
-            currentSlide.classList.remove("is-active");
-            nextSlide.classList.add("is-entering");
+            slides[currentIndex].classList.remove("is-active");
+            slides[index].classList.add("is-entering");
 
             currentIndex = index;
-
             updateArrows();
             updateLensImage();
 
             setTimeout(() => {
-                nextSlide.classList.remove("is-entering");
-                nextSlide.classList.add("is-active");
+                slides[index].classList.remove("is-entering");
+                slides[index].classList.add("is-active");
                 isAnimating = false;
             }, 800);
         };
 
-        // 4. Mouvement de la loupe
-        const moveLens = (e: MouseEvent) => {
-            if (!lens || isAnimating) return;
+        // Fonction pour corriger la distorsion du ratio
+        const updateMagnifierScale = (
+            activeImg: HTMLImageElement,
+            imgRect: DOMRect,
+        ) => {
+            const containerRatio = imgRect.width / imgRect.height;
+            const imageRatio = activeImg.naturalWidth / activeImg.naturalHeight;
 
-            const rect = viewport.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // On vérifie que la souris est bien dans le cadre
-            if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
-                lens.style.opacity = "0";
-                return;
+            // On simule le "object-fit: cover" pour le background-size
+            if (imageRatio > containerRatio) {
+                // Image plus large que le conteneur (croppée sur les côtés)
+                lens.style.backgroundSize = `auto ${imgRect.height * zoomLevel}px`;
+            } else {
+                // Image plus haute que le conteneur (croppée en haut/bas)
+                lens.style.backgroundSize = `${imgRect.width * zoomLevel}px auto`;
             }
-
-            lens.style.opacity = "1";
-
-            // On centre la loupe (220px / 2 = 110)
-            const lensOffset = 110;
-            lens.style.left = `${x}px`;
-            lens.style.top = `${y}px`;
-            lens.style.transform = `translate(-50%, -50%)`;
-
-            // Calcul du background
-            const bgX = x * zoomLevel - lensOffset;
-            const bgY = y * zoomLevel - lensOffset;
-
-            lens.style.backgroundSize = `${rect.width * zoomLevel}px ${rect.height * zoomLevel}px`;
-            lens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
         };
 
-        // Listeners
-        viewport.addEventListener("mousemove", moveLens);
-        viewport.addEventListener("mouseenter", () => {
-            updateLensImage(); // On rafraîchit l'image au cas où
-            lens.style.opacity = "1";
+        const render = () => {
+            // Calcul de l'amorti (LERP)
+            currentX += (targetX - currentX) * friction;
+            currentY += (targetY - currentY) * friction;
+
+            const activeImg = slides[currentIndex]?.querySelector(
+                "img",
+            ) as HTMLImageElement;
+            if (activeImg && lens) {
+                const rect = viewport.getBoundingClientRect();
+                const imgRect = activeImg.getBoundingClientRect();
+
+                // Position de la loupe
+                lens.style.left = `${currentX}px`;
+                lens.style.top = `${currentY}px`;
+
+                // Correction de la distorsion
+                updateMagnifierScale(activeImg, imgRect);
+
+                // Calcul de la position du fond (centrage du zoom)
+                // On utilise les dimensions réelles affichées pour que le zoom soit parfait
+                const bgX =
+                    (currentX + rect.left - imgRect.left) * zoomLevel -
+                    lens.offsetWidth / 2;
+                const bgY =
+                    (currentY + rect.top - imgRect.top) * zoomLevel -
+                    lens.offsetHeight / 2;
+
+                lens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+            }
+            requestAnimationFrame(render);
+        };
+
+        viewport.addEventListener("mousemove", (e) => {
+            const rect = viewport.getBoundingClientRect();
+            targetX = e.clientX - rect.left;
+            targetY = e.clientY - rect.top;
+
+            if (
+                targetX < 0 ||
+                targetY < 0 ||
+                targetX > rect.width ||
+                targetY > rect.height
+            ) {
+                lens.style.opacity = "0";
+            } else {
+                lens.style.opacity = "1";
+            }
         });
-        viewport.addEventListener("mouseleave", () => {
-            lens.style.opacity = "0";
+
+        viewport.addEventListener(
+            "mouseleave",
+            () => (lens.style.opacity = "0"),
+        );
+        viewport.addEventListener("mouseenter", () => {
+            updateLensImage();
+            lens.style.opacity = "1";
         });
 
         nextBtn?.addEventListener("click", () => goTo(currentIndex + 1));
         prevBtn?.addEventListener("click", () => goTo(currentIndex - 1));
 
-        // Init
+        // Initialisation
         updateArrows();
         updateLensImage();
+        render(); // Lance la boucle d'amorti
     }
 
     const setup = () => {

@@ -188,7 +188,6 @@ const articles: laboBlock[] = laboData.filter(
     }
 
     #btn-labo-alert {
-        /* 1. Remonte le seuil minimal pour qu'il soit "deviné" */
         --total-int: 0.12;
         --low-int: 0;
         --high-int: 0;
@@ -197,10 +196,8 @@ const articles: laboBlock[] = laboData.filter(
         overflow: hidden;
         will-change: opacity, background;
 
-        /* 2. Applique l'opacité */
         opacity: var(--total-int);
 
-        /* 3. On ajoute une bordure "structurelle" pour dessiner la forme même à 0 */
         border: 1px solid rgba(255, 255, 255, 0.15) !important;
 
         background: linear-gradient(
@@ -209,7 +206,6 @@ const articles: laboBlock[] = laboData.filter(
             rgba(0, 180, 255, var(--high-int)) 100%
         ) !important;
 
-        /* Lissage pour que le retour au calme ne soit pas trop sec */
         transition:
             opacity 0.3s ease-out,
             background 0.1s ease-out;
@@ -275,22 +271,24 @@ const articles: laboBlock[] = laboData.filter(
             systeme: initSysteme,
         };
 
+        type PreviewType = keyof typeof initMap;
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const card = entry.target as HTMLElement;
-
                         card.classList.add("is-visible");
 
-                        // B. On cherche le canvas à l'intérieur pour lancer l'animation
                         const canvas = card.querySelector(
                             "canvas[data-preview]",
                         ) as HTMLCanvasElement;
+
                         if (canvas) {
                             const type = canvas.getAttribute("data-preview");
-                            if (type && initMap[type]) {
-                                initMap[type](canvas);
+
+                            if (type && type in initMap) {
+                                initMap[type as PreviewType](canvas);
                             }
                         }
 

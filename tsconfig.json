@@ -1,8 +1,17 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
+    "ignoreDeprecations": "5.0",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "astro:actions": [
+        "./.astro/actions.d.ts"
+      ]
+    },
+    "types": [
+      "node"
+    ]
   },
   "include": [
     ".astro/types.d.ts",

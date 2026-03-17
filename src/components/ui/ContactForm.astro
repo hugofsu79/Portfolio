@@ -12,10 +12,66 @@ import Button from "../ui/Button.astro";
         />
         <input type="email" name="email" placeholder="Email" required />
     </div>
-
     <textarea name="message" placeholder="Votre message" required></textarea>
-
-    <Button variant="primary" size="lg" type="submit">Envoyer </Button>
+    <Button variant="primary" size="lg" type="submit">Envoyer</Button>
 </form>
 
 <div id="toast" class="toast"></div>
+
+<script>
+    import { actions } from "astro:actions";
+
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+    const toast = document.getElementById("toast");
+
+    form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        // On ne récupère que 'error' ici pour satisfaire TypeScript
+        const { error } = await actions.sendEmail(formData);
+
+        if (error) {
+            console.error("Erreur:", error);
+            if (toast) {
+                toast.textContent =
+                    "Une erreur est survenue. Réessayez plus tard.";
+                toast.classList.add("show", "error");
+            }
+        } else {
+            if (toast) {
+                toast.textContent = "Message envoyé avec succès !";
+                toast.classList.add("show", "success");
+            }
+            form.reset();
+            setTimeout(() => {
+                toast?.classList.remove("show", "success", "error");
+            }, 5000);
+        }
+    });
+</script>
+
+<style>
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        background: var(--bg-primary, #333);
+        color: white;
+        transform: translateY(100px);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+    }
+    .toast.show {
+        transform: translateY(0);
+    }
+    .toast.success {
+        border-left: 4px solid #4caf50;
+    }
+    .toast.error {
+        border-left: 4px solid #f44336;
+    }
+</style>

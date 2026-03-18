@@ -14,13 +14,14 @@ export const server = {
             message: z.string(),
         }),
         handler: async (input) => {
-            // On peut maintenant utiliser ton vrai domaine !
             const { error } = await resend.emails.send({
-                from: 'Contact <contact@hugofoisseau.fr>',
+                from: 'Portfolio <notifications@hugofoisseau.fr>',
+
                 to: ['contact@hugofoisseau.fr'],
+
                 replyTo: input.email,
                 subject: `Nouveau message de ${input.firstname}`,
-                text: `Email: ${input.email}\n\nMessage: ${input.message}`,
+                text: `Email du visiteur: ${input.email}\n\nMessage: ${input.message}`,
             });
 
             if (error) {

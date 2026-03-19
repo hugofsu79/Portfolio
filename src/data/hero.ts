@@ -9,22 +9,25 @@ export const heroContent: I18nContent<{
     definition_3: string;
 }> = {
     fr: {
-        job: "Designer interactif",
+        job: "Product Designer",
         "context.label": "n.m",
-        "context.description": "(Du latin designare (projeter) et inter-agere (agir entre).",
+        "context.description": "(Du latin designare (projeter) et producere (faire émerger).",
         definition_1:
-            "Concepteur d’interfaces (UI/UX) pensées pour être comprises et utilisées.",
+            "Concepteur de produits numériques, structurant les parcours et les interfaces pour répondre à des usages réels.",
         definition_2:
-            "Médiateur entre usage, design et technique.",
+            "Médiateur entre design, technique et enjeux produit.",
         definition_3:
-            "Architecte de systèmes visuels, d’applications et de produits cohérents",
+            "Architecte de systèmes d’interface cohérents, scalables et ancrés dans la réalité de production",
     },
     en: {
-        job: "Interactive Designer",
+        job: "Product Designer",
         "context.label": "n.",
-        "context.description": "(From the Latin designare (to plan) and inter-agere (to act between).",
-        definition_1: "Designer of interfaces (UI/UX) built to be understood and used.",
-        definition_2: "Mediator between usage, design, and technology.",
-        definition_3: "Architect of consistent visual and behavioral systems.",
+        "context.description": "(From Latin designare (to plan) and producere (to bring forth).",
+        definition_1:
+            "Designer of digital products, shaping user flows and interfaces around real use cases.",
+        definition_2:
+            "Bridge between design, technology, and product constraints.",
+        definition_3:
+            "Architect of scalable interface systems grounded in real-world implementation.",
     }
 };

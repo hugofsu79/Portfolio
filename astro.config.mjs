@@ -4,7 +4,6 @@ import vercel from '@astrojs/vercel/serverless';
 export default defineConfig({
     output: 'server',
 
-    // 2. Domaine off
     site: 'https://hugofoisseau.fr',
 
     adapter: vercel({

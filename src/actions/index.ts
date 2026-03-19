@@ -31,4 +31,4 @@ export const server = {
             return { success: true };
         },
     }),
-}
+};

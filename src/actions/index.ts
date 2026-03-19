@@ -16,14 +16,13 @@ export const server = {
         handler: async (input) => {
             const { error } = await resend.emails.send({
                 from: 'Portfolio <notifications@hugofoisseau.fr>',
-
-                to: ['contact@hugofoisseau.fr'],
-
+                to: ['hugo266@icloud.com'], // Envoi vers iCloud pour contourner le blocage Hostinger
                 replyTo: input.email,
                 subject: `Nouveau message de ${input.firstname}`,
-                text: `Email du visiteur: ${input.email}\n\nMessage: ${input.message}`,
+                text: `Contact: ${input.firstname} (${input.email})\n\nMessage: ${input.message}`,
             });
 
+            // INDISPENSABLE : Pour que le site sache s'il y a une erreur
             if (error) {
                 console.error("Erreur Resend:", error);
                 throw new Error(error.message);

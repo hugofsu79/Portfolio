@@ -3,15 +3,15 @@ import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
     output: 'server',
-
     site: 'https://hugofoisseau.fr',
 
     adapter: vercel({
         webAnalytics: { enabled: true }
     }),
 
+    // ON DÉSACTIVE LA VÉRIFICATION D'ORIGINE ICI
     security: {
-        checkOrigin: true
+        checkOrigin: false
     },
 
     compressHTML: true,

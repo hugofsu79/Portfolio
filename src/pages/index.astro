@@ -80,18 +80,10 @@ import About from "../components/sections/About.astro";
 	}
 </style>
 
-<script type="module" src="/src/scripts/useProjectHover.ts"></script>
-<script is:inline>
-	window.addEventListener("load", () => {
-		// @ts-ignore
-		window.useProjectHover(".project-row");
-	});
-</script>
+<script>
+	import { useProjectHover } from "../scripts/useProjectHover.ts";
+	import { useProjectScrollActive } from "../scripts/useProjectScrollActive.ts";
 
-<script type="module">
-	import { useProjectScrollActive } from "/src/scripts/useProjectScrollActive.ts";
-
-	window.addEventListener("load", () => {
-		useProjectScrollActive(".project-row");
-	});
+	useProjectHover(".project-row");
+	useProjectScrollActive(".project-row");
 </script>

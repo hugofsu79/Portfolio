@@ -16,7 +16,7 @@ export const server = {
         handler: async (input) => {
             const { error } = await resend.emails.send({
                 from: 'Portfolio <notifications@hugofoisseau.fr>',
-                to: ['hugo266@icloud.com'], // Envoi vers iCloud pour contourner le blocage Hostinger
+                to: ['hugo266@icloud.com'],
                 replyTo: input.email,
                 subject: `Nouveau message de ${input.firstname}`,
                 text: `Contact: ${input.firstname} (${input.email})\n\nMessage: ${input.message}`,

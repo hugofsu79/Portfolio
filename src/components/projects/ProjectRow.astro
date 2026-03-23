@@ -19,7 +19,11 @@ const lang = Astro.currentLocale || "fr";
                     <li class="project-row">
                         <a
                             class="project-row-link"
-                            href={`/projects/${item.slug}`}
+                            href={
+                                lang === "fr"
+                                    ? `/projects/${item.slug}`
+                                    : `/${lang}/projects/${item.slug}`
+                            }
                             data-astro-prefetch
                         >
                             <div class="project-title">

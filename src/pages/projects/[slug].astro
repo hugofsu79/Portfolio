@@ -1,7 +1,6 @@
 ---
 import DynamicLogo from "../../components/ui/DynamicLogo.astro";
 import { projects } from "../../data/projects";
-
 import Layout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/layout/Footer.astro";
 import Carousel from "../../components/sections/Carousel.astro";
@@ -15,23 +14,31 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const item = projects.find((p) => p.slug === slug);
-if (!item) {
+const { project: propsProject } = Astro.props;
+
+// SÉCURITÉ : Si propsProject est vide (bug local), on va chercher manuellement
+const project = propsProject || projects.find((p) => p.slug === slug);
+
+if (!project) {
     return Astro.redirect("/404");
 }
 
-const { project } = Astro.props;
+const item = project;
+const fr = project.content?.fr;
+const en = project.content?.en;
 
-const fr = project.content.fr;
-const en = project.content.en;
+if (!fr || !en) {
+    throw new Error(`Données manquantes pour le projet : ${slug}`);
+}
 
 const cleanPath = (path: string) =>
-    path.startsWith("/public") ? path.replace("/public", "") : path;
+    path && path.startsWith("/public") ? path.replace("/public", "") : path;
 
-const formattedCarouselImages = project.media.carousel.map((img) => ({
-    src: cleanPath(img.src),
-    alt: img.alt.fr,
-}));
+const formattedCarouselImages =
+    project.media?.carousel?.map((img) => ({
+        src: cleanPath(img.src),
+        alt: img.alt?.fr || "",
+    })) || [];
 ---
 
 <Layout title={`Portfolio - ${project.entreprise}`}>
